@@ -10,7 +10,7 @@ function [bg, tin, tout, xcm, ycm] = findBG_MOG_mk3(cinFilename,minPixArea)
 % frame.
 % xcm and ycm are a ROUGH estimate for the center-of-mass of the fly
 
-phantomSDK_setPath ;
+% phantomSDK_setPath ;
 LoadPhantomLibraries;
 
 warning('off','MATLAB:gui:latexsup:UnableToInterpretTeXString')
