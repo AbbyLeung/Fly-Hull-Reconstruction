@@ -181,10 +181,12 @@ for t=tin:tout
         end
     end
     
-    level = graythresh(im2) * 0.6 ; 
+    % level = graythresh(im2) * 0.7 ; % was 0.6
+    level = 0.5;
     all_fly_thresholds(c) = level ;
     
-    bw2   = imbinarize(im2, level) ;
+    % bw2   = imbinarize(im2, level) ;
+    bw2 = imbinarize(im2);
     
     ind_temp = t - metaData.firstImage ; 
     xcm_curr = xcm_guess(ind_temp) ; 

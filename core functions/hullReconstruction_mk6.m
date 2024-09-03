@@ -107,7 +107,7 @@ ind_offsetsy = zeros(1,26,'int16') ;
 ind_offsetsz = zeros(1,26,'int16') ;
 
 c = 0;
-for i3=-1:1 ;
+for i3=-1:1 
     for j3=-1:1
         for k3=-1:1
             if ~(i3==0 && j3==0 && k3==0)
