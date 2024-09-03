@@ -14,3 +14,4 @@ PhantomSDK/
 # also don't track the following file types:
 *.asv
 *.png
+*.mat
