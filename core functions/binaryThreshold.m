@@ -188,7 +188,7 @@ for t=tin:tout
     % bw2   = imbinarize(im2, level) ;
     bw2 = imbinarize(im2);
     
-    ind_temp = t - metaData.firstImage ; 
+    ind_temp = t - metaData.firstImage + 1 ; 
     xcm_curr = xcm_guess(ind_temp) ; 
     ycm_curr = ycm_guess(ind_temp) ; 
     mask = false(size(bw2)) ;

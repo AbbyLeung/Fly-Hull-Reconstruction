@@ -100,7 +100,7 @@ end
 %% calculate body roll
 % calc roll angles at data.rhoTimes
 if (~isfield(data,'rhoTimes')) || (isempty(data.rhoTimes))
-    %[rhoTimes, rollVectors] = estimateRollVectors(data);
+    [rhoTimes, rollVectors] = estimateRollVector(data);
     disp('data.rhoTimes is not defined.') ;
     rhoFlag = false ;
 else

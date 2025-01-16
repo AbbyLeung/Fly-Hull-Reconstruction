@@ -620,7 +620,7 @@ parfor indd= 1: (endTrackingTime-startTrackingTime+1)  %parfor
         keyboard ; 
     end
     
-    if(0)
+    if(1)
         ww = [-1 1 -1 1] * 40  ; %#ok<UNRCH>
         figure(77); clf ;
         subplot(2,2,1) ;

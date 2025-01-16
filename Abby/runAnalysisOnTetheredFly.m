@@ -11,10 +11,6 @@ removeLegsFlag = false ; % try to remove legs in binary threshold?
 alignBBoxFlag = false ; % try to align images to avoid clipping?
 stopWingsFlag = false;
 
-% 
-% flyAnalysisMain(movNum, ExprNum, pathStruct, clustFlag, ...
-%                 largePertFlag, removeLegsFlag) ;
-
 % indexing for cameras
 XZ = 2 ;
 XY = 3 ;
@@ -42,43 +38,45 @@ if ~isfolder(savePath)
 end
 
 prefixStr = ['mov_',movieNum];
-
 movieFolder = fullfile(savePath,prefixStr);
 
 if ~isfolder(movieFolder)
     mkdir(movieFolder)
 end
 hullFigPath = movieFolder;
+defineConstantsScript
 
 
 %% FIND BACKGROUND ETC.
-allBGcell = findBGTethered(pathToWatch);
+[allBGcell,metaData] = findBGTethered(pathToWatch);
+firstImNum = metaData.firstImage;
+lastImNum = metaData.lastImage;
+vidWidth = metaData.width;
+vidHeight = metaData.height;
 
 % estimations for the time the fly comes in and out of the FOV of each
 % camera. this part of the automation can be improved. check it or just set
 % the "tin" and "tout" manually later.
 % allTin  = zeros(3,1) ;
 % allTout = zeros(3,1) ;
-allTin = [-200;-200;-200];
-allTout = [1400;1400;1400];
 
-tin = -200;
-tout = 1400;
+tin = firstImNum+100;
+tout = lastImNum-100;
 
-% do this properly with the meta data later?
-xcm = ones(2301,1);
-ycm = ones(2301,1);
+allTin = [tin;tin;tin];
+allTout = [tout;tout;tout];
 
-allXcm = {xcm*300,xcm*320,xcm*320};
-allYcm = {ycm*340,ycm*350,ycm*400};
-%---------------------------------------------
-% save these results in case of error later?
-% if savePointFlag
-%    bg_savename = fullfile(savePath, prefixStr, 'BG.mat') ;
-%    save(bg_savename,'allBGcell','allXcm','allYcm','allTin',...
-%        'allTout','tin','tout')
-% end
-%  -----------------------------------------------------------------------
+
+xcm = ones(tout-tin+1,1);
+ycm = ones(tout-tin+1,1);
+
+% either this or do some automated way of getting the center
+x_center = round(metaData.width/2);
+y_center = round(metaData.height/2);
+
+allXcm = {xcm*x_center,xcm*x_center,xcm*x_center};
+allYcm = {ycm*y_center,ycm*y_center,ycm*y_center};
+% ---------------------------------------------------------------
 %% PERFORM BINARY THRESHOLDING ON IMAGES
 %  -----------------------------------------------------------------------
 % load phantom library
@@ -554,4 +552,103 @@ save(savePathFull, 'data', 'bodyRes', 'bodyFrameStartInd', 'bodyFrameEndInd', ..
 end
 %dos(['move/y results_temp.mat ' resultsFileName '.mat']) ;
 
-return
+% return
+
+%% Calculate raw angles
+plotFlag = false;
+largePertFlag = false;
+
+[rhoTimes, rollVectors] = estimateRollVector(data,largePertFlag) ;
+data.rhoTimes = rhoTimes ;
+data.rollVectors = rollVectors ;
+
+[anglesLabFrame, anglesBodyFrame, t, newEtaLab, newEtaBody, sp_rho,...
+    smoothed_rho, rho_t, rho_samp, rotM_YP, rotM_roll, largePertFlag] = ...
+    calcAnglesRaw_Sam(data, plotFlag,largePertFlag);
+
+%% unwrap and spline smooth wing angles
+%------------------------------------------------
+if (isfield(data,'ignoreFrames'))
+    ignoreFrames = data.ignoreFrames ;
+else
+    ignoreFrames = [] ;
+end
+% right stroke angle
+phiR = -anglesBodyFrame(:, PHIR) ;
+ignoreIndR = unique([find(isnan(phiR))' ignoreFrames]) ;
+%phiR = phiR + 360 ;
+
+for i = 1:length(phiR)
+    while phiR(i) < -90
+        phiR(i) = phiR(i) + 360 ;
+    end
+    while phiR(i) > 270
+        phiR(i) = phiR(i) - 360 ;
+    end
+end
+
+if (~isempty(ignoreIndR))
+    phiR(ignoreIndR) = NaN ;
+end
+
+%-----------------------------------------------
+% left stroke angle
+phiL = +anglesBodyFrame(:, PHIL) ;
+ignoreIndL = unique([find(isnan(phiL))'  ignoreFrames])  ;
+
+for i = 1:length(phiL)
+    while phiL(i) < -90
+        phiL(i) = phiL(i) + 360 ;
+    end
+    while phiL(i) > 270
+        phiL(i) = phiL(i) - 360 ;
+    end
+end
+
+if (~isempty(ignoreIndL))
+    phiL(ignoreIndL) = NaN ;
+end
+
+% hampel filter to remove outliers
+[~, hampelR] = hampel(phiR, 7,2) ;
+[~, hampelL] = hampel(phiL, 7,2) ;
+
+phiR(hampelR) = NaN ;
+phiL(hampelL) = NaN ;
+
+%% store data in structure
+anglesBodyFrame(:,PHIR) = -phiR ;
+anglesBodyFrame(:,PHIL) = phiL ;
+data.anglesBodyFrame = anglesBodyFrame ;
+data.anglesLabFrame = anglesLabFrame ;
+
+%% Smooth angles
+%% smooth angles (body and wing)
+% --------------------------------------------
+% smooth wing angles (lab and body frames)
+[~, smoothAnglesMatR_Lab, ~, ~, ~ ] = smoothWingAngles(data, 'R','Lab') ;
+[~, smoothAnglesMatL_Lab, ~, ~, ~ ] = smoothWingAngles(data, 'L','Lab') ;
+[~, smoothAnglesMatR_Body, ~, ~, ~ ] = smoothWingAngles(data, 'R','Body') ;
+[~, smoothAnglesMatL_Body, ~, ~, ~ ] = smoothWingAngles(data, 'L','Body') ;
+% make sure phiR is negative in body frame
+if (mode(sign(smoothAnglesMatR_Body(1,:))) > 0)
+    smoothAnglesMatR_Body(1,:) = -1.*smoothAnglesMatR_Body(1,:) ; 
+end
+
+% --------------------------------------------------------------------
+% smooth body angles (just in lab frame -- not defined in body frame)
+[pitchSmooth, yawSmooth, rollSmooth] = smoothBodyAngles(data,largePertFlag) ;
+
+% ------------------------------------
+% create arrays for smoothed angles
+% NB: need to take transpose for wing angle mats
+anglesLabFrameSmooth = [yawSmooth, pitchSmooth, smoothAnglesMatR_Lab', ...
+    smoothAnglesMatL_Lab', rollSmooth] ; 
+anglesBodyFrameSmooth = zeros(data.Nimages, 8);
+anglesBodyFrameSmooth(:,[PHIR, THETAR, ETAR, PHIL, THETAL, ETAL]) = ...
+    [smoothAnglesMatR_Body', smoothAnglesMatL_Body'] ; 
+    
+% --------------------------------------
+% add to data struct
+data.anglesLabFrameSmooth = anglesLabFrameSmooth ; 
+data.anglesBodyFrameSmooth = anglesBodyFrameSmooth ; 

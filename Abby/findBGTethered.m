@@ -1,4 +1,4 @@
-function [initialFrameArray] = findBGTethered(exprPath)
+function [initialFrameArray,cineMetaData] = findBGTethered(exprPath)
 %FINDBGTETHERED Summary of this function goes here
 %   Detailed explanation goes here
 LoadPhantomLibraries();
@@ -8,13 +8,19 @@ RegisterPhantom(true);
 
 % cinePath = fullfile(exprPath,'xy_001.cine');
 % cineData = myOpenCinFile(cinePath);
-% cineMetaData = getCinMetaData(cinePath);
+cineDir = dir(fullfile(exprPath,'*.cine'));
+
+cineMetaData = getCinMetaData(fullfile(cineDir(1).folder,cineDir(1).name));
 
 % camNames = {'xy','yz','xz'};
 camNames = {'yz','xz','xy'};
 initialFrameArray = cell(1,3);
 currImFrame = cell(1,3);
 offset_vec = [13,13,15];
+
+% this offset vec is because I took the background image on a different day
+% from the experiment because I didn't know better. I shouldn't have to do
+% this in the future though.
 
 for camInd = 1:3
     % save background image

@@ -43,4 +43,16 @@ imshow(mask)
 UnregisterPhantom();
 UnloadPhantomLibraries();
 
+%% Test body res and stuff
+currFrameNum = 100;
+
+res = wing2Res;
+frameLogical = res(:,1)==currFrameNum;
+scatter3(res(frameLogical,2),res(frameLogical,3),res(frameLogical,4))
+axis equal
+
+
+
+
+
 
