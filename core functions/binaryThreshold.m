@@ -188,17 +188,17 @@ for t=tin:tout
     % bw2   = imbinarize(im2, level) ;
     bw2 = imbinarize(im2);
     
-    ind_temp = t - metaData.firstImage + 1 ; 
-    xcm_curr = xcm_guess(ind_temp) ; 
-    ycm_curr = ycm_guess(ind_temp) ; 
-    mask = false(size(bw2)) ;
-    x1 = int16(max([xcm_curr - maskWindow, 1])) ;
-    x2 = int16(min([xcm_curr + maskWindow, metaData.width])) ; 
-    y1 = int16(max([ycm_curr - maskWindow, 1])) ;
-    y2 = int16(min([ycm_curr + maskWindow, metaData.height])) ;
-    mask(y1:y2, x1:x2) = true ;
-    
-    bw2 = bw2 & mask ; 
+    % ind_temp = t - tin + 1; 
+    % xcm_curr = xcm_guess(ind_temp) ; 
+    % ycm_curr = ycm_guess(ind_temp) ; 
+    % mask = false(size(bw2)) ;
+    % x1 = int16(max([xcm_curr - maskWindow, 1])) ;
+    % x2 = int16(min([xcm_curr + maskWindow, metaData.width])) ; 
+    % y1 = int16(max([ycm_curr - maskWindow, 1])) ;
+    % y2 = int16(min([ycm_curr + maskWindow, metaData.height])) ;
+    % mask(y1:y2, x1:x2) = true ;
+    % 
+    % bw2 = bw2 & mask ; 
     % find center of mass of the largest cc of bw2
     % find largest CC
     CC  = bwconncomp(bw2);
