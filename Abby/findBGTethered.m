@@ -8,7 +8,7 @@ RegisterPhantom(true);
 
 % cinePath = fullfile(exprPath,'xy_001.cine');
 % cineData = myOpenCinFile(cinePath);
-cineDir = dir(fullfile(exprPath,'*.cine'));
+cineDir = dir(fullfile(exprPath,'bg','*.cine'));
 
 cineMetaData = getCinMetaData(fullfile(cineDir(1).folder,cineDir(1).name));
 
@@ -16,7 +16,8 @@ cineMetaData = getCinMetaData(fullfile(cineDir(1).folder,cineDir(1).name));
 camNames = {'yz','xz','xy'};
 initialFrameArray = cell(1,3);
 currImFrame = cell(1,3);
-offset_vec = [13,13,15];
+% offset_vec = [13,13,15];
+offset_vec = [0,0,0];
 
 % this offset vec is because I took the background image on a different day
 % from the experiment because I didn't know better. I shouldn't have to do
@@ -24,7 +25,9 @@ offset_vec = [13,13,15];
 
 for camInd = 1:3
     % save background image
-    camFilenameBG = [camNames{camInd},'_3.cine'];
+    currCamDir = dir(fullfile(exprPath,'bg',[camNames{camInd},'*.cine']));
+    camFilenameBG = currCamDir(1).name;
+    % camFilenameBG = [camNames{camInd},'_001.cine'];
     cinePath_bg = fullfile(exprPath,'bg',camFilenameBG);
     cineDataBG = myOpenCinFile(cinePath_bg);
     bgIm = myReadCinImage(cineDataBG,1);
