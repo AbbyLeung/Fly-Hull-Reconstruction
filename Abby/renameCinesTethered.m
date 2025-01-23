@@ -1,4 +1,5 @@
-% given cine directories, rename the files
+% Script to rename cine files from the trigger time to a number. This
+% also checks if there are cines already renamed. 
 falseTriggerFlag = false;
 errorFlag = false;
 
@@ -11,6 +12,7 @@ fnExp3 = ['(?<camName>[xyz]{2})_Y(?<year>\d{4})',...
     '(?<second>\d+.\d+)']; % one digit in day AND ALSO a space between the month and day
 fnExp = [fnExp1,'|',fnExp3]; 
 
+% reg expression for movies that are already renamed
 fnExpMovNum = '(?<camName>[xyz]{2})_(?<movieNum>\d{3}).cine';
 pathToWatch =  'Y:\Abby\tethered_3cam_data\02_20012025\';
 
@@ -41,6 +43,7 @@ datetimes = cell(1,3);
 
 camNames = {'xy','yz','xz'};
 
+% get trigger times from each camera
 for camInd = 1:3
     camFilename = [camNames{camInd},'*.cine'];
     currDir = dir(fullfile(pathToWatch,camFilename));
@@ -83,11 +86,12 @@ else
     movNum = max(movNumsList);
 end
 
+% compare trigger times across the 3 cams
 for ind1 = 1:length(datetimes{1})
     [timeDiffs_2,ind2] = min(abs((datetimes{1}(ind1)-datetimes{2})));
     [timeDiffs_3,ind3] = min(abs((datetimes{1}(ind1)-datetimes{3})));
 
-    tol = duration(0,0,0.5); % 0.5 second tolerance. lazy, do nchoosek?
+    tol = duration(0,0,0.5); % 0.5 second tolerance
     if timeDiffs_2 < tol && timeDiffs_3 < tol
         movNum = movNum + 1;
         movNumStr = num2str(movNum,'%03.f');
@@ -107,8 +111,6 @@ for ind1 = 1:length(datetimes{1})
         [~,cam2Name,~] = fileparts(origPaths{2});
         [~,cam3Name,~] = fileparts(origPaths{3});
         
-        % xmlFilenames = {['Camera1_',movNumStr,'.xml'],['Camera2_',movNumStr,'.xml'],...
-        %     ['Camera3_',movNumStr,'.xml']};
         xmlFilenames = strcat(camNames,['_',movNumStr,'.xml']);
         xmlPaths = fullfile(pathToWatch,xmlFilenames);
 
