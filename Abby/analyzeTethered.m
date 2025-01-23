@@ -1,7 +1,7 @@
 % Script to run analysis on renamed files. Need to modify the cnie2sparse
 % code to make everything work.
 
-pathToWatch = 'C:\Users\Abby\Cornell\Abby_test_tethered_code\01_23082024\' ; 
+pathToWatch = 'F:\02_20012025\' ; 
 pathStruct = generatePathStruct(pathToWatch) ;
 ExprNum = pathStruct.ExprNum;
 
@@ -51,6 +51,7 @@ defineConstantsScript
 
 %% FIND BACKGROUND ETC.
 [allBGcell,metaData] = findBGTethered(pathToWatch);
+
 firstImNum = metaData.firstImage;
 lastImNum = metaData.lastImage;
 vidWidth = metaData.width;
@@ -105,17 +106,15 @@ cam = XY ;
 
 [all_fly_bw_xy, body_only_bw_xy, all_fly_thresholds_xy, xcm_xy, ycm_xy,...
     allAxlim_xy, DELTA, with_legs_bw_xy] = ...
-    binaryThreshold(allBGcell{cam} , cinFilenames{cam}, tin,...
-     tout, twoFlies, allXcm{cam}, allYcm{cam}, removeLegsFlag, ...
-     stopWingsFlag) ;
+    binaryThreshTethered(allBGcell{cam} , cinFilenames{cam}, tin,...
+     tout, removeLegsFlag, stopWingsFlag) ;
 
 cam = XZ ;
 try
     [all_fly_bw_xz, body_only_bw_xz, all_fly_thresholds_xz, xcm_xz, ycm_xz,...
         allAxlim_xz, DELTA, with_legs_bw_xz] = ...
-        binaryThreshold( allBGcell{cam}  , cinFilenames{cam}, tin,...
-         tout, twoFlies, allXcm{cam}, allYcm{cam}, removeLegsFlag, ...
-         stopWingsFlag) ;
+        binaryThreshTethered( allBGcell{cam}  , cinFilenames{cam}, tin,...
+         tout, removeLegsFlag, stopWingsFlag) ;
 catch exception
     msg = strcat('Error doing xz binary threshold for movie ', movieNum) ;%cinFilenames{cam}(length(cinFilenames{cam})-6:length(cinFilenames{cam})-4)) ;
     msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
@@ -127,22 +126,28 @@ catch exception
 end
 
 cam = YZ ;
-try
-    [all_fly_bw_yz, body_only_bw_yz, all_fly_thresholds_yz, xcm_yz, ycm_yz,...
-        allAxlim_yz, DELTA, with_legs_bw_yz] = ...
-        binaryThreshold( allBGcell{cam}  , cinFilenames{cam}, tin,...
-         tout, twoFlies, allXcm{cam}, allYcm{cam}, removeLegsFlag, ...
-         stopWingsFlag) ;
-catch exception
-    msg = strcat('Error doing yz binary threshold for movie ', movieNum) ;%cinFilenames{cam}(length(cinFilenames{cam})-6:length(cinFilenames{cam})-4)) ;
-    msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
-    disp(msg)
-    % fileID = fopen(errorPath,'a+') ;
-    % fprintf(fileID, '%s\r\n', msg) ;
-    % fclose(fileID) ;
-    errorFlag = true ;
-    return
-end
+% try
+%     [all_fly_bw_yz, body_only_bw_yz, all_fly_thresholds_yz, xcm_yz, ycm_yz,...
+%         allAxlim_yz, DELTA, with_legs_bw_yz] = ...
+%         binaryThreshTethered( allBGcell{cam}  , cinFilenames{cam}, tin,...
+%          tout, twoFlies, allXcm{cam}, allYcm{cam}, removeLegsFlag, ...
+%          stopWingsFlag) ;
+% catch exception
+%     msg = strcat('Error doing yz binary threshold for movie ', movieNum) ;%cinFilenames{cam}(length(cinFilenames{cam})-6:length(cinFilenames{cam})-4)) ;
+%     msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
+%     disp(msg)
+%     % fileID = fopen(errorPath,'a+') ;
+%     % fprintf(fileID, '%s\r\n', msg) ;
+%     % fclose(fileID) ;
+%     errorFlag = true ;
+%     return
+% end
+
+[all_fly_bw_yz, body_only_bw_yz, all_fly_thresholds_yz, xcm_yz, ycm_yz,...
+    allAxlim_yz, DELTA, with_legs_bw_yz] = ...
+    binaryThreshTethered( allBGcell{cam}  , cinFilenames{cam}, tin,...
+     tout, removeLegsFlag,stopWingsFlag) ;
+
 UnregisterPhantom();
 UnloadPhantomLibraries();
 %  -----------------------------------------------------------------------

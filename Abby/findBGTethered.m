@@ -10,7 +10,10 @@ RegisterPhantom(true);
 % cineData = myOpenCinFile(cinePath);
 cineDir = dir(fullfile(exprPath,'bg','*.cine'));
 
-cineMetaData = getCinMetaData(fullfile(cineDir(1).folder,cineDir(1).name));
+metaDataDir = dir(fullfile(exprPath,'*.cine'));
+
+cineMetaData = getCinMetaData(fullfile(metaDataDir(1).folder,...
+    metaDataDir(1).name));
 
 % camNames = {'xy','yz','xz'};
 camNames = {'yz','xz','xy'};
@@ -18,6 +21,8 @@ initialFrameArray = cell(1,3);
 currImFrame = cell(1,3);
 % offset_vec = [13,13,15];
 offset_vec = [0,0,0];
+window_length = 100;
+w_dims = [round(cineMetaData.width/2)-window_length,round(cineMetaData.height/2)+window_length];
 
 % this offset vec is because I took the background image on a different day
 % from the experiment because I didn't know better. I shouldn't have to do
@@ -34,14 +39,15 @@ for camInd = 1:3
     myCloseCinFile(cineDataBG);
 
     % Load input im 
-    cineFilename = [camNames{camInd},'_001.cine'];
+    cineFilename = [camNames{camInd},'_002.cine'];
     cinePath = fullfile(exprPath,cineFilename);
     currCineData = myOpenCinFile(cinePath);
     currIm = myReadCinImage(currCineData,0);
     currImFrame{camInd} = currIm;
     
     tempIm = currIm;
-    tempIm(300:450,250:400) = bgIm(300:450,250:400)-offset_vec(camInd);
+
+    tempIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2)) = bgIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2))-offset_vec(camInd);
     initialFrameArray{camInd} = tempIm;
 
     myCloseCinFile(currCineData);

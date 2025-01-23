@@ -157,23 +157,8 @@ for t=tin:tout
     end
     %im1 = ReadCineFileImage(cinFilename, t, false);
     im1 = myReadCinImage(cindata, t) ;
-    
     im2 = imsubtract(bg, im1) ;
     
-    %{
-    % find bw-threshold level based on a sub image (same results, don't bother)
-    x1 = max( [xcm(c)-W, 1]) ;
-    x2 = min( [xcm(c)+W, metaData.width]) ;
-    y1 = max( [ycm(c)-W, 1]) ;
-    y2 = min( [ycm(c)+W, metaData.height]) ;
-    
-    sub_im2 = im2(y1:y2, x1:x2) ;
-    %figure(3) ; imshow(sub_im2);
-    level = graythresh(sub_im2)  ;
-    c=c+1 ;
-    %}
-     
-  
     if twoflies>0
         for j = 1:twoflies
             im2(int16(min(yboxCell{1,j})):int16(max(yboxCell{1,j})),int16(min(xboxCell{1,j})):int16(max(xboxCell{1,j})))...
@@ -214,9 +199,7 @@ for t=tin:tout
     
     %[idx1 idx2]  = ind2sub(size(bwtest2), CC.PixelIdxList{idx(1)}) ;
     bw3 = false(size(bw2)) ;
-    %if t == 151
-    %    disp('blerg') ;
-    %end
+
     bw3(CC.PixelIdxList{idx(1)}) = true ;
     bw3 = imfill(bw3, 'holes') ;
     
@@ -230,16 +213,6 @@ for t=tin:tout
     % ---
     
     [idx1, idx2]  = ind2sub(size(bw3), CC.PixelIdxList{idx(1)}) ;
-    
-    %{
-    % -- following part did not work. find body-only based on motion
-    
-    % apply the adaptive threshold for the fly-pixels only to find
-    % body-only threshold
-    pixvals     = im2(CC.PixelIdxList{idx(1)});
-    level_body  = graythresh(pixvals) * 1.0;
-    bw_body     = im2bw(im2, level_body) ;
-    %}
     
     % find axis limits for display
     m1 = mean(idx1) ;
