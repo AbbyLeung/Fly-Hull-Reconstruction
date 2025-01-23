@@ -26,18 +26,6 @@ function [all_fly_bw, body_only_bw, all_fly_thresholds, xcm_pass2, ...
 %     When showing an image of frame k, you can use: axis(allAxLim(k,:)) to
 %     center the view on the fly.
 %   * DELTA - the number of frames taken before and after each frame.
-%
-%
-% USAGE for example:
-% ------------------
-% load Luca_expr2_mov5_bg
-% [all_fly_bw, body_only_bw, all_fly_thresholds, xcm_pass2, ycm_pass2, allAxlim, DELTA] = ...
-%                 binaryThreshold(bgxy, 'C:\Users\Tsevi\Desktop\TEMP\xy_005.cin', -593, -438) ;
-% figure ; hold on ;
-% plot(xcm_pass2, ycm_pass2,'ks-','markerfacecolor','g') ;
-% plot(xcm_pass2(DELTA+1), ycm_pass2(DELTA+1),'ks-','markerfacecolor','r') ;
-% xlabel('x') ; ylabel('y') ; axis equal ; hold off ; grid on ;
-
 
 if ~exist('removeLegsFlag','var') || isempty(removeLegsFlag)
     removeLegsFlag = true ; 

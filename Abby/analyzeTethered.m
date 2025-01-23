@@ -1,7 +1,7 @@
 % Script to run analysis on renamed files. Need to modify the cnie2sparse
 % code to make everything work.
 
-pathToWatch = 'F:\02_20012025\' ; 
+pathToWatch = 'Y:\Abby\tethered_3cam_data\02_20012025\' ; 
 pathStruct = generatePathStruct(pathToWatch) ;
 ExprNum = pathStruct.ExprNum;
 
@@ -16,7 +16,7 @@ XZ = 2 ;
 XY = 3 ;
 YZ = 1 ;
 % input movie number for analysis
-movNum = 4;
+movNum = 1;
 movNumStr = num2str(movNum,'%03.f');
 ExprNumStr = num2str(ExprNum,'%03.f');
 cineSuffix = ['_',movNumStr,'.cine'];
@@ -51,7 +51,6 @@ defineConstantsScript
 
 %% FIND BACKGROUND ETC.
 [allBGcell,metaData] = findBGTethered(pathToWatch);
-
 firstImNum = metaData.firstImage;
 lastImNum = metaData.lastImage;
 vidWidth = metaData.width;
@@ -68,7 +67,6 @@ tout = lastImNum-100;
 
 allTin = [tin;tin;tin];
 allTout = [tout;tout;tout];
-
 
 xcm = ones(tout-tin+1,1);
 ycm = ones(tout-tin+1,1);
@@ -110,43 +108,17 @@ cam = XY ;
      tout, removeLegsFlag, stopWingsFlag) ;
 
 cam = XZ ;
-try
-    [all_fly_bw_xz, body_only_bw_xz, all_fly_thresholds_xz, xcm_xz, ycm_xz,...
+[all_fly_bw_xz, body_only_bw_xz, all_fly_thresholds_xz, xcm_xz, ycm_xz,...
         allAxlim_xz, DELTA, with_legs_bw_xz] = ...
         binaryThreshTethered( allBGcell{cam}  , cinFilenames{cam}, tin,...
          tout, removeLegsFlag, stopWingsFlag) ;
-catch exception
-    msg = strcat('Error doing xz binary threshold for movie ', movieNum) ;%cinFilenames{cam}(length(cinFilenames{cam})-6:length(cinFilenames{cam})-4)) ;
-    msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
-    % fileID = fopen(errorPath,'a+') ;
-    % fprintf(fileID, '%s\r\n', msg) ;
-    % fclose(fileID) ;
-    errorflag = true ;
-    return
-end
 
 cam = YZ ;
-% try
-%     [all_fly_bw_yz, body_only_bw_yz, all_fly_thresholds_yz, xcm_yz, ycm_yz,...
-%         allAxlim_yz, DELTA, with_legs_bw_yz] = ...
-%         binaryThreshTethered( allBGcell{cam}  , cinFilenames{cam}, tin,...
-%          tout, twoFlies, allXcm{cam}, allYcm{cam}, removeLegsFlag, ...
-%          stopWingsFlag) ;
-% catch exception
-%     msg = strcat('Error doing yz binary threshold for movie ', movieNum) ;%cinFilenames{cam}(length(cinFilenames{cam})-6:length(cinFilenames{cam})-4)) ;
-%     msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
-%     disp(msg)
-%     % fileID = fopen(errorPath,'a+') ;
-%     % fprintf(fileID, '%s\r\n', msg) ;
-%     % fclose(fileID) ;
-%     errorFlag = true ;
-%     return
-% end
-
 [all_fly_bw_yz, body_only_bw_yz, all_fly_thresholds_yz, xcm_yz, ycm_yz,...
     allAxlim_yz, DELTA, with_legs_bw_yz] = ...
     binaryThreshTethered( allBGcell{cam}  , cinFilenames{cam}, tin,...
-     tout, removeLegsFlag,stopWingsFlag) ;
+     tout,removeLegsFlag, stopWingsFlag) ;
+
 
 UnregisterPhantom();
 UnloadPhantomLibraries();
@@ -156,15 +128,11 @@ UnloadPhantomLibraries();
 %  -----------------------------------------------------------------------
 
 dim = max([all_fly_bw_xy.dim ; all_fly_bw_xz.dim ; all_fly_bw_yz.dim]) ; 
-%dim = all_fly_bw_xy.dim ;
 newdim = dim ;
-% newdim(1) = dim(1) - 2*DELTA ;
-% newdim(2) = 3 ; % three cams
 newdim(2) = dim(2) - 2*DELTA ;
 newdim(1) = 3 ; % three cams
 
 all_fly_bw = init4D(newdim) ; 
-% Nimages = newdim(1) ;
 Nimages = newdim(2) ;
 disp('Combining...')
 for k=1:Nimages
@@ -394,9 +362,6 @@ params.YZ = YZ ;
 params.XY = XY ;
 params.XZ = XZ ;
 params.fps = 8000 ;
-% params.camerasPos=[easyWandData.DLTtranslationVector(:,:,2)';...
-% easyWandData.DLTtranslationVector(:,:,1)';...
-% easyWandData.DLTtranslationVector(:,:,3)'];  % row1=yz, row2=xz, row3=xy
 params.cameraNames = ['yz';'xz';'xy'];
 params.detectorLengthPix = all_fly_bw.dim(3:4) ;  % [imageHeight, imageWidth]
 params.voxelSize = 50e-6 ; % 50 microns
@@ -457,27 +422,11 @@ end
 %--------------------------------------------------------------------------
 tic ;
 disp('Doing hull reconstruction...')
-try
-    [ bodyRes, bodyFrameStartInd, bodyFrameEndInd, ...
-        wing1Res, wing1FrameStartInd, wing1FrameEndInd, ...
-        wing2Res, wing2FrameStartInd, wing2FrameEndInd, mergedWingsFlag ] = ...
-        hullReconstruction_mk6(params, CM_pos, all_fly_bw, body_only_bw,...
-        dlt_matrix, easyWandData,[2,1,3]);
-catch exception
-    msg = strcat('Error reconstructing hulls for movie ', movieNum) ;%cinFilenames{cam}(length(cinFilenames{cam})-6:length(cinFilenames{cam})-4)) ;
-    msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
-    disp(msg)
-    % fileID = fopen(errorPath,'a+') ;
-    % fprintf(fileID, '%s\r\n', msg) ;
-    % fprintf(fileID, '%s\r\n', ' ') ;
-    % fclose(fileID) ;
-    % errorFlag = true ;
-    return
-end
-% [ bodyRes, bodyFrameStartInd, bodyFrameEndInd, ...
-%     wing1Res, wing1FrameStartInd, wingFrameEndInd, ...
-%     wing2Res, wing2FrameStartInd, wing2FrameEndInd, mergedWingsFlag ] = ...
-%     hullReconstruction_mk6(params, CM_pos, all_fly_bw, body_only_bw, dlt_matrix, easyWandData,[2,1,3]);
+
+[ bodyRes, bodyFrameStartInd, bodyFrameEndInd, ...
+    wing1Res, wing1FrameStartInd, wing1FrameEndInd, ...
+    wing2Res, wing2FrameStartInd, wing2FrameEndInd, mergedWingsFlag ] = ...
+    hullReconstruction_mk6(params, CM_pos, all_fly_bw, body_only_bw, dlt_matrix, easyWandData,[2,1,3]);
 thull = toc ;
 
 delete(gcp) ;
@@ -496,7 +445,7 @@ disp(['done calculating Hulls for movie ' movieNum]) ;
 %--------------------------------------------------------------------------
 %% ANALYZE VOXEL RECONSTRUCTION
 %--------------------------------------------------------------------------
-t1 = clock ;
+% t1 = clock ;
 
 %diaryFile = ['myDiary.txt'] ;
 % diaryFile = fullfile(savePath,prefixStr,'myDiary.txt');
@@ -510,127 +459,20 @@ t1 = clock ;
 disp('Doing hull analysis...') 
 plotHullFlag = false;
 saveHullFigFlag = false;
-try
-    data = hullAnalysis_mk3 (bodyRes, wing1Res, wing2Res, params, ...
-        mergedWingsFlag, [], 'test', plotHullFlag, saveHullFigFlag, ...
-        hullFigPath);
-catch exception
-    msg = strcat('Error analyzing hulls for movie ', movieNum) ;%cinFilenames{cam}(length(cinFilenames{cam})-6:length(cinFilenames{cam})-4)) ;
-    msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
-    disp(msg)
-    % fileID = fopen(errorPath,'a+') ;
-    % fprintf(fileID, '%s\r\n', msg) ;
-    % fprintf(fileID, '%s\r\n', ' ') ;
-    % fclose(fileID) ;
-    % errorFlag = true ;
-    return
-end
+
+data_hull = hullAnalysis_mk3 (bodyRes, wing1Res, wing2Res, params, ...
+    mergedWingsFlag, [], 'test', plotHullFlag, saveHullFigFlag, ...
+    hullFigPath);
+
 disp(['Done with hull analysis for movie ' movieNum])
-t2 = clock ;
-dt12 = t2 - t1 ;
+% t2 = clock ;
+% dt12 = t2 - t1 ;
 
-% diary off ;
-%--------------------------------------------------------------------------
-
-
-%% Calculate raw angles
+%% calculate angles
 plotFlag = false;
-largePertFlag = false;
-
-[rhoTimes, rollVectors] = estimateRollVector(data,largePertFlag) ;
-data.rhoTimes = rhoTimes ;
-data.rollVectors = rollVectors ;
-
-[anglesLabFrame, anglesBodyFrame, t, newEtaLab, newEtaBody, sp_rho,...
-    smoothed_rho, rho_t, rho_samp, rotM_YP, rotM_roll, largePertFlag] = ...
-    calcAnglesRaw_Sam(data, plotFlag,largePertFlag);
-
-%% unwrap and spline smooth wing angles
-%------------------------------------------------
-if (isfield(data,'ignoreFrames'))
-    ignoreFrames = data.ignoreFrames ;
-else
-    ignoreFrames = [] ;
-end
-% right stroke angle
-phiR = -anglesBodyFrame(:, PHIR) ;
-ignoreIndR = unique([find(isnan(phiR))' ignoreFrames]) ;
-%phiR = phiR + 360 ;
-
-for i = 1:length(phiR)
-    while phiR(i) < -90
-        phiR(i) = phiR(i) + 360 ;
-    end
-    while phiR(i) > 270
-        phiR(i) = phiR(i) - 360 ;
-    end
-end
-
-if (~isempty(ignoreIndR))
-    phiR(ignoreIndR) = NaN ;
-end
-
-%-----------------------------------------------
-% left stroke angle
-phiL = +anglesBodyFrame(:, PHIL) ;
-ignoreIndL = unique([find(isnan(phiL))'  ignoreFrames])  ;
-
-for i = 1:length(phiL)
-    while phiL(i) < -90
-        phiL(i) = phiL(i) + 360 ;
-    end
-    while phiL(i) > 270
-        phiL(i) = phiL(i) - 360 ;
-    end
-end
-
-if (~isempty(ignoreIndL))
-    phiL(ignoreIndL) = NaN ;
-end
-
-% hampel filter to remove outliers
-[~, hampelR] = hampel(phiR, 7,2) ;
-[~, hampelL] = hampel(phiL, 7,2) ;
-
-phiR(hampelR) = NaN ;
-phiL(hampelL) = NaN ;
-
-%% store data in structure
-anglesBodyFrame(:,PHIR) = -phiR ;
-anglesBodyFrame(:,PHIL) = phiL ;
-data.anglesBodyFrame = anglesBodyFrame ;
-data.anglesLabFrame = anglesLabFrame ;
-
-%% smooth angles (body and wing)
-% --------------------------------------------
-% smooth wing angles (lab and body frames)
-[~, smoothAnglesMatR_Lab, ~, ~, ~ ] = smoothWingAngles(data, 'R','Lab') ;
-[~, smoothAnglesMatL_Lab, ~, ~, ~ ] = smoothWingAngles(data, 'L','Lab') ;
-[~, smoothAnglesMatR_Body, ~, ~, ~ ] = smoothWingAngles(data, 'R','Body') ;
-[~, smoothAnglesMatL_Body, ~, ~, ~ ] = smoothWingAngles(data, 'L','Body') ;
-
-% make sure phiR is negative in body frame
-if (mode(sign(smoothAnglesMatR_Body(1,:))) > 0)
-    smoothAnglesMatR_Body(1,:) = -1.*smoothAnglesMatR_Body(1,:) ; 
-end
-
-% --------------------------------------------------------------------
-% smooth body angles (just in lab frame -- not defined in body frame)
-[pitchSmooth, yawSmooth, rollSmooth] = smoothBodyAngles(data,largePertFlag) ;
-
-% ------------------------------------
-% create arrays for smoothed angles
-% NB: need to take transpose for wing angle mats
-anglesLabFrameSmooth = [yawSmooth, pitchSmooth, smoothAnglesMatR_Lab', ...
-    smoothAnglesMatL_Lab', rollSmooth] ; 
-anglesBodyFrameSmooth = zeros(data.Nimages, 8);
-anglesBodyFrameSmooth(:,[PHIR, THETAR, ETAR, PHIL, THETAL, ETAL]) = ...
-    [smoothAnglesMatR_Body', smoothAnglesMatL_Body'] ; 
-    
-% --------------------------------------
-% add to data struct
-data.anglesLabFrameSmooth = anglesLabFrameSmooth ; 
-data.anglesBodyFrameSmooth = anglesBodyFrameSmooth ; 
+data.ExprNum = ExprNum;
+data.MovNum = movNum;
+data = calcFlyAngles(data_hull,largePertFlag,plotFlag);
 
 %% SAVE RESULTS
 %--------------------------------------------------------------------------
@@ -662,3 +504,30 @@ save(savePathFull, 'data', 'bodyRes', 'bodyFrameStartInd', 'bodyFrameEndInd', ..
     'all_fly_thresholds_yz', 'xcm_yz', 'ycm_yz', 'allAxlim_yz', ...
     'tin', 'tout', 'resultsFileName')
 end
+
+%% do some post processing to clean up the data
+dlt = dlt_matrix ; 
+order = [2, 1, 3] ;
+
+data = cleanUpWingVoxels(data, all_fly_bw, ...
+    body_only_bw, dlt_matrix, order) ;
+
+% check to see if wings need to be swapped
+% fprintf('Checking L<->R wing swaps for movie %d... \n', movNum)
+swapFlag = true(data.Nimages,1) ; 
+cc = 0 ;
+while (sum(swapFlag) > 1) && (cc < 20)
+    cc = cc + 1 ; 
+    [data, swapFlag] = checkWingSwap(data, largePertFlag) ;
+end
+
+% re-calculate angles
+data_cleaned = calcFlyAngles(data,largePertFlag,plotFlag);
+
+% Save cleaned data
+cleanedFilename =  [prefixStr,'_cleaned'];
+savePathCleaned = fullfile(savePath, prefixStr, [cleanedFilename, '.mat']) ; 
+
+save(savePathCleaned,'data_cleaned')
+
+
