@@ -6,17 +6,6 @@ pathToWatch = 'Y:\Abby2\02_20012025\' ;
 pathStruct = generatePathStruct(pathToWatch) ;
 ExprNum = pathStruct.ExprNum;
 
-clustFlag = true ; % which version of analysis script to run
-largePertFlag = false  ; % is it a large perturbation?
-removeLegsFlag = false ; % try to remove legs in binary threshold?
-alignBBoxFlag = false ; % try to align images to avoid clipping?
-stopWingsFlag = true;
-
-% indexing for cameras
-XZ = 2 ;
-XY = 3 ;
-YZ = 1 ;
-
 %% rename matching cines
 cineDir = dir(fullfile(pathToWatch,'*.cine'));
 
@@ -59,10 +48,20 @@ for camInd = 1:length(camNamesList)
         datetimes{camInd} = [cineDirs{camInd}.triggerTime];
 end
 
-%% get current movie number
-movNum = 0;
-renamed_fn = regexp({cineDir.name},fnExpMovNum,'names');
-%% compare datetimes and if a set of 3 vids is within the tol, group them
+% get current movie number
+renamed_out = regexp({cineDir.name},fnExpMovNum,'names');
+renamedInds = ~(cellfun(@isempty,renamed_out));
+
+if sum(renamedInds) == 0
+    movNum = 0;
+else
+    movsRenamed = renamed_out(renamedInds);
+    renamedStruct = [movsRenamed{:}];
+    movNumsList = str2double({renamedStruct.movieNum});
+
+    movNum = max(movNumsList);
+end
+% compare datetimes and if a set of 3 vids is within the tol, group them
 for ind1 = 1:length(datetimes{1})
     [timeDiffs_2,ind2] = min(abs((datetimes{1}(ind1)-datetimes{2})));
     [timeDiffs_3,ind3] = min(abs((datetimes{1}(ind1)-datetimes{3})));
@@ -93,13 +92,21 @@ for ind1 = 1:length(datetimes{1})
         movefile(fullfile(pathToWatch,[camNames{3},'.xml']),xmlPaths{3});
 else
         continue
-
     end
 end
 
+%% run analysis
+clustFlag = true ; % which version of analysis script to run
+largePertFlag = false  ; % is it a large perturbation?
+removeLegsFlag = false ; % try to remove legs in binary threshold?
+alignBBoxFlag = false ; % try to align images to avoid clipping?
+stopWingsFlag = true;
 
+% indexing for cameras
+XZ = 2 ;
+XY = 3 ;
+YZ = 1 ;
 
-%% input movie number for analysis
 movNum = 4;
 movNumStr = num2str(movNum,'%03.f');
 ExprNumStr = num2str(ExprNum,'%03.f');
