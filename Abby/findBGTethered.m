@@ -4,12 +4,6 @@ function [initialFrameArray,cineMetaData] = findBGTethered(exprPath)
 LoadPhantomLibraries();
 RegisterPhantom(true);
 
-% exprPath = 'C:\Users\Abby\Cornell\Abby_test_tethered_code\01_23082024';
-
-% cinePath = fullfile(exprPath,'xy_001.cine');
-% cineData = myOpenCinFile(cinePath);
-cineDir = dir(fullfile(exprPath,'bg','*.cine'));
-
 metaDataDir = dir(fullfile(exprPath,'*.cine'));
 
 cineMetaData = getCinMetaData(fullfile(metaDataDir(1).folder,...
@@ -30,8 +24,8 @@ w_dims = [round(cineMetaData.width/2)-window_length,round(cineMetaData.height/2)
 
 for camInd = 1:3
     % save background image
-    currCamDir = dir(fullfile(exprPath,'bg',[camNames{camInd},'*.cine']));
-    camFilenameBG = currCamDir(1).name;
+    currBGDir = dir(fullfile(exprPath,'bg',[camNames{camInd},'*.cine']));
+    camFilenameBG = currBGDir(1).name;
     % camFilenameBG = [camNames{camInd},'_001.cine'];
     cinePath_bg = fullfile(exprPath,'bg',camFilenameBG);
     cineDataBG = myOpenCinFile(cinePath_bg);
@@ -39,7 +33,8 @@ for camInd = 1:3
     myCloseCinFile(cineDataBG);
 
     % Load input im 
-    cineFilename = [camNames{camInd},'_002.cine'];
+    currCamDir = dir(fullfile(exprPath,[camNames{camInd},'*.cine*']));
+    cineFilename = currCamDir(1).name;
     cinePath = fullfile(exprPath,cineFilename);
     currCineData = myOpenCinFile(cinePath);
     currIm = myReadCinImage(currCineData,0);

@@ -695,6 +695,8 @@ for t=startTrackingTime:endTrackingTime
         wing1Res(nextIndWing1:nextIndWing1+Swing1(n)-1,:) = [ int16(ones(Swing1(n),1)*t) allWing1Coords{n} ];
     elseif Swing1(n) == 1 && n+1>(endTrackingTime-startTrackingTime) % if there is no n+1 frame
         wing1Res(nextIndWing1:nextIndWing1+Swing1(n)-1,:) = [ int16(ones(Swing1(n),1)*t) mean(allWing1Coords{n-1}) ] ;
+    elseif Swing1(n) == 1 && n == 1
+        wing1Res(nextIndWing1:nextIndWing1+Swing1(n)-1,:) = [ int16(ones(Swing1(n),1)*t) mean(allWing1Coords{n+1}) ] ;
     else
         wing1Res(nextIndWing1:nextIndWing1+Swing1(n)-1,:) = [ int16(ones(Swing1(n),1)*t) mean([mean(allWing1Coords{n-1}); mean(allWing1Coords{n+1})]) ] ;
     end
@@ -704,6 +706,9 @@ for t=startTrackingTime:endTrackingTime
         wing2Res(nextIndWing2:nextIndWing2+Swing2(n)-1,:) = [ int16(ones(Swing2(n),1)*t) allWing2Coords{n} ];
     elseif Swing2(n) == 1 && n+1>(endTrackingTime-startTrackingTime)
         wing2Res(nextIndWing2:nextIndWing2+Swing2(n)-1,:) = [ int16(ones(Swing2(n),1)*t) mean(allWing2Coords{n-1}) ] ;
+    elseif Swing2(n) == 1 && n == 1
+        wing2Res(nextIndWing2:nextIndWing2+Swing2(n)-1,:) = [ int16(ones(Swing2(n),1)*t) mean(allWing2Coords{n+1}) ] ;
+
     else
         wing2Res(nextIndWing2:nextIndWing2+Swing2(n)-1,:) = [ int16(ones(Swing2(n),1)*t) mean([mean(allWing2Coords{n-1}); mean(allWing2Coords{n+1})]) ] ;
     end

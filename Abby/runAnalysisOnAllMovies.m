@@ -5,6 +5,7 @@
 pathToWatch = 'Y:\Abby2\02_20012025\' ; 
 pathStruct = generatePathStruct(pathToWatch) ;
 ExprNum = pathStruct.ExprNum;
+camNamesList = {'xy','xz','yz'};
 
 %% rename matching cines
 cineDir = dir(fullfile(pathToWatch,'*.cine'));
@@ -12,6 +13,7 @@ cineDir = dir(fullfile(pathToWatch,'*.cine'));
 fnExp1 = ['(?<camName>[xyz]{2})_Y(?<year>\d{4})',...
     '(?<month>\d{2})(?<day>\d{2})H(?<hour>\d{2})(?<minute>\d{2})', ...
     '(?<second>\d+.\d+)']; % two digits in day
+
 fnExp2 = ['(?<camName>[xyz]{2})_Y(?<year>\d{4})',...
     '(?<month>\d{2}) (?<day>\d{1})H(?<hour>\d{2})(?<minute>\d{2})', ...
     '(?<second>\d+.\d+)']; % one digit in day AND ALSO a space between the month and day
@@ -29,25 +31,6 @@ for i = 1:length(names_struct)
     names_struct(i).filename = original_filenames{i};
 end
 
-%% sort datetimes and directory by camera name
-camNamesList = {'xy','xz','yz'};
-datetimes = cell(1,length(camNamesList));
-cineDirs = cell(1,length(camNamesList));
-
-for camInd = 1:length(camNamesList)
-    currCamInds = strcmp(camNamesList{camInd},{names_struct.camName});
-    cineDirs{camInd} = names_struct(currCamInds);
-
-        for cineFileInd = 1:sum(currCamInds)
-            currName = cineDirs{camInd}(cineFileInd);
-            datetime_str = [currName.year,currName.month,currName.day,...
-                            currName.hour,currName.minute,currName.second(1:7)];
-            cineDirs{camInd}(cineFileInd).triggerTime = datetime(datetime_str,...
-                    'InputFormat','yyyyMMddHHmmss.SSSS');
-        end
-        datetimes{camInd} = [cineDirs{camInd}.triggerTime];
-end
-
 % get current movie number
 renamed_out = regexp({cineDir.name},fnExpMovNum,'names');
 renamedInds = ~(cellfun(@isempty,renamed_out));
@@ -61,689 +44,101 @@ else
 
     movNum = max(movNumsList);
 end
-% compare datetimes and if a set of 3 vids is within the tol, group them
-for ind1 = 1:length(datetimes{1})
-    [timeDiffs_2,ind2] = min(abs((datetimes{1}(ind1)-datetimes{2})));
-    [timeDiffs_3,ind3] = min(abs((datetimes{1}(ind1)-datetimes{3})));
 
-    tol = duration(0,0,0.1); % tolerance is 0.1 seconds (double triggering)
-    if timeDiffs_2 < tol && timeDiffs_3 < tol
-        movNum = movNum + 1;
-        movNumStr = num2str(movNum,'%03.f');
-
-        origFilenames = {cineDirs{1}(ind1).filename,cineDirs{2}(ind2).filename,...
-                cineDirs{3}(ind3).filename};
-        origPaths = fullfile(pathToWatch,origFilenames);
-        renameFilenames = strcat(camNamesList,'_',movNumStr,'.cine');
-        cinePaths = fullfile(pathToWatch,renameFilenames);
-
-        % rename files
-        movefile(origPaths{1},cinePaths{1}); movefile(origPaths{2},cinePaths{2});
-        movefile(origPaths{3},cinePaths{3});
-
-        % also rename the .xml files
-        [~,camNames,~] = fileparts(origPaths);
-
-        xmlFilenames = strcat(camNamesList,'_',movNumStr,'.xml');
-        xmlPaths = fullfile(pathToWatch,xmlFilenames);
-
-        movefile(fullfile(pathToWatch,[camNames{1},'.xml']),xmlPaths{1});
-        movefile(fullfile(pathToWatch,[camNames{2},'.xml']),xmlPaths{2});
-        movefile(fullfile(pathToWatch,[camNames{3},'.xml']),xmlPaths{3});
+if sum(renamedInds)<length(renamedInds)
+    renameFlag = true;
 else
+    renameFlag = false;
+end
+
+%% rename cines if needed
+if renameFlag
+
+    datetimes = cell(1,length(camNamesList));
+    cineDirs = cell(1,length(camNamesList));
+    
+    for camInd = 1:length(camNamesList)
+        currCamInds = strcmp(camNamesList{camInd},{names_struct.camName});
+        cineDirs{camInd} = names_struct(currCamInds);
+    
+            for cineFileInd = 1:sum(currCamInds)
+                currName = cineDirs{camInd}(cineFileInd);
+                datetime_str = [currName.year,currName.month,currName.day,...
+                                currName.hour,currName.minute,currName.second(1:7)];
+                cineDirs{camInd}(cineFileInd).triggerTime = datetime(datetime_str,...
+                        'InputFormat','yyyyMMddHHmmss.SSSS');
+            end
+            datetimes{camInd} = [cineDirs{camInd}.triggerTime];
+    end
+    
+    % compare datetimes and if a set of 3 vids is within the tol, group them
+    for ind1 = 1:length(datetimes{1})
+        [timeDiffs_2,ind2] = min(abs((datetimes{1}(ind1)-datetimes{2})));
+        [timeDiffs_3,ind3] = min(abs((datetimes{1}(ind1)-datetimes{3})));
+    
+        tol = duration(0,0,0.1); % tolerance is 0.1 seconds (double triggering)
+        if timeDiffs_2 < tol && timeDiffs_3 < tol
+            movNum = movNum + 1;
+            movNumStr = num2str(movNum,'%03.f');
+    
+            origFilenames = {cineDirs{1}(ind1).filename,cineDirs{2}(ind2).filename,...
+                    cineDirs{3}(ind3).filename};
+            origPaths = fullfile(pathToWatch,origFilenames);
+            renameFilenames = strcat(camNamesList,'_',movNumStr,'.cine');
+            cinePaths = fullfile(pathToWatch,renameFilenames);
+    
+            % rename files
+            movefile(origPaths{1},cinePaths{1}); movefile(origPaths{2},cinePaths{2});
+            movefile(origPaths{3},cinePaths{3});
+    
+            % also rename the .xml files
+            [~,camNames,~] = fileparts(origPaths);
+    
+            xmlFilenames = strcat(camNamesList,'_',movNumStr,'.xml');
+            xmlPaths = fullfile(pathToWatch,xmlFilenames);
+    
+            movefile(fullfile(pathToWatch,[camNames{1},'.xml']),xmlPaths{1});
+            movefile(fullfile(pathToWatch,[camNames{2},'.xml']),xmlPaths{2});
+            movefile(fullfile(pathToWatch,[camNames{3},'.xml']),xmlPaths{3});
+    else
+            continue
+        end
+    end
+end
+
+% get movie number list after renaming
+cineDir = dir(fullfile(pathToWatch,'*.cine'));
+renamed_out = regexp({cineDir.name},fnExpMovNum,'names');
+renamedInds = ~(cellfun(@isempty,renamed_out));
+
+if any(renamedInds)
+    movsRenamed = renamed_out(renamedInds);
+    renamedStruct = [movsRenamed{:}];
+    movNumsList = str2double({renamedStruct.movieNum});
+else
+    disp('No movies to run reconstruction on')
+    return
+end
+
+%% run analysis on renamed cines
+for currMovNum = 7:12%unique(movNumsList)
+    % check if there is triplet
+    movNumStr = num2str(currMovNum,'%03.f');
+    tripletCheck = sum(movNumsList==currMovNum);
+    if tripletCheck ~= length(camNamesList)
+        disp(['No matching triplet for movie ',movNumStr])
         continue
+    else
+        disp(['Found triplet for movie ',movNumStr,', running reconstruction'])
+        analyzeOneFlyMovie(pathToWatch,currMovNum)
+        disp(['Done analyzing movie ',movNumStr])
     end
 end
 
-%% run analysis
-clustFlag = true ; % which version of analysis script to run
-largePertFlag = false  ; % is it a large perturbation?
-removeLegsFlag = false ; % try to remove legs in binary threshold?
-alignBBoxFlag = false ; % try to align images to avoid clipping?
-stopWingsFlag = true;
-
-% indexing for cameras
-XZ = 2 ;
-XY = 3 ;
-YZ = 1 ;
-
-movNum = 4;
-movNumStr = num2str(movNum,'%03.f');
-ExprNumStr = num2str(ExprNum,'%03.f');
-cineSuffix = ['_',movNumStr,'.cine'];
-movieNum = movNumStr;
-
-camNames = {'yz','xz','xy'};
-camFilenames = strcat(camNames,cineSuffix);
-cinFilenames = fullfile(pathToWatch,camFilenames);
-
-twoFlies = 0;
-
-load(fullfile(pathStruct.calibration,'calibration_easyWandData'))
-DLT_matrix_CSV_filename = fullfile(pathStruct.calibration,...
-    'calibration_dltCoefs.csv') ;
-
-dlt_matrix = load(DLT_matrix_CSV_filename);
-
-savePath = pathStruct.save;
-if ~isfolder(savePath)
-    mkdir(savePath)
-end
-
-prefixStr = ['Expr_',ExprNumStr,'_mov_',movieNum];
-movieFolder = fullfile(savePath,prefixStr);
-
-if ~isfolder(movieFolder)
-    mkdir(movieFolder)
-end
-hullFigPath = movieFolder;
-defineConstantsScript
-
-%% FIND BACKGROUND ETC.
-[allBGcell,metaData] = findBGTethered(pathToWatch);
-firstImNum = metaData.firstImage;
-lastImNum = metaData.lastImage;
-vidWidth = metaData.width;
-vidHeight = metaData.height;
-
-% estimations for the time the fly comes in and out of the FOV of each
-% camera. this part of the automation can be improved. check it or just set
-% the "tin" and "tout" manually later.
-% allTin  = zeros(3,1) ;
-% allTout = zeros(3,1) ;
-
-tin = firstImNum+100;
-tout = lastImNum-100;
-
-allTin = [tin;tin;tin];
-allTout = [tout;tout;tout];
 
 
-xcm = ones(tout-tin+1,1);
-ycm = ones(tout-tin+1,1);
-
-% either this or do some automated way of getting the center
-x_center = round(metaData.width/2);
-y_center = round(metaData.height/2);
-
-allXcm = {xcm*x_center,xcm*x_center,xcm*x_center};
-allYcm = {ycm*y_center,ycm*y_center,ycm*y_center};
-% ---------------------------------------------------------------
-%% PERFORM BINARY THRESHOLDING ON IMAGES
-%  -----------------------------------------------------------------------
-% load phantom library
-LoadPhantomLibraries();
-RegisterPhantom(true);
-
-cam = XY ;
-% try
-%     [all_fly_bw_xy, body_only_bw_xy, all_fly_thresholds_xy, xcm_xy, ycm_xy,...
-%         allAxlim_xy, DELTA, with_legs_bw_xy] = ...
-%         binaryThreshold(allBGcell{cam} , cinFilenames{cam}, tin,...
-%          tout, twoFlies, allXcm{cam}, allYcm{cam}, removeLegsFlag, ...
-%          stopWingsFlag) ;
-% catch exception
-%     msg = strcat('Error doing xy binary threshold for movie ', movieNum) ;
-%     msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
-%     disp(msg)
-%     % fileID = fopen(errorPath,'a+') ;
-%     % fprintf(fileID, '%s\r\n', msg) ;
-%     % fclose(fileID) ;
-%     errorFlag = true ;
-%     return
-% end
-
-[all_fly_bw_xy, body_only_bw_xy, all_fly_thresholds_xy, xcm_xy, ycm_xy,...
-    allAxlim_xy, DELTA, with_legs_bw_xy] = ...
-    binaryThreshold(allBGcell{cam} , cinFilenames{cam}, tin,...
-     tout, twoFlies, allXcm{cam}, allYcm{cam}, removeLegsFlag, ...
-     stopWingsFlag) ;
-
-cam = XZ ;
-try
-    [all_fly_bw_xz, body_only_bw_xz, all_fly_thresholds_xz, xcm_xz, ycm_xz,...
-        allAxlim_xz, DELTA, with_legs_bw_xz] = ...
-        binaryThreshold( allBGcell{cam}  , cinFilenames{cam}, tin,...
-         tout, twoFlies, allXcm{cam}, allYcm{cam}, removeLegsFlag, ...
-         stopWingsFlag) ;
-catch exception
-    msg = strcat('Error doing xz binary threshold for movie ', movieNum) ;
-    msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
-    % fileID = fopen(errorPath,'a+') ;
-    % fprintf(fileID, '%s\r\n', msg) ;
-    % fclose(fileID) ;
-    errorflag = true ;
-    return
-end
-
-cam = YZ ;
-try
-    [all_fly_bw_yz, body_only_bw_yz, all_fly_thresholds_yz, xcm_yz, ycm_yz,...
-        allAxlim_yz, DELTA, with_legs_bw_yz] = ...
-        binaryThreshold( allBGcell{cam}  , cinFilenames{cam}, tin,...
-         tout, twoFlies, allXcm{cam}, allYcm{cam}, removeLegsFlag, ...
-         stopWingsFlag) ;
-catch exception
-    msg = strcat('Error doing yz binary threshold for movie ', movieNum) ;
-    msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
-    disp(msg)
-    % fileID = fopen(errorPath,'a+') ;
-    % fprintf(fileID, '%s\r\n', msg) ;
-    % fclose(fileID) ;
-    errorFlag = true ;
-    return
-end
-UnregisterPhantom();
-UnloadPhantomLibraries();
-%  -----------------------------------------------------------------------
-%% COMBINE all_fly_bw_** INTO ONE STRUCTURE
-%   (use frames DELTA+1 until Nimages-DELTA)
-%  -----------------------------------------------------------------------
-
-dim = max([all_fly_bw_xy.dim ; all_fly_bw_xz.dim ; all_fly_bw_yz.dim]) ; 
-%dim = all_fly_bw_xy.dim ;
-newdim = dim ;
-% newdim(1) = dim(1) - 2*DELTA ;
-% newdim(2) = 3 ; % three cams
-newdim(2) = dim(2) - 2*DELTA ;
-newdim(1) = 3 ; % three cams
-
-all_fly_bw = init4D(newdim) ; 
-% Nimages = newdim(1) ;
-Nimages = newdim(2) ;
-disp('Combining...')
-for k=1:Nimages
-    % ------------------
-    % combine XY
-    i1=XY ; i2=k ;
-    ind1vec = dim(3)*(i1-1) +  (1:dim(3)) ;
-    ind2vec = dim(4)*(i2-1) +  (1:dim(4)) ;
-    % resize XY if need be
-    bw_xy = getImage4D(all_fly_bw_xy, 1, i2+DELTA) ;
-    if size(bw_xy,1) ~= dim(3) 
-        pad_height = round((dim(3) - size(bw_xy,1))/2) ;
-        bw_xy = padarray(bw_xy,[pad_height,0],0,'both') ; 
-    end
-    if size(bw_xy,2) ~= dim(4) 
-        pad_width = round((dim(4) - size(bw_xy,2))/2) ;
-        bw_xy = padarray(bw_xy,[0, pad_width],0,'both') ; 
-    end
-    all_fly_bw.mat(ind1vec, ind2vec) = bw_xy ;   
-    
-    % ------------------
-    % combine XZ
-    i1=XZ ; i2=k ;
-    ind1vec = dim(3)*(i1-1) +  (1:dim(3)) ;
-    ind2vec = dim(4)*(i2-1) +  (1:dim(4)) ;
-    % resize XZ if need be
-    bw_xz =  getImage4D(all_fly_bw_xz, 1, i2+DELTA) ; 
-    if size(bw_xz,1) ~= dim(3) 
-        pad_height = round((dim(3) - size(bw_xz,1))/2) ;
-        bw_xz = padarray(bw_xz,[pad_height,0],0,'both') ; 
-    end
-    if size(bw_xz,2) ~= dim(4) 
-        pad_width = round((dim(4) - size(bw_xz,2))/2) ;
-        bw_xz = padarray(bw_xz,[0, pad_width],0,'both') ; 
-    end
-    all_fly_bw.mat(ind1vec, ind2vec) = bw_xz ;
-    
-    % ------------------
-    % combine YZ
-    i1=YZ ; i2=k ;
-    ind1vec = dim(3)*(i1-1) +  (1:dim(3)) ;
-    ind2vec = dim(4)*(i2-1) +  (1:dim(4)) ;
-    % resize YZ if need be
-    bw_yz =   getImage4D(all_fly_bw_yz, 1, i2+DELTA) ;   
-    if size(bw_yz,1) ~= dim(3) 
-        pad_height = round((dim(3) - size(bw_yz,1))/2) ;
-        bw_yz = padarray(bw_yz,[pad_height,0],0,'both') ; 
-    end
-    if size(bw_yz,2) ~= dim(4) 
-        pad_width = round((dim(4) - size(bw_yz,2))/2) ;
-        bw_yz = padarray(bw_yz,[0, pad_width],0,'both') ; 
-    end
-    all_fly_bw.mat(ind1vec, ind2vec) = bw_yz ;
-end
-
-% ------------------------------------------------
-% combine body_only_bw_** into one structure
-
-dim = max([body_only_bw_xy.dim ; body_only_bw_xz.dim ; ...
-    body_only_bw_yz.dim]) ; 
-% dim = body_only_bw_xy.dim ;
-newdim = dim ;
-% newdim(1) = dim(1) - 2*DELTA ;
-% newdim(2) = 3 ; % three cams
-% body_only_bw = init4D(newdim) ; 
-% Nimages = newdim(1) ;
-newdim(2) = dim(2) - 2*DELTA ;
-newdim(1) = 3 ; % three cams
-body_only_bw = init4D(newdim) ; 
-Nimages = newdim(2) ;
-
-% WHEN dealing with body-only need to handle fucking delta.
-
-for k=1:Nimages
-    % --------------------
-    % combine XY
-    i1=XY ; i2=k ;
-    ind1vec = dim(3)*(i1-1) +  (1:dim(3)) ;
-    ind2vec = dim(4)*(i2-1) +  (1:dim(4)) ;
-    % resize XY if need be
-    bw_xy = getImage4D(body_only_bw_xy, 1, i2+DELTA) ;
-    if size(bw_xy,1) ~= dim(3) 
-        pad_height = round((dim(3) - size(bw_xy,1))/2) ;
-        bw_xy = padarray(bw_xy,[pad_height,0],0,'both') ; 
-    end
-    if size(bw_xy,2) ~= dim(4) 
-        pad_width = round((dim(4) - size(bw_xy,2))/2) ;
-        bw_xy = padarray(bw_xy,[0, pad_width],0,'both') ; 
-    end   
-    body_only_bw.mat(ind1vec, ind2vec) = bw_xy ;   
-    
-    % --------------------
-    % combine XZ
-    i1=XZ ; i2=k ;
-    ind1vec = dim(3)*(i1-1) +  (1:dim(3)) ;
-    ind2vec = dim(4)*(i2-1) +  (1:dim(4)) ;
-    % resize XZ if need be
-    bw_xz = getImage4D(body_only_bw_xz, 1, i2+DELTA) ; 
-    if size(bw_xz,1) ~= dim(3) 
-        pad_height = round((dim(3) - size(bw_xz,1))/2) ;
-        bw_xz = padarray(bw_xz,[pad_height,0],0,'both') ; 
-    end
-    if size(bw_xz,2) ~= dim(4) 
-        pad_width = round((dim(4) - size(bw_xz,2))/2) ;
-        bw_xz = padarray(bw_xz,[0, pad_width],0,'both') ; 
-    end
-    body_only_bw.mat(ind1vec, ind2vec) = bw_xz;   
-    
-    % --------------------
-    % combine YZ
-    i1=YZ ; i2=k ;
-    ind1vec = dim(3)*(i1-1) +  (1:dim(3)) ;
-    ind2vec = dim(4)*(i2-1) +  (1:dim(4)) ;
-    % resize YZ if need be
-    bw_yz = getImage4D(body_only_bw_yz, 1, i2+DELTA)  ;   
-    if size(bw_yz,1) ~= dim(3) 
-        pad_height = round((dim(3) - size(bw_yz,1))/2) ;
-        bw_yz = padarray(bw_yz,[pad_height,0],0,'both') ; 
-    end
-    if size(bw_yz,2) ~= dim(4) 
-        pad_width = round((dim(4) - size(bw_yz,2))/2) ;
-        bw_yz = padarray(bw_yz,[0, pad_width],0,'both') ; 
-    end
-    body_only_bw.mat(ind1vec, ind2vec) = bw_yz ;   
-end
-
-% ------------------------------------------------------
-% combine binarized images that include legs, if using
-
-if isfield(with_legs_bw_xy, 'dim')
-    dim = max([with_legs_bw_xy.dim ; with_legs_bw_xz.dim ; with_legs_bw_yz.dim]) ; 
-    % dim = with_legs_bw_xy.dim ;
-    newdim = dim ;
-    % newdim(1) = dim(1) - 2*DELTA ;
-    % newdim(2) = 3 ; % three cams
-    newdim(2) = dim(2) - 2*DELTA ;
-    newdim(1) = 3 ; % three cams
-    
-    with_legs_bw = init4D(newdim) ;
-    % Nimages = newdim(1) ;
-    Nimages = newdim(2) ;
-    for k=1:Nimages
-        % -------------------------
-        % combine XY
-        i1=XY ; i2=k ;
-        ind1vec = dim(3)*(i1-1) +  (1:dim(3)) ;
-        ind2vec = dim(4)*(i2-1) +  (1:dim(4)) ;
-        % resize XY if need be
-        bw_xy = getImage4D(with_legs_bw_xy, 1, i2+DELTA) ;
-        if size(bw_xy,1) ~= dim(3)
-            pad_height = round((dim(3) - size(bw_xy,1))/2) ;
-            bw_xy = padarray(bw_xy,[pad_height,0],0,'both') ;
-        end
-        if size(bw_xy,2) ~= dim(4)
-            pad_width = round((dim(4) - size(bw_xy,2))/2) ;
-            bw_xy = padarray(bw_xy,[0, pad_width],0,'both') ;
-        end
-        with_legs_bw.mat(ind1vec, ind2vec) = bw_xy ;
-        
-        % -------------------------
-        % combine XZ
-        i1=XZ ; i2=k ;
-        ind1vec = dim(3)*(i1-1) +  (1:dim(3)) ;
-        ind2vec = dim(4)*(i2-1) +  (1:dim(4)) ;
-        % resize XZ if need be
-        bw_xz = getImage4D(with_legs_bw_xz, 1, i2+DELTA) ;
-        if size(bw_xz,1) ~= dim(3)
-            pad_height = round((dim(3) - size(bw_xz,1))/2) ;
-            bw_xz = padarray(bw_xz,[pad_height,0],0,'both') ;
-        end
-        if size(bw_xz,2) ~= dim(4)
-            pad_width = round((dim(4) - size(bw_xz,2))/2) ;
-            bw_xz = padarray(bw_xz,[0, pad_width],0,'both') ;
-        end
-        with_legs_bw.mat(ind1vec, ind2vec) = bw_xz ;
-        
-        % -------------------------
-        % combine YZ
-        i1=YZ ; i2=k ;
-        ind1vec = dim(3)*(i1-1) +  (1:dim(3)) ;
-        ind2vec = dim(4)*(i2-1) +  (1:dim(4)) ;
-        % resize YZ if need be
-        bw_yz = getImage4D(with_legs_bw_yz, 1, i2+DELTA) ;
-        if size(bw_yz,1) ~= dim(3)
-            pad_height = round((dim(3) - size(bw_yz,1))/2) ;
-            bw_yz = padarray(bw_yz,[pad_height,0],0,'both') ;
-        end
-        if size(bw_yz,2) ~= dim(4)
-            pad_width = round((dim(4) - size(bw_yz,2))/2) ;
-            bw_yz = padarray(bw_yz,[0, pad_width],0,'both') ;
-        end
-        with_legs_bw.mat(ind1vec, ind2vec) = bw_yz ;
-    end
-else
-    with_legs_bw = [] ;
-end
-
-disp(['Done combining for movie ' movieNum])
-%--------------------------------------------------------------------------
-%% COMBINE CENTER-OF-MASS COORDINATES FOR EACH FRAME/CAMERA
-%--------------------------------------------------------------------------
-% CM_pos is the center-of-mass of the body in each image. 
-% dimension of CM_pos is (3cameras, Nimages, 2coordinates)
-
-% first adjust for any size changes we may have made to images
-pad_amt_yz = all_fly_bw.dim(3:4) - all_fly_bw_yz.dim(3:4) ; 
-pad_amt_xz = all_fly_bw.dim(3:4) - all_fly_bw_xz.dim(3:4) ; 
-pad_amt_xy = all_fly_bw.dim(3:4) - all_fly_bw_xy.dim(3:4) ; 
-
-% then combine CM measured from each camera into CM_pos
-CM_pos = zeros(3, Nimages, 2) ;
-ind = (1:Nimages) + DELTA ;
-CM_pos(XY, :,1) = xcm_xy(ind) + pad_amt_xy(2)/2 ;
-CM_pos(XY, :,2) = ycm_xy(ind) + pad_amt_xy(1)/2;
-CM_pos(XZ, :,1) = xcm_xz(ind) + pad_amt_xz(2)/2;
-CM_pos(XZ, :,2) = ycm_xz(ind) + pad_amt_xz(1)/2;
-CM_pos(YZ, :,1) = xcm_yz(ind) + pad_amt_yz(2)/2;
-CM_pos(YZ, :,2) = ycm_yz(ind) + pad_amt_yz(1)/2;
 
 
-%% DEFINE PARAMS
-% --------------
-
-params.CAMERAS=[1 2 3];
-params.NCAMS=3;
-params.YZ = YZ ; 
-params.XY = XY ;
-params.XZ = XZ ;
-params.fps = 8000 ;
-% params.camerasPos=[easyWandData.DLTtranslationVector(:,:,2)';...
-% easyWandData.DLTtranslationVector(:,:,1)';...
-% easyWandData.DLTtranslationVector(:,:,3)'];  % row1=yz, row2=xz, row3=xy
-params.cameraNames = ['yz';'xz';'xy'];
-params.detectorLengthPix = all_fly_bw.dim(3:4) ;  % [imageHeight, imageWidth]
-params.voxelSize = 50e-6 ; % 50 microns
-%params.N=120; % 
-params.volLength= 8e-3 ; % size of the square sub-vol cube to reconstruct (meters)
-%params.voxelSize=0.4/120;
-params.volCenter=[0,0,0];
-params.focusPix=easyWandData.focalLengths;
-%params.offsetsMatrix=[];
-params.startTrackingTime   =  tin+DELTA  ; % plus 1 removed.
-params.endTrackingTime     =  tout-DELTA ;
-params.firstTrackableFrame =  tin+DELTA  ; % plus 1 removed.
-
-% this is in fact "voxels per cm".
-params.pixPerCM            = 350 ; % 232 ; % effective value. need to change that to be consistent with real units
-% probably we should start from the wing legnth in cm and calculate how
-% many voxels are in 1 wing length by dividing wingLcm/params.voxelSize
-
-%---------------------------------------------
-% save these results in case of error later?
-% if savePointFlag
-%    binaryThresh_savename = fullfile(savePath, prefixStr, 'binaryThresh.mat') ;
-%    save(binaryThresh_savename, 'all_fly_bw_xy',  'body_only_bw_xy',...
-%     'all_fly_thresholds_xy',  'xcm_xy', 'ycm_xy', 'allAxlim_xy', 'DELTA', ...
-%     'all_fly_bw_xz', 'body_only_bw_xz', 'all_fly_thresholds_xz', 'xcm_xz',...
-%     'ycm_xz', 'allAxlim_xz', 'all_fly_bw_yz', 'body_only_bw_yz', ...
-%     'all_fly_thresholds_yz', 'xcm_yz', 'ycm_yz', 'allAxlim_yz', ...
-%     'with_legs_bw_xy', 'with_legs_bw_xz', 'with_legs_bw_yz', 'all_fly_bw',...
-%     'body_only_bw', 'with_legs_bw', 'params', 'easyWandData')
-% end
-%% VIZ body vs. whole fly featuring
-% ---------------------------------
-%{
-figure('position',[ 94   584   560   160]);
-
-ww = [-1 1 -1 1] * 48  ;
-
-for k=1:Nimages
-    for cam=1:3
-        fly = getImage4D(all_fly_bw,cam,k) ;
-        bod = getImage4D(body_only_bw, cam,k) ;
-        rgb = zeros(512,512,3,'uint8') ;        
-        rgb(:,:,1) = uint8(bod)*255 ; 
-        rgb(:,:,2) = uint8(fly)*255 ; 
-        subplot(1,3,cam) ; 
-        imshow(rgb) ;
-        xc = squeeze(CM_pos(cam,k,1)) ;
-        yc = squeeze(CM_pos(cam,k,2)) ;
-        axis([xc xc yc yc]+ww) ;
-    end
-    title(k) ;
-    %saveas(gcf,['.\tmp\featuring_' num2str(k) '.png']) ;
-    pause (0.05);
-end
-%}
-%--------------------------------------------------------------------------
-%% NEW 3D RECONSTRUCTION
-%--------------------------------------------------------------------------
-tic ;
-disp('Doing hull reconstruction...')
-try
-    [ bodyRes, bodyFrameStartInd, bodyFrameEndInd, ...
-        wing1Res, wing1FrameStartInd, wing1FrameEndInd, ...
-        wing2Res, wing2FrameStartInd, wing2FrameEndInd, mergedWingsFlag ] = ...
-        hullReconstruction_mk6(params, CM_pos, all_fly_bw, body_only_bw,...
-        dlt_matrix, easyWandData,[2,1,3]);
-catch exception
-    msg = strcat('Error reconstructing hulls for movie ', movieNum) ;%cinFilenames{cam}(length(cinFilenames{cam})-6:length(cinFilenames{cam})-4)) ;
-    msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
-    disp(msg)
-    % fileID = fopen(errorPath,'a+') ;
-    % fprintf(fileID, '%s\r\n', msg) ;
-    % fprintf(fileID, '%s\r\n', ' ') ;
-    % fclose(fileID) ;
-    % errorFlag = true ;
-    return
-end
-% [ bodyRes, bodyFrameStartInd, bodyFrameEndInd, ...
-%     wing1Res, wing1FrameStartInd, wingFrameEndInd, ...
-%     wing2Res, wing2FrameStartInd, wing2FrameEndInd, mergedWingsFlag ] = ...
-%     hullReconstruction_mk6(params, CM_pos, all_fly_bw, body_only_bw, dlt_matrix, easyWandData,[2,1,3]);
-thull = toc ;
-
-delete(gcp) ;
-
-disp(['done calculating Hulls for movie ' movieNum]) ;
-
-%---------------------------------------------
-% save these results in case of error later?
-% if savePointFlag
-%    hullRecon_savename = fullfile(savePath, prefixStr, 'hullRecon.mat') ;
-%    save(hullRecon_savename, 'bodyRes', 'bodyFrameStartInd', ...
-%        'bodyFrameEndInd', 'wing1Res', 'wing1FrameStartInd',...
-%        'wing1FrameEndInd', 'wing2Res', 'wing2FrameStartInd',...
-%        'wing2FrameEndInd')
-% end
-%--------------------------------------------------------------------------
-%% ANALYZE VOXEL RECONSTRUCTION
-%--------------------------------------------------------------------------
-t1 = clock ;
-
-%diaryFile = ['myDiary.txt'] ;
-% diaryFile = fullfile(savePath,prefixStr,'myDiary.txt');
-% try
-%     dos(['del ' diaryFile ]) ;
-% catch
-%     disp('Diary file does not exist.') ;
-%     pause(2) ;
-% end
-% diary(diaryFile) ;
-disp('Doing hull analysis...') 
-plotHullFlag = false;
-saveHullFigFlag = false;
-try
-    data = hullAnalysis_mk3 (bodyRes, wing1Res, wing2Res, params, ...
-        mergedWingsFlag, [], 'test', plotHullFlag, saveHullFigFlag, ...
-        hullFigPath);
-catch exception
-    msg = strcat('Error analyzing hulls for movie ', movieNum) ;%cinFilenames{cam}(length(cinFilenames{cam})-6:length(cinFilenames{cam})-4)) ;
-    msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
-    disp(msg)
-    % fileID = fopen(errorPath,'a+') ;
-    % fprintf(fileID, '%s\r\n', msg) ;
-    % fprintf(fileID, '%s\r\n', ' ') ;
-    % fclose(fileID) ;
-    % errorFlag = true ;
-    return
-end
-disp(['Done with hull analysis for movie ' movieNum])
-t2 = clock ;
-dt12 = t2 - t1 ;
-
-% diary off ;
-%--------------------------------------------------------------------------
 
 
-%% Calculate raw angles
-plotFlag = false;
-largePertFlag = false;
 
-[rhoTimes, rollVectors] = estimateRollVector(data,largePertFlag) ;
-data.rhoTimes = rhoTimes ;
-data.rollVectors = rollVectors ;
-
-[anglesLabFrame, anglesBodyFrame, t, newEtaLab, newEtaBody, sp_rho,...
-    smoothed_rho, rho_t, rho_samp, rotM_YP, rotM_roll, largePertFlag] = ...
-    calcAnglesRaw_Sam(data, plotFlag,largePertFlag);
-
-%% unwrap and spline smooth wing angles
-%------------------------------------------------
-if (isfield(data,'ignoreFrames'))
-    ignoreFrames = data.ignoreFrames ;
-else
-    ignoreFrames = [] ;
-end
-% right stroke angle
-phiR = -anglesBodyFrame(:, PHIR) ;
-ignoreIndR = unique([find(isnan(phiR))' ignoreFrames]) ;
-%phiR = phiR + 360 ;
-
-for i = 1:length(phiR)
-    while phiR(i) < -90
-        phiR(i) = phiR(i) + 360 ;
-    end
-    while phiR(i) > 270
-        phiR(i) = phiR(i) - 360 ;
-    end
-end
-
-if (~isempty(ignoreIndR))
-    phiR(ignoreIndR) = NaN ;
-end
-
-%-----------------------------------------------
-% left stroke angle
-phiL = +anglesBodyFrame(:, PHIL) ;
-ignoreIndL = unique([find(isnan(phiL))'  ignoreFrames])  ;
-
-for i = 1:length(phiL)
-    while phiL(i) < -90
-        phiL(i) = phiL(i) + 360 ;
-    end
-    while phiL(i) > 270
-        phiL(i) = phiL(i) - 360 ;
-    end
-end
-
-if (~isempty(ignoreIndL))
-    phiL(ignoreIndL) = NaN ;
-end
-
-% hampel filter to remove outliers
-[~, hampelR] = hampel(phiR, 7,2) ;
-[~, hampelL] = hampel(phiL, 7,2) ;
-
-phiR(hampelR) = NaN ;
-phiL(hampelL) = NaN ;
-
-%% store data in structure
-anglesBodyFrame(:,PHIR) = -phiR ;
-anglesBodyFrame(:,PHIL) = phiL ;
-data.anglesBodyFrame = anglesBodyFrame ;
-data.anglesLabFrame = anglesLabFrame ;
-
-%% smooth angles (body and wing)
-% --------------------------------------------
-% smooth wing angles (lab and body frames)
-[~, smoothAnglesMatR_Lab, ~, ~, ~ ] = smoothWingAngles(data, 'R','Lab') ;
-[~, smoothAnglesMatL_Lab, ~, ~, ~ ] = smoothWingAngles(data, 'L','Lab') ;
-[~, smoothAnglesMatR_Body, ~, ~, ~ ] = smoothWingAngles(data, 'R','Body') ;
-[~, smoothAnglesMatL_Body, ~, ~, ~ ] = smoothWingAngles(data, 'L','Body') ;
-
-% make sure phiR is negative in body frame
-if (mode(sign(smoothAnglesMatR_Body(1,:))) > 0)
-    smoothAnglesMatR_Body(1,:) = -1.*smoothAnglesMatR_Body(1,:) ; 
-end
-
-% --------------------------------------------------------------------
-% smooth body angles (just in lab frame -- not defined in body frame)
-[pitchSmooth, yawSmooth, rollSmooth] = smoothBodyAngles(data,largePertFlag) ;
-
-% ------------------------------------
-% create arrays for smoothed angles
-% NB: need to take transpose for wing angle mats
-anglesLabFrameSmooth = [yawSmooth, pitchSmooth, smoothAnglesMatR_Lab', ...
-    smoothAnglesMatL_Lab', rollSmooth] ; 
-anglesBodyFrameSmooth = zeros(data.Nimages, 8);
-anglesBodyFrameSmooth(:,[PHIR, THETAR, ETAR, PHIL, THETAL, ETAL]) = ...
-    [smoothAnglesMatR_Body', smoothAnglesMatL_Body'] ; 
-    
-% --------------------------------------
-% add to data struct
-data.anglesLabFrameSmooth = anglesLabFrameSmooth ; 
-data.anglesBodyFrameSmooth = anglesBodyFrameSmooth ; 
-
-%% SAVE RESULTS
-%--------------------------------------------------------------------------
-resultsFileName = [prefixStr,'_results'];
-
-savePathFull = fullfile(savePath, prefixStr, [resultsFileName '.mat']) ; 
-if exist('allBG','var')
-save(savePathFull, 'data', 'bodyRes', 'bodyFrameStartInd', 'bodyFrameEndInd', ...
-    'wing1Res', 'wing1FrameStartInd', 'wing1FrameEndInd', ...
-    'wing2Res', 'wing2FrameStartInd', 'wing2FrameEndInd', 'mergedWingsFlag', ...
-    'params',  'CM_pos', 'all_fly_bw', 'body_only_bw', 'with_legs_bw',...
-    'dlt_matrix', 'easyWandData', ...
-    'cinFilenames', 'allBG', 'Nimages', 'all_fly_bw_xy',  'body_only_bw_xy',...
-    'all_fly_thresholds_xy',  'xcm_xy', 'ycm_xy', 'allAxlim_xy', 'DELTA', ...
-    'all_fly_bw_xz', 'body_only_bw_xz', 'all_fly_thresholds_xz', 'xcm_xz',...
-    'ycm_xz', 'allAxlim_xz', 'all_fly_bw_yz', 'body_only_bw_yz', ...
-    'all_fly_thresholds_yz', 'xcm_yz', 'ycm_yz', 'allAxlim_yz', ...
-    'tin', 'tout', 'resultsFileName')   
-else
-save(savePathFull, 'data', 'bodyRes', 'bodyFrameStartInd', 'bodyFrameEndInd', ...
-    'wing1Res', 'wing1FrameStartInd', 'wing1FrameEndInd', ...
-    'wing2Res', 'wing2FrameStartInd', 'wing2FrameEndInd', 'mergedWingsFlag', ...
-    'params',  'CM_pos', 'all_fly_bw', 'body_only_bw', 'with_legs_bw',...
-    'dlt_matrix', 'easyWandData', ...
-    'cinFilenames', 'allBGcell', 'Nimages', 'all_fly_bw_xy',  'body_only_bw_xy',...
-    'all_fly_thresholds_xy',  'xcm_xy', 'ycm_xy', 'allAxlim_xy', 'DELTA', ...
-    'all_fly_bw_xz', 'body_only_bw_xz', 'all_fly_thresholds_xz', 'xcm_xz',...
-    'ycm_xz', 'allAxlim_xz', 'all_fly_bw_yz', 'body_only_bw_yz', ...
-    'all_fly_thresholds_yz', 'xcm_yz', 'ycm_yz', 'allAxlim_yz', ...
-    'tin', 'tout', 'resultsFileName')
-end
