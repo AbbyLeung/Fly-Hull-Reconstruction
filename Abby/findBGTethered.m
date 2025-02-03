@@ -1,11 +1,10 @@
-function [initialFrameArray,cineMetaData] = findBGTethered(exprPath)
+function [initialFrameArray,cineMetaData] = findBGTethered(exprPath,movNum)
 %FINDBGTETHERED Summary of this function goes here
 %   Detailed explanation goes here
 LoadPhantomLibraries();
 RegisterPhantom(true);
 
 metaDataDir = dir(fullfile(exprPath,'*.cine'));
-
 cineMetaData = getCinMetaData(fullfile(metaDataDir(1).folder,...
     metaDataDir(1).name));
 
@@ -14,13 +13,21 @@ camNames = {'yz','xz','xy'};
 initialFrameArray = cell(1,3);
 currImFrame = cell(1,3);
 % offset_vec = [13,13,15];
-offset_vec = [0,0,0];
+% offset_vec = [0,0,0];
 window_length = 100;
-w_dims = [round(cineMetaData.width/2)-window_length,round(cineMetaData.height/2)+window_length];
+cineCenter = [round(cineMetaData.width/2),round(cineMetaData.height/2)];
+dims = cell(1,3);
+
+dims{1} = cineCenter + [-window_length,window_length];
+dims{2} = cineCenter + [-window_length,window_length];
+dims{3} = cineCenter + [-window_length,window_length];
 
 % this offset vec is because I took the background image on a different day
 % from the experiment because I didn't know better. I shouldn't have to do
 % this in the future though.
+
+movStrNum = sprintf('%03d',movNum);
+
 
 for camInd = 1:3
     % save background image
@@ -33,16 +40,28 @@ for camInd = 1:3
     myCloseCinFile(cineDataBG);
 
     % Load input im 
-    currCamDir = dir(fullfile(exprPath,[camNames{camInd},'*.cine*']));
+    currCamDir = dir(fullfile(exprPath,[camNames{camInd},'_',movStrNum,...
+        '.cine']));
     cineFilename = currCamDir(1).name;
     cinePath = fullfile(exprPath,cineFilename);
     currCineData = myOpenCinFile(cinePath);
     currIm = myReadCinImage(currCineData,0);
     currImFrame{camInd} = currIm;
     
-    tempIm = currIm;
+    w_dims = dims{camInd};
 
-    tempIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2)) = bgIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2))-offset_vec(camInd);
+    if camInd ~= 3
+        tempIm = currIm;
+        tempIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2)) = bgIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2));
+    else
+        tempIm = currIm;
+        widthOffset = 0; heightOffset = -50;
+        tempIm((w_dims(1):w_dims(2))+heightOffset,...
+            (w_dims(1):w_dims(2))+widthOffset) = bgIm((w_dims(1):w_dims(2))+heightOffset,...
+            (w_dims(1):w_dims(2))+widthOffset);
+    end
+    
+    
     initialFrameArray{camInd} = tempIm;
 
     myCloseCinFile(currCineData);

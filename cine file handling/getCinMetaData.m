@@ -52,6 +52,13 @@ height = pHeight.Value;
 metaData.width = double(width) ;
 metaData.height = double(height) ;
 
+pFramerate = libpointer('int32Ptr',0);
+PhGetCineInfo(cineHandle, PhFileConst.GCI_FRAMERATE, pFramerate);
+framerate = pFramerate.Value;
+
+metaData.frameRate = framerate;
+
+
 PhDestroyCine(cineHandle);
 
 

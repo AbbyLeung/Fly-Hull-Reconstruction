@@ -121,7 +121,7 @@ else
 end
 
 %% run analysis on renamed cines
-for currMovNum = 7:12%unique(movNumsList)
+for currMovNum = 8:12%unique(movNumsList)
     % check if there is triplet
     movNumStr = num2str(currMovNum,'%03.f');
     tripletCheck = sum(movNumsList==currMovNum);

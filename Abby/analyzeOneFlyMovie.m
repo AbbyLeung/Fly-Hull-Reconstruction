@@ -50,7 +50,7 @@ defineConstantsScript
 
 
 %% FIND BACKGROUND ETC.
-[allBGcell,metaData] = findBGTethered(pathToWatch);
+[allBGcell,metaData] = findBGTethered(pathToWatch,movNum);
 firstImNum = metaData.firstImage;
 lastImNum = metaData.lastImage;
 vidWidth = metaData.width;
