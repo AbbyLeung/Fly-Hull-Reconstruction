@@ -7,6 +7,12 @@ pathStruct = generatePathStruct(pathToWatch) ;
 ExprNum = pathStruct.ExprNum;
 camNamesList = {'xy','xz','yz'};
 
+mp4Path = fullfile(pathToWatch,'mp4');
+if ~isfolder(mp4Path)
+    mkdir(mp4Path)
+end
+
+
 %% rename matching cines
 cineDir = dir(fullfile(pathToWatch,'*.cine'));
 
@@ -130,8 +136,10 @@ for currMovNum = 8:12%unique(movNumsList)
         continue
     else
         disp(['Found triplet for movie ',movNumStr,', running reconstruction'])
-        analyzeOneFlyMovie(pathToWatch,currMovNum)
-        disp(['Done analyzing movie ',movNumStr])
+        % analyzeOneFlyMovie(pathToWatch,currMovNum)
+        % disp(['Done analyzing movie ',movNumStr])
+        disp('Generating mp4...')
+        cine2mp4(pathToWatch,ExprNum,currMovNum,mp4Path)
     end
 end
 

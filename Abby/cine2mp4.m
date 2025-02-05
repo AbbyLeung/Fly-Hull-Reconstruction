@@ -1,20 +1,23 @@
-function [] = cine2mp4(cineFilenames,exprNum,movNum,saveToPath)
+function [] = cine2mp4(exprPath,exprNum,movNum,saveToPath)
 %CINE2MP4 convert cines to mp4
 %   if I wrote this in a sensible way this doesn't require much tweaking
 %   for different cam numbers, just the video height and width and maybe
 %   metadata crap
 mp4Filename = ['Expr',int2str(exprNum),'_mov',int2str(movNum),'.mp4'];
 mp4Path = fullfile(saveToPath,mp4Filename);
-numCams = length(cineFilenames);
+numCams = 3;
+camNames = {'yz','xy','xz'};
+cineFilenames = strcat(camNames,'_',sprintf('%03d',movNum),'.cine');
+cinePaths = fullfile(exprPath,cineFilenames);
 
 LoadPhantomLibraries();
 RegisterPhantom(true); 
 
 % if times and frame size are different, throw error
-metaDataCell = cell(1,length(cineFilenames));
+metaDataCell = cell(1,length(cinePaths));
 keepFields = {'firstImage','lastImage','width','height','framerate'};
-for cineInd = 1:length(cineFilenames)
-    currMetaData = getCinMetaData(cineFilenames{cineInd});
+for cineInd = 1:length(cinePaths)
+    currMetaData = getCinMetaData(cinePaths{cineInd});
     currFieldNames = fieldnames(currMetaData);
     removeFields = currFieldNames(~ismember(currFieldNames,keepFields));
     metaDataCell{cineInd} = rmfield(currMetaData,removeFields);
@@ -26,10 +29,10 @@ end
 
 clear metaDataCell
 % get metadata and set video params
-metaData = getCinMetaData(cineFilenames{1});
+metaData = getCinMetaData(cinePaths{1});
 imWidth = metaData.width;
 imHeight = metaData.height;
-framerate = metaData.frameRate;
+framerate = double(metaData.frameRate);
 firstImNo = metaData.firstImage;
 lastImNo = metaData.lastImage;
 frameNoArray = firstImNo:lastImNo;
@@ -49,7 +52,7 @@ end
 % Get cine data for opening the cine files
 cineDataCell = cell(1,numCams);
 for cineDataInd = 1:numCams
-    cineDataCell{cineDataInd} = myOpenCinFile(cineFilenames{cineDataInd});
+    cineDataCell{cineDataInd} = myOpenCinFile(cinePaths{cineDataInd});
 end
 
 writerObj=VideoWriter(mp4Path,'MPEG-4');

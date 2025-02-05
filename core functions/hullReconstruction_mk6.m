@@ -687,40 +687,45 @@ nextIndWing2 = 1 ;
 
 for t=startTrackingTime:endTrackingTime
     n = t - startTrackingTime + 1 ;
-    
+
     bodyRes(nextIndBody:nextIndBody+Sbody(n)-1,:) = [ int16(ones(Sbody(n),1)*t) allBodyCoords{n} ];
     nextIndBody = nextIndBody + Sbody(n) ;
-    
+
     if Swing1(n) > 1 %changed by SW, 7/2/15
         wing1Res(nextIndWing1:nextIndWing1+Swing1(n)-1,:) = [ int16(ones(Swing1(n),1)*t) allWing1Coords{n} ];
     elseif Swing1(n) == 1 && n+1>(endTrackingTime-startTrackingTime) % if there is no n+1 frame
-        wing1Res(nextIndWing1:nextIndWing1+Swing1(n)-1,:) = [ int16(ones(Swing1(n),1)*t) mean(allWing1Coords{n-1}) ] ;
+        wing1Res(nextIndWing1:nextIndWing1+Swing1(n)-1,:) = [ int16(ones(Swing1(n),1)*t) mean(allWing1Coords{n-1},1) ] ;
     elseif Swing1(n) == 1 && n == 1
-        wing1Res(nextIndWing1:nextIndWing1+Swing1(n)-1,:) = [ int16(ones(Swing1(n),1)*t) mean(allWing1Coords{n+1}) ] ;
+        wing1Res(nextIndWing1:nextIndWing1+Swing1(n)-1,:) = [ int16(ones(Swing1(n),1)*t) mean(allWing1Coords{n+1},1) ] ;
     else
-        wing1Res(nextIndWing1:nextIndWing1+Swing1(n)-1,:) = [ int16(ones(Swing1(n),1)*t) mean([mean(allWing1Coords{n-1}); mean(allWing1Coords{n+1})]) ] ;
+        wing1Res(nextIndWing1:nextIndWing1+Swing1(n)-1,:) = [ int16(ones(Swing1(n),1)*t) mean([mean(allWing1Coords{n-1},1); mean(allWing1Coords{n+1},1)]) ] ;
     end
     nextIndWing1 = nextIndWing1 + Swing1(n) ;
-    
+
     if Swing2(n) > 1 %changed by SW, 7/2/15
         wing2Res(nextIndWing2:nextIndWing2+Swing2(n)-1,:) = [ int16(ones(Swing2(n),1)*t) allWing2Coords{n} ];
     elseif Swing2(n) == 1 && n+1>(endTrackingTime-startTrackingTime)
-        wing2Res(nextIndWing2:nextIndWing2+Swing2(n)-1,:) = [ int16(ones(Swing2(n),1)*t) mean(allWing2Coords{n-1}) ] ;
+        wing2Res(nextIndWing2:nextIndWing2+Swing2(n)-1,:) = [ int16(ones(Swing2(n),1)*t) mean(allWing2Coords{n-1},1) ] ;
     elseif Swing2(n) == 1 && n == 1
-        wing2Res(nextIndWing2:nextIndWing2+Swing2(n)-1,:) = [ int16(ones(Swing2(n),1)*t) mean(allWing2Coords{n+1}) ] ;
-
+        wing2Res(nextIndWing2:nextIndWing2+Swing2(n)-1,:) = [ int16(ones(Swing2(n),1)*t) mean(allWing2Coords{n+1},1) ] ;
     else
-        wing2Res(nextIndWing2:nextIndWing2+Swing2(n)-1,:) = [ int16(ones(Swing2(n),1)*t) mean([mean(allWing2Coords{n-1}); mean(allWing2Coords{n+1})]) ] ;
+        wing2Res(nextIndWing2:nextIndWing2+Swing2(n)-1,:) = [ int16(ones(Swing2(n),1)*t), mean([mean(allWing2Coords{n-1},1); mean(allWing2Coords{n+1},1)]) ] ;
     end
     nextIndWing2 = nextIndWing2 + Swing2(n) ;
 end
 
-%{
-[ bodyRes, bodyFrameStartInd, bodyFrameEndInd ...
-    wing1Res, wing1FrameStartInd, wing1FrameEndInd ...
-    wing2Res, wing2FrameStartInd, wing2FrameEndInd ] = .
+% %% test different method of building res
+% emptyInds = find(cellfun(@isempty,allWing2Coords));
+% 
+% % loop over empty inds, more efficient. Then just do a vertcat
+% for ind = emptyInds
+% 
+%     allWing2Coords{ind} = mean([mean(allWing2Coords{ind-1},1); mean(allWing2Coords{ind+1},1)]);
+% 
+% end
+% 
+% 
 
-%}
 
 df = diff(bodyRes(:,1)) ;
 bodyFrameStartInd = [1 ; find(df==1)+1] ;

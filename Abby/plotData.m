@@ -1,22 +1,6 @@
 % convert cines to mp4 test
 % this takes ~70s, much faster than our current script?!
 
-tic
-
-exprPath = 'Y:\Abby2\02_20012025';
-camNames = {'xz','xy','yz'};
-cineFilenames = strcat(camNames,'_005.cine');
-cinePaths = fullfile(exprPath,cineFilenames);
-saveToPath = fullfile(exprPath,'mp4');
-
-if ~isfolder(saveToPath)
-    mkdir(saveToPath)
-end
-
-% cine2mp4(cinePaths,1,5,saveToPath)
-
-% toc
-
 %% plot some data from data_cleaned
 flyAngles = data_cleaned.anglesBodyFrameSmooth;
 frames = data_cleaned.params.startTrackingTime:data_cleaned.params.endTrackingTime;
@@ -24,7 +8,7 @@ t_ms = frames*(1/data_cleaned.params.fps)*1000;
 
 t_cond = t_ms> -50 & t_ms < 100;
 
-angleInd = 4;
+angleInd = 5;
 currAngle1 = flyAngles(t_cond,angleInd);
 currAngle2 = flyAngles(t_cond,angleInd+3);
 
