@@ -2,7 +2,7 @@
 % code to make everything work.
 
 %% Setup up paths for analysis folder
-pathToWatch = 'Y:\Abby2\02_20012025\' ; 
+pathToWatch = 'Y:\Abby2\03_05022025\' ; 
 pathStruct = generatePathStruct(pathToWatch) ;
 ExprNum = pathStruct.ExprNum;
 camNamesList = {'xy','xz','yz'};
@@ -69,6 +69,9 @@ if renameFlag
     
             for cineFileInd = 1:sum(currCamInds)
                 currName = cineDirs{camInd}(cineFileInd);
+                if length(currName.day) ==1
+                    currName.day = ['0',currName.day];
+                end
                 datetime_str = [currName.year,currName.month,currName.day,...
                                 currName.hour,currName.minute,currName.second(1:7)];
                 cineDirs{camInd}(cineFileInd).triggerTime = datetime(datetime_str,...
@@ -127,7 +130,7 @@ else
 end
 
 %% run analysis on renamed cines
-for currMovNum = 8:12%unique(movNumsList)
+for currMovNum = unique(movNumsList)
     % check if there is triplet
     movNumStr = num2str(currMovNum,'%03.f');
     tripletCheck = sum(movNumsList==currMovNum);
