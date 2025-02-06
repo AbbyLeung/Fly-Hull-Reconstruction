@@ -12,7 +12,6 @@ if ~isfolder(mp4Path)
     mkdir(mp4Path)
 end
 
-
 %% rename matching cines
 cineDir = dir(fullfile(pathToWatch,'*.cine'));
 
@@ -139,10 +138,10 @@ for currMovNum = unique(movNumsList)
         continue
     else
         disp(['Found triplet for movie ',movNumStr,', running reconstruction'])
-        % analyzeOneFlyMovie(pathToWatch,currMovNum)
-        % disp(['Done analyzing movie ',movNumStr])
-        disp('Generating mp4...')
-        cine2mp4(pathToWatch,ExprNum,currMovNum,mp4Path)
+        analyzeOneFlyMovie(pathToWatch,currMovNum)
+        disp(['Done analyzing movie ',movNumStr])
+%         disp('Generating mp4...')
+%         cine2mp4(pathToWatch,ExprNum,currMovNum,mp4Path)
     end
 end
 

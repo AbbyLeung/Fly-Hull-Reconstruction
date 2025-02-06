@@ -50,15 +50,15 @@ for camInd = 1:3
     
     w_dims = dims{camInd};
 
-    if camInd ~= 3
+    if camInd == 1 || camInd == 2
         tempIm = currIm;
-        tempIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2)) = bgIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2));
-    else
-        tempIm = currIm;
-        widthOffset = 0; heightOffset = -50;
+        widthOffset = 0; heightOffset = 250;
         tempIm((w_dims(1):w_dims(2))+heightOffset,...
             (w_dims(1):w_dims(2))+widthOffset) = bgIm((w_dims(1):w_dims(2))+heightOffset,...
             (w_dims(1):w_dims(2))+widthOffset);
+    else
+        tempIm = currIm;
+        tempIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2)) = bgIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2));
     end
     
     
