@@ -12,8 +12,6 @@ cineMetaData = getCinMetaData(fullfile(metaDataDir(1).folder,...
 camNames = {'yz','xz','xy'};
 initialFrameArray = cell(1,3);
 currImFrame = cell(1,3);
-% offset_vec = [13,13,15];
-% offset_vec = [0,0,0];
 window_length = 100;
 cineCenter = [round(cineMetaData.width/2),round(cineMetaData.height/2)];
 dims = cell(1,3);
@@ -28,7 +26,9 @@ dims{3} = cineCenter + [-window_length,window_length];
 
 movStrNum = sprintf('%03d',movNum);
 
-
+colorCorr = [-3,5,5];
+widthOffset = [0,-150,0];
+heightOffset = [0,0,-70];
 for camInd = 1:3
     % save background image
     currBGDir = dir(fullfile(exprPath,'bg',[camNames{camInd},'*.cine']));
@@ -50,17 +50,24 @@ for camInd = 1:3
     
     w_dims = dims{camInd};
 
-    if camInd == 1 || camInd == 2
-        tempIm = currIm;
-        widthOffset = 0; heightOffset = 250;
-        tempIm((w_dims(1):w_dims(2))+heightOffset,...
-            (w_dims(1):w_dims(2))+widthOffset) = bgIm((w_dims(1):w_dims(2))+heightOffset,...
-            (w_dims(1):w_dims(2))+widthOffset);
-    else
-        tempIm = currIm;
-        tempIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2)) = bgIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2));
-    end
-    
+%     if camInd == 1 || camInd == 2
+%         tempIm = currIm;
+%         widthOffset = -150; heightOffset = 0;
+%         tempIm((w_dims(1):w_dims(2))+heightOffset,...
+%             (w_dims(1):w_dims(2))+widthOffset) = bgIm((w_dims(1):w_dims(2))+heightOffset,...
+%             (w_dims(1):w_dims(2))+widthOffset)+5;
+%         imshow(tempIm)
+%     else
+%         tempIm = currIm;
+%         tempIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2)) = bgIm(w_dims(1):w_dims(2),w_dims(1):w_dims(2))-3;
+%         imshow(tempIm);
+%     end
+%     
+
+    tempIm = currIm;
+    tempIm((w_dims(1):w_dims(2))+heightOffset(camInd),...
+        (w_dims(1):w_dims(2))+widthOffset(camInd)) = bgIm((w_dims(1):w_dims(2))+heightOffset(camInd),...
+        (w_dims(1):w_dims(2))+widthOffset(camInd))+colorCorr(camInd);
     
     initialFrameArray{camInd} = tempIm;
 

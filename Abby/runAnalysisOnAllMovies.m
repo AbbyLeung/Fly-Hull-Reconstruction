@@ -2,9 +2,10 @@
 % code to make everything work.
 
 %% Setup up paths for analysis folder
-pathToWatch = 'Y:\Abby2\03_05022025\' ; 
-pathStruct = generatePathStruct(pathToWatch) ;
-ExprNum = pathStruct.ExprNum;
+pathToWatch = 'Y:\Abby2\Feb6\control fly 1\' ; 
+% pathStruct = generatePathStruct(pathToWatch) ;
+% ExprNum = pathStruct.ExprNum;
+ExprNum = 1;
 camNamesList = {'xy','xz','yz'};
 
 mp4Path = fullfile(pathToWatch,'mp4');
@@ -129,7 +130,7 @@ else
 end
 
 %% run analysis on renamed cines
-for currMovNum = 9%unique(movNumsList)
+for currMovNum = unique(movNumsList)
     % check if there is triplet
     movNumStr = num2str(currMovNum,'%03.f');
     tripletCheck = sum(movNumsList==currMovNum);
@@ -139,13 +140,13 @@ for currMovNum = 9%unique(movNumsList)
     else
         disp(['Found triplet for movie ',movNumStr,', running reconstruction'])
         try
-            analyzeOneFlyMovie(pathToWatch,currMovNum)
+            analyzeOneFlyMovie(pathToWatch,ExprNum,currMovNum)
             disp(['Done analyzing movie ',movNumStr])
         catch exception
             disp(exception)
         end
-%         disp('Generating mp4...')
-%         cine2mp4(pathToWatch,ExprNum,currMovNum,mp4Path)
+        disp('Generating mp4...')
+        cine2mp4(pathToWatch,ExprNum,currMovNum,mp4Path)
     end
 end
 
