@@ -50,7 +50,7 @@ defineConstantsScript
 
 
 %% FIND BACKGROUND ETC.
-[allBGcell,metaData] = findBGTethered(pathToWatch,movNum);
+[allBGcell,metaData,x_offset,y_offset] = findBGTethered(pathToWatch,movNum);
 firstImNum = metaData.firstImage;
 lastImNum = metaData.lastImage;
 vidWidth = metaData.width;
@@ -65,18 +65,18 @@ vidHeight = metaData.height;
 tin = firstImNum+100;
 tout = lastImNum-100;
 
-allTin = [tin;tin;tin];
-allTout = [tout;tout;tout];
+% allTin = [tin;tin;tin];
+% allTout = [tout;tout;tout];
 
-xcm = ones(tout-tin+1,1);
-ycm = ones(tout-tin+1,1);
+% xcm = ones(tout-tin+1,1);
+% ycm = ones(tout-tin+1,1);
 
 % either this or do some automated way of getting the center
-x_center = round(metaData.width/2);
-y_center = round(metaData.height/2);
+% x_center = round(metaData.width/2);
+% y_center = round(metaData.height/2);
 
-allXcm = {xcm*x_center,xcm*x_center,xcm*x_center};
-allYcm = {ycm*y_center,ycm*y_center,ycm*y_center};
+% allXcm = {xcm*x_center,xcm*x_center,xcm*x_center};
+% allYcm = {ycm*y_center,ycm*y_center,ycm*y_center};
 % ---------------------------------------------------------------
 %% PERFORM BINARY THRESHOLDING ON IMAGES
 %  -----------------------------------------------------------------------
@@ -106,21 +106,21 @@ disp('Binary for XY')
 [all_fly_bw_xy, body_only_bw_xy, all_fly_thresholds_xy, xcm_xy, ycm_xy,...
     allAxlim_xy, DELTA, with_legs_bw_xy] = ...
     binaryThreshTethered(allBGcell{cam} , cinFilenames{cam}, tin,...
-     tout, removeLegsFlag, stopWingsFlag) ;
+     tout, x_offset(XY),y_offset(XY),removeLegsFlag, stopWingsFlag) ;
 
 disp('Binary for XZ')
 cam = XZ ;
 [all_fly_bw_xz, body_only_bw_xz, all_fly_thresholds_xz, xcm_xz, ycm_xz,...
         allAxlim_xz, DELTA, with_legs_bw_xz] = ...
         binaryThreshTethered( allBGcell{cam}  , cinFilenames{cam}, tin,...
-         tout, removeLegsFlag, stopWingsFlag) ;
+         tout, x_offset(XZ), y_offset(XZ),removeLegsFlag, stopWingsFlag) ;
 
 disp('Binary for YZ')
 cam = YZ ;
 [all_fly_bw_yz, body_only_bw_yz, all_fly_thresholds_yz, xcm_yz, ycm_yz,...
     allAxlim_yz, DELTA, with_legs_bw_yz] = ...
     binaryThreshTethered( allBGcell{cam}  , cinFilenames{cam}, tin,...
-     tout,removeLegsFlag, stopWingsFlag) ;
+     tout, x_offset(YZ),y_offset(YZ),removeLegsFlag, stopWingsFlag) ;
 
 
 UnregisterPhantom();

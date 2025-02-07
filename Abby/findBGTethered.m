@@ -1,4 +1,4 @@
-function [initialFrameArray,cineMetaData] = findBGTethered(exprPath,movNum)
+function [initialFrameArray,cineMetaData,widthOffset,heightOffset] = findBGTethered(exprPath,movNum)
 %FINDBGTETHERED Summary of this function goes here
 %   Detailed explanation goes here
 LoadPhantomLibraries();
@@ -27,8 +27,8 @@ dims{3} = cineCenter + [-window_length,window_length];
 movStrNum = sprintf('%03d',movNum);
 
 colorCorr = [-3,5,5];
-widthOffset = [0,-150,0];
-heightOffset = [0,0,-70];
+widthOffset = [0,-150,-120];
+heightOffset = [0,0,0];
 for camInd = 1:3
     % save background image
     currBGDir = dir(fullfile(exprPath,'bg',[camNames{camInd},'*.cine']));
