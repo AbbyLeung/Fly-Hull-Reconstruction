@@ -129,7 +129,7 @@ else
 end
 
 %% run analysis on renamed cines
-for currMovNum = unique(movNumsList)
+for currMovNum = 9%unique(movNumsList)
     % check if there is triplet
     movNumStr = num2str(currMovNum,'%03.f');
     tripletCheck = sum(movNumsList==currMovNum);
@@ -138,8 +138,12 @@ for currMovNum = unique(movNumsList)
         continue
     else
         disp(['Found triplet for movie ',movNumStr,', running reconstruction'])
-        analyzeOneFlyMovie(pathToWatch,currMovNum)
-        disp(['Done analyzing movie ',movNumStr])
+        try
+            analyzeOneFlyMovie(pathToWatch,currMovNum)
+            disp(['Done analyzing movie ',movNumStr])
+        catch exception
+            disp(exception)
+        end
 %         disp('Generating mp4...')
 %         cine2mp4(pathToWatch,ExprNum,currMovNum,mp4Path)
     end

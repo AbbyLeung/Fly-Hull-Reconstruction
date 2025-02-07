@@ -8,7 +8,7 @@ t_ms = frames*(1/data_cleaned.params.fps)*1000;
 
 t_cond = t_ms> -50 & t_ms < 100;
 
-angleInd = 5;
+angleInd = 4;
 currAngle1 = flyAngles(t_cond,angleInd);
 currAngle2 = flyAngles(t_cond,angleInd+3);
 
@@ -27,7 +27,7 @@ hold off
 legend('Right','Left')
 xlabel('Time (ms)')
 ylabel('Stroke (deg)')
-% ylim([-10,230])
+ylim([-10,230])
 
 xlim([-50,100])
 
