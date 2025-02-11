@@ -1,7 +1,7 @@
 function [all_fly_bw, body_only_bw, all_fly_thresholds, xcm_pass2, ...
      ycm_pass2, allAxlim, DELTA, with_legs_bw] = ...
     binaryThreshTethered(bg, cinFilename, tin, tout, ...
-    xcmShift,ycmShift,removeLegsFlag, stopWingsFlag)
+    windowParams,removeLegsFlag, stopWingsFlag)
 % input parameters:
 %    *  bg - the background image for this movie (UINT8)
 %    *  cinFileName - a string of the full cine file name
@@ -123,15 +123,16 @@ for t=tin:tout
     % xcm_curr = xcm_guess(ind_temp) ; 
     % ycm_curr = ycm_guess(ind_temp) ; 
     mask = false(size(bw2)) ;
-    xcm = metaData.width/2;
-    ycm = metaData.height/2;
-    xcm_curr = xcm+xcmShift;
-    ycm_curr = ycm+ycmShift;
-    x1 = int16(max([xcm_curr - maskWindow, 1])) ;
-    x2 = int16(min([xcm_curr + maskWindow, metaData.width])) ; 
-    y1 = int16(max([ycm_curr - maskWindow, 1])) ;
-    y2 = int16(min([ycm_curr + maskWindow, metaData.height])) ;
-    mask(y1:y2, x1:x2) = true ;
+    % xcm = metaData.width/2;
+    % ycm = metaData.height/2;
+    % xcm_curr = xcm+xcmShift;
+    % ycm_curr = ycm+ycmShift;
+    % x1 = int16(max([xcm_curr - maskWindow, 1])) ;
+    % x2 = int16(min([xcm_curr + maskWindow, metaData.width])) ; 
+    % y1 = int16(max([ycm_curr - maskWindow, 1])) ;
+    % y2 = int16(min([ycm_curr + maskWindow, metaData.height])) ;
+    % mask(y1:y2, x1:x2) = true ;
+    mask(windowParams(1):windowParams(2),windowParams(3):windowParams(4)) = true;
 
     bw2 = bw2 & mask ; 
     % find center of mass of the largest cc of bw2
@@ -139,7 +140,6 @@ for t=tin:tout
     CC  = bwconncomp(bw2);
     Ncc = length(CC.PixelIdxList) ;
     
-   
     svec = zeros(Ncc,1) ; % vector containing the size of each connected components
     
     for j=1:Ncc

@@ -4,8 +4,7 @@ function [] = analyzeOneFlyMovie(pathToWatch,ExprNum,movNum)
 % Script to run analysis on renamed files. Need to modify the cnie2sparse
 % code to make everything work.
 
-pathStruct = generatePathStruct(pathToWatch);
-
+% pathStruct = generatePathStruct(pathToWatch);
 clustFlag = true ; % shich version of analysis script to run
 largePertFlag = false  ; % is it a large perturbation?
 removeLegsFlag = false ; % try to remove legs in binary threshold?
@@ -16,6 +15,7 @@ stopWingsFlag = true;
 XZ = 2 ;
 XY = 3 ;
 YZ = 1 ;
+
 % input movie number for analysis
 ExprNumStr = num2str(ExprNum,'%03.f');
 movNumStr = num2str(movNum,'%03.f');
@@ -28,13 +28,14 @@ cinFilenames = fullfile(pathToWatch,camFilenames);
 
 twoFlies = 0;
 
-load(fullfile(pathStruct.calibration,'calibration_easyWandData'))
-DLT_matrix_CSV_filename = fullfile(pathStruct.calibration,...
+% load(fullfile(pathStruct.calibration,'calibration_easyWandData'))
+calibrationPath = fullfile(fileparts(pathToWatch),'calibration');
+DLT_matrix_CSV_filename = fullfile(calibrationPath,...
     'calibration_dltCoefs.csv') ;
 
 dlt_matrix = load(DLT_matrix_CSV_filename);
 
-savePath = pathStruct.save;
+savePath = fullfile(pathToWatch,'Analysis');
 if ~isfolder(savePath)
     mkdir(savePath)
 end
@@ -48,9 +49,12 @@ end
 hullFigPath = movieFolder;
 defineConstantsScript
 
+flyBGParams = load(fullfile(pathToWatch,'bg_info','flyWindowParams.mat'));
+colorOffsets = flyBGParams.colorOffsets;
+windowParams = flyBGParams.windowParams;
 
 %% FIND BACKGROUND ETC.
-[allBGcell,metaData,x_offset,y_offset] = findBGTethered(pathToWatch,movNum);
+[allBGcell,metaData] = findBGTethered(pathToWatch,movNum,colorOffsets,windowParams);
 firstImNum = metaData.firstImage;
 lastImNum = metaData.lastImage;
 vidWidth = metaData.width;
@@ -106,21 +110,21 @@ disp('Binary for XY')
 [all_fly_bw_xy, body_only_bw_xy, all_fly_thresholds_xy, xcm_xy, ycm_xy,...
     allAxlim_xy, DELTA, with_legs_bw_xy] = ...
     binaryThreshTethered(allBGcell{cam} , cinFilenames{cam}, tin,...
-     tout, x_offset(XY),y_offset(XY),removeLegsFlag, stopWingsFlag) ;
+     tout, windowParams(cam,:),removeLegsFlag, stopWingsFlag) ;
 
 disp('Binary for XZ')
 cam = XZ ;
 [all_fly_bw_xz, body_only_bw_xz, all_fly_thresholds_xz, xcm_xz, ycm_xz,...
         allAxlim_xz, DELTA, with_legs_bw_xz] = ...
         binaryThreshTethered( allBGcell{cam}  , cinFilenames{cam}, tin,...
-         tout, x_offset(XZ), y_offset(XZ),removeLegsFlag, stopWingsFlag) ;
+         tout, windowParams(cam,:),removeLegsFlag, stopWingsFlag) ;
 
 disp('Binary for YZ')
 cam = YZ ;
 [all_fly_bw_yz, body_only_bw_yz, all_fly_thresholds_yz, xcm_yz, ycm_yz,...
     allAxlim_yz, DELTA, with_legs_bw_yz] = ...
     binaryThreshTethered( allBGcell{cam}  , cinFilenames{cam}, tin,...
-     tout, x_offset(YZ),y_offset(YZ),removeLegsFlag, stopWingsFlag) ;
+     tout, windowParams(cam,:),removeLegsFlag, stopWingsFlag) ;
 
 
 UnregisterPhantom();
