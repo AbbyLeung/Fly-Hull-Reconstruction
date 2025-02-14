@@ -133,7 +133,7 @@ clusterErrorFlag = nan(N_bad_frames, 1) ;
 
 for k = 1:N_bad_frames 
     ind = bad_frames(k) ;
-    fprintf('Frame %d : beginning analysis \n', ind )
+    % fprintf('Frame %d : beginning analysis \n', ind )
     row_start = frameStartInd(ind) ; % rows for voxel idx array
     row_end = frameEndInd(ind) ;
     %----------------------------------------------------------------------
@@ -163,7 +163,7 @@ for k = 1:N_bad_frames
     if voxOverlapCheck
        % if this happens, the same voxels are likely assigned to both
        % wings. need to figure out which wing the voxels should belong to
-       fprintf('Frame %d : same voxels assigned to both wings \n', ind )
+       % fprintf('Frame %d : same voxels assigned to both wings \n', ind )
        wingVox = unique([wingVoxR ; wingVoxL],'rows') ;
        if (sum(segWingsFlag) > 0)
            projR = nan(1,NCAMS) ;
@@ -237,14 +237,14 @@ for k = 1:N_bad_frames
     % are merged and 2) there's a crappy little bundle of pixels for one
     % wing off in a corner. in this case, we'll cluster
     if guessMergeFlag(ind)
-        fprintf('Frame %d : wings seemed merged, attempting to cluster... \n',...
-            ind )
+        % fprintf('Frame %d : wings seemed merged, attempting to cluster... \n',...
+        %     ind )
         if (N_vox_R_frac(ind) >= 0.5)
             wing_str = 'right' ;
         elseif (N_vox_R_frac(ind) < 0.5)
             wing_str = 'left' ;
         else
-            disp('this should not happen')
+            % disp('this should not happen')
             keyboard
         end
         % perform clustering
@@ -330,7 +330,7 @@ for k = 1:N_bad_frames
         % perform assignment:
         if unMergeFailFlag %|| ~new_dist_check
             % in case both blobs think they should be the same wing
-            fprintf('Frame %d : clustering likely unnecessary or was inconclusive \n', ind )
+            % pfprintf('Frame %d : clustering likely unnecessary or was inconclusive \n', ind )
         else
             % otherwise, assign the new wing data to our output struct
             wingVoxR = wingVox(label_idx == right_idx,:) ;
@@ -380,7 +380,7 @@ for k = 1:N_bad_frames
             end
         end
     else
-        fprintf('Frame %d : no need to un-merge wings \n',ind)
+        % fprintf('Frame %d : no need to un-merge wings \n',ind)
     end
     
     %----------------------------------------------------------------------
@@ -436,7 +436,7 @@ for k = 1:N_bad_frames
     % ---------------------------
     % RIGHT wing
     if clusterJustRightFlag
-        fprintf('Frame %d : clustering just right wing voxels \n', ind )
+        % fprintf('Frame %d : clustering just right wing voxels \n', ind )
         wing_str = 'right' ;
         try
             [data_out, ~, ignoreFlagR] = clusterSingleWing(data_out, ...
@@ -454,7 +454,7 @@ for k = 1:N_bad_frames
     % ---------------------------
     % LEFT wing
     if clusterJustLeftFlag
-        fprintf('Frame %d : clustering just left wing voxels \n', ind )
+        % fprintf('Frame %d : clustering just left wing voxels \n', ind )
         wing_str = 'left' ;
         try
             [data_out, ~, ignoreFlagL] = clusterSingleWing(data_out, ...
@@ -470,7 +470,7 @@ for k = 1:N_bad_frames
         end
     end
     if ~oneWingClustFlag
-        fprintf('Frame %d : no blobby wings to cluster \n', ind)
+        % fprintf('Frame %d : no blobby wings to cluster \n', ind)
     end
 
     %----------------------------------------------------------------------
@@ -480,7 +480,7 @@ for k = 1:N_bad_frames
         title(['Frame ' num2str(ind) ' AFTER'])
         keyboard
     end
-    fprintf('Completed %d /%d frames \n',k, N_bad_frames)
+    % fprintf('Completed %d /%d frames \n',k, N_bad_frames)
 end
 
 end
@@ -518,7 +518,7 @@ if clusterDebugFlag
    title(['Frame ' num2str(ind) ' ' wing_side ' wing clustering']) 
 end
 if badClusterFlag
-    fprintf('Frame %d : error performing clustering on %s wing \n', ind , wing_side)
+    % fprintf('Frame %d : error performing clustering on %s wing \n', ind , wing_side)
     ignoreFlag = true ; 
     return
 end
@@ -587,7 +587,7 @@ if sum(any_nan_idx) > 0
     if (length(tmp_idx) == 1)
         good_idx = tmp_idx ; 
     else
-        disp('Could not assign wing vectors, skipping...')
+        % disp('Could not assign wing vectors, skipping...')
         ignoreFlag = true ; 
         return
     end
@@ -614,7 +614,7 @@ centroidDispHat = centroidDispVec ./ myNorm(centroidDispVec) ;
 dotCheck = dot(centroidDispHat, interpSpanHat) ; 
 % cm_dist_comp = repmat(cm_dist_orig,N_clusts,1) - cm_dists ; 
 if (sum(label_idx == good_idx) < minNumVox) || (abs(dotCheck) > dotThresh)
-    disp('bad clustering--just take original')
+    % disp('bad clustering--just take original')
 else
     %----------------------------------
     % else enter data into structure

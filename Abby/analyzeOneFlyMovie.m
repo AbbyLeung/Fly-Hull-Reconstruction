@@ -30,6 +30,7 @@ twoFlies = 0;
 
 % load(fullfile(pathStruct.calibration,'calibration_easyWandData'))
 calibrationPath = fullfile(fileparts(pathToWatch),'calibration');
+load(fullfile(calibrationPath,'calibration_easyWandData'));
 DLT_matrix_CSV_filename = fullfile(calibrationPath,...
     'calibration_dltCoefs.csv') ;
 

@@ -2,11 +2,11 @@
 % code to make everything work.
 
 %% Setup up paths for analysis folder
-exprFolder = 'Y:\Abby2\Feb7\S01' ; 
+exprFolder = 'Y:\Abby2\Feb7\Control haltereless' ; 
 ExprNum = 1;
 camNamesList = {'xy','xz','yz'};
 calibrationPath = fullfile(exprFolder,'calibration');
-bgRefPath = fullfile(exprFolder,'bg_ref');
+% bgRefPath = fullfile(exprFolder,'bg_ref');
 
 % get folder names for each fly and then loop through each one
 exprDir = dir(fullfile(exprFolder,'fly*'));
@@ -190,13 +190,13 @@ for flyTrialsInd = 1:length(exprDir)
 
             end
             disp(['Found triplet for movie ',movNumStr,', running reconstruction'])
-            % try
-            analyzeOneFlyMovie(currFlyFolder,ExprNum,currMovNum)
-            disp(['Done analyzing movie ',movNumStr])
-            % catch exception
-            %     disp('Analysis failed:')
-            %     disp(exception)
-            % end
+            try
+                analyzeOneFlyMovie(currFlyFolder,ExprNum,currMovNum)
+                disp(['Done analyzing movie ',movNumStr])
+            catch exception
+                disp('Analysis failed:')
+                disp(exception)
+            end
             % disp('Generating mp4...')
             % cine2mp4(pathToWatch,ExprNum,currMovNum,mp4Path)
         end
