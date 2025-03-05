@@ -1,5 +1,5 @@
 % script that loops through files and generates figs
-expFolder = 'Y:\Abby2\Feb7\S02';
+expFolder = 'Y:\Abby2\Feb7\Control haltereless';
 flyDir = dir(fullfile(expFolder,'fly*'));
 
 % analysisFolder = 'Y:\Abby2\Feb7\S01\fly 18\Analysis';
