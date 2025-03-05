@@ -2,7 +2,7 @@
 % code to make everything work.
 
 %% Setup up paths for analysis folder
-exprFolder = 'Y:\Abby2\Feb7\Control haltereless' ; 
+exprFolder = 'Y:\Abby2\Feb7\control 250ms' ; 
 ExprNum = 1;
 camNamesList = {'xy','xz','yz'};
 calibrationPath = fullfile(exprFolder,'calibration');
