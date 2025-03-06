@@ -1,6 +1,6 @@
 % script to load data into one data structure
-exprFolder = 'Y:\Abby2\Feb7\S01';
-flyLine = 'S01';
+exprFolder = 'Y:\Abby2\Feb7\Control haltereless';
+flyLine = 'ControlNH';
 flyDir = dir(fullfile(exprFolder,'fly*'));
 folderNames = {flyDir.name};
 datastruct = struct();
@@ -64,4 +64,5 @@ for flyInd = 1:length(folderNames)
     end  
 end
 
-save('S01_datastruct.mat','datastruct')
+ctrlNHDatastruct = datastruct;
+save('ctrlNHdatastruct.mat','ctrlNHDatastruct')
