@@ -64,4 +64,5 @@ for flyInd = 1:length(folderNames)
     end  
 end
 
-save('S01_datastruct.mat','datastruct')
+S01Datastruct = datastruct;
+save('S01_datastruct.mat','S01Datastruct')
