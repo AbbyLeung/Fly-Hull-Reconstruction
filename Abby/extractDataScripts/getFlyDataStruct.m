@@ -1,6 +1,15 @@
-% script to load data into one data structure
-exprFolder = 'Y:\Abby2\Feb7\S01';
-flyLine = 'S01';
+%{
+
+[S02datastruct] = getFlyDataStruct('Y:\Abby2\Feb7\S02','S02')
+save('S02_datastruct.mat','S02datastruct')
+
+[ctrldatastruct] = getFlyDataStruct('Y:\Abby2\Feb7\control','Control')
+save('control_datastruct.mat','ctrldatastruct')
+%}
+
+function [datastruct] = getFlyDataStruct(exprFolder,flyLine)
+%GETFLYDATASTRUCT extract datastruct from experiment folder
+%   
 flyDir = dir(fullfile(exprFolder,'fly*'));
 folderNames = {flyDir.name};
 datastruct = struct();
@@ -52,11 +61,8 @@ for flyInd = 1:length(folderNames)
 
        time = (firstFrame:lastFrame)*(1/fps);
 
-
        % get fly shadow
-       tic
        flyShadow = getXYview(currData);
-       toc
 
        datastruct(structInd).t  = time;
        datastruct(structInd).bodyYaw = bodyAngles(:,1);
@@ -66,10 +72,12 @@ for flyInd = 1:length(folderNames)
        datastruct(structInd).wing_smoothL = wingAnglesL';
        datastruct(structInd).flyShadow = flyShadow;
 
+
        clear currData
-       structInd = structInd + 1
+       % dispmsg = ['Done with fly ',currFlyStr,', trial ', currTrialStr];
+       % disp(dispmsg);
+
+       structInd = structInd + 1;
     end  
 end
-
-S01Datastruct = datastruct;
-save('S01_datastruct.mat','S01Datastruct')
+end
