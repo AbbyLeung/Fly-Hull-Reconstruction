@@ -4,9 +4,9 @@
 % -------------------------------------------------------------------------
 %% params
 saveFlag = false;
-schematicType = 'body' ; % 'body' | 'wing' | 'wingFrame'
+schematicType = 'flyOnly' ; % 'body' | 'wing' | 'wingFrame' | 'flyOnly'
 labelFlag = true ; 
-pinType = 0 ;
+pinType = 3 ; % 1 = roll, 2 = pitch, 3 = tethered fly
 
 savePath = pwd ; % TO BE ALTERED
     
@@ -89,6 +89,9 @@ switch schematicType
     case 'wingFrame'
         rightYPR = (pi/180)*[ 90, 0, 90] ;
         leftYPR = (pi/180)*[ 90, 0, 90] ;
+    case 'flyOnly'
+        rightYPR = (pi/180)*[ 140, 22, 55] ;
+        leftYPR = (pi/180)*[ 140, 22, 55] ;
     otherwise
         fprintf('Invalid schematic type: %s \n', schematicType)
         keyboard
@@ -108,7 +111,7 @@ flyScaleIncrease = 5 ;
 
 % --------------------------------------------------------------------------
 %%  draw fly
-[flyGrp, bodyGrp, rightWingGrp, leftWingGrp, dL, ~, ~] = draw3Dfly(ax, ...
+[flyGrp, bodyGrp, rightWingGrp, leftWingGrp, dL, ~, ~] = drawTetheredFly(ax, ...
     flyScaleIncrease*flyScale, resolution, pinType, thetab0, flyGridFlag,...
     flyColorScheme);
 setFlyDOF(flyGrp, rightWingGrp, leftWingGrp, bodyPos, bodyYPR, rightYPR , ...
@@ -561,6 +564,8 @@ switch schematicType
         %xlim = [-5, 55] ;
         %ylim = [20, 165] ;
         %zlim = [-65, 80] ;
+    case 'flyOnly'
+       
     otherwise
         fprintf('Invalid schematic type: %s \n', schematicType)
         keyboard

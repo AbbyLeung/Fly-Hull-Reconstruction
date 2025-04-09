@@ -1,6 +1,6 @@
 % script to load data into one data structure
-exprFolder = 'Y:\Abby2\Feb7\S01';
-flyLine = 'S01';
+exprFolder = 'Y:\Abby2\Feb7\Control haltereless';
+flyLine = 'Control haltereless';
 flyDir = dir(fullfile(exprFolder,'fly*'));
 folderNames = {flyDir.name};
 datastruct = struct();
@@ -28,16 +28,25 @@ for flyInd = 1:length(folderNames)
        datastruct(structInd).trialNum = currTrialNum;
         
        % load analysis file
-       dataFilename = [trialFolderName,'_cleaned.mat'];
+       currFolder = fullfile(trialsDir(trialInd).folder,trialFolderName);
+       mcDir = dir(fullfile(currFolder,'*manually_corrected.mat'));
 
-       try
-           currData = load(fullfile(trialsDir(trialInd).folder,trialFolderName,...
-               dataFilename));
+       try 
+           if ~isempty(mcDir)
+               dataFilename = mcDir.name;
+               currData = load(fullfile(currFolder,dataFilename));
+               currData = currData.data;
+           else % assume the data is cleaned already (part of reconstruction)
+                dataFilename = [trialFolderName,'_cleaned.mat'];
+                currData = load(fullfile(currFolder,dataFilename));
+                currData = currData.data_cleaned;
+           end
        catch errorMsg
             disp(errorMsg)
             continue
        end
-       currData = currData.data_cleaned;
+
+       % currData = currData.data_cleaned;
        bodyAngles = currData.anglesLabFrameSmooth(:,[1,2,9]); %yaw, pitch, roll
        wingAngles = currData.anglesBodyFrameSmooth;
        wingAngles(:,3) = wingAngles(:,3)*(-1);
@@ -54,9 +63,9 @@ for flyInd = 1:length(folderNames)
 
 
        % get fly shadow
-       tic
-       flyShadow = getXYview(currData);
-       toc
+       % tic
+       % flyShadow = getXYview(currData);
+       % toc
 
        datastruct(structInd).t  = time;
        datastruct(structInd).bodyYaw = bodyAngles(:,1);
@@ -64,10 +73,10 @@ for flyInd = 1:length(folderNames)
        datastruct(structInd).bodyRoll = bodyAngles(:,3);
        datastruct(structInd).wing_smoothR = wingAnglesR';
        datastruct(structInd).wing_smoothL = wingAnglesL';
-       datastruct(structInd).flyShadow = flyShadow;
+       % datastruct(structInd).flyShadow = flyShadow;
 
        clear currData
-       structInd = structInd + 1
+       structInd = structInd + 1;
     end  
 end
 

@@ -43,7 +43,7 @@ movslope_len = 200 ; % 200
 movslope_order = 2 ; 
 % -------------------------------------------------------
 %% deal with bodyCM units (voxel vs meters)
-meanDiff = nanmean(myNorm(diff(bodyCM))) ; 
+meanDiff = nanmean(myNorm(diff(bodyCM))) ; %#ok<NANMEAN>
 if (meanDiff > 1e-3)
     % in this case, bodyCM is in voxel coordinates
     bodyCM = voxelSize.*bodyCM ;

@@ -69,6 +69,8 @@ if ~largePertFlag
     i2 = min([init_window, length(bodyYaw)]) ; 
     bodyYawInit = nanmedian(bodyYaw(i1:i2)) ; 
     bodyYaw = bodyYaw - bodyYawInit ;
+    % then unwrap first to fix weird edge cases
+    bodyYaw = unwrap(bodyYaw);
     
     % then restrict yaw to be in the range [-180, 180]
     for i = 1:length(bodyYaw)
