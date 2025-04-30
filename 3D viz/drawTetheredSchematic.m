@@ -7,7 +7,7 @@ saveFlag = true ; % save output?
 insetFlag = false ; % make zoomed-in image of fly?
 optoFlag = true ;  % add drawing of optogenetic light?
 savePrefix = '' ; % any additional string to affix to filenames
-pinType = 2 ;    % type of pin on fly. 0 = no pin , 1 = roll pin, 2 = pitch
+pinType = 3 ;    % type of pin on fly. 0 = no pin , 1 = roll pin, 2 = pitch
 
 savePath = 'C:\Users\Abby\Box Sync\figs' ; % ALTER AS NEEDED
 % saveName = 'schematic_no_LED' ; 
@@ -20,9 +20,9 @@ lineScale = flyScale/2.0 ;
 % ------------------------------------
 % set camera positons and directions
 dist_scale = scale*25 ; 
-center_yz = dist_scale*[1, 0, 0] ; 
+center_yz = dist_scale*[1.1, 0, 0] ; 
 center_xz = dist_scale*[0, 1, 0] ;
-center_xy = dist_scale*[0, 0, 1] ;
+center_xy = dist_scale*[0, 0, 0.9] ;
 
 % unit vector camera directions
 direction_yz = [-1, 0, 0] ; 
@@ -52,7 +52,7 @@ thetab0 = 45 * pi / 180 ;
 % leftYPR = (pi/180)*[[ 140, 22, 55] ; [120, -15, 75] ;  [20, 10, 55] ; ...
 %     [70, 0, 55] ; [110, 0, 135] ; [95, 0, 30]] ;  
 
-bodyPos = [0, 0, 0];
+bodyPos = [0, 0, -10];
 bodyYPR = [pi/2, pi/4, 0];
 rightYPR = (pi/180)*[ 140, 22, 55] ;
 leftYPR = (pi/180)*[ 140, 22, 55] ;
@@ -68,13 +68,14 @@ led_direction = [0,0,0] - led_center ;
 led_direction = led_direction./norm(led_direction) ; 
 beamColorMap = 'Reds' ; 
 ledLength = scale*8 ; 
-ledRadius = scale*2 ; 
+ledRadius = scale*4 ; 
 beamLength = scale*35 ; 
 
 % -----------------------
 % misc params
 resolution = 100 ; 
-az = 112 ; 
+% az = 112 ; 
+az = 126;
 el = 15 ; 
 lightPos = [0.2638    0.2293   -0.2018] ; 
 
@@ -101,8 +102,8 @@ cam_xy = draw3Dcamera(ax, parent, camLen, camWid, camDep, center_xy, ...
 % put some flies in the chamber 
 flyGrpList = gobjects(N_flies) ; 
 for ind = 1:N_flies
-    [flyGrp, ~, rightWingGrp, leftWingGrp, dL, ~, ~] = draw3Dfly(ax, ...
-        flyScale*6, resolution, pinType, thetab0, flyGridFlag);
+    [flyGrp, ~, rightWingGrp, leftWingGrp, dL, ~, ~] = drawTetheredFly(ax, ...
+        flyScale*6.5, resolution, pinType, thetab0, flyGridFlag);
     setFlyDOF(flyGrp, rightWingGrp, leftWingGrp, bodyPos(ind,:), ...
         bodyYPR(ind,:), rightYPR(ind,:) , leftYPR(ind,:), thetab0, dL )
     

@@ -1,6 +1,6 @@
 % script to load data into one data structure
-exprFolder = 'Y:\Abby2\Feb7\Control haltereless';
-flyLine = 'Control haltereless';
+exprFolder = 'Y:\Abby2\Feb7\S01 haltereless';
+flyLine = 'S01 haltereless';
 flyDir = dir(fullfile(exprFolder,'fly*'));
 folderNames = {flyDir.name};
 datastruct = struct();
@@ -36,10 +36,13 @@ for flyInd = 1:length(folderNames)
                dataFilename = mcDir.name;
                currData = load(fullfile(currFolder,dataFilename));
                currData = currData.data;
+               datastruct(structInd).ManualCorr = true;
            else % assume the data is cleaned already (part of reconstruction)
                 dataFilename = [trialFolderName,'_cleaned.mat'];
                 currData = load(fullfile(currFolder,dataFilename));
                 currData = currData.data_cleaned;
+                datastruct(structInd).ManualCorr = false;
+                
            end
        catch errorMsg
             disp(errorMsg)
@@ -80,5 +83,5 @@ for flyInd = 1:length(folderNames)
     end  
 end
 
-S01Datastruct = datastruct;
-save('S01_datastruct.mat','S01Datastruct')
+S01_NH = datastruct;
+save('S01_NH.mat','S01_NH')

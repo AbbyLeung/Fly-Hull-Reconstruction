@@ -1,8 +1,7 @@
 function [] = analyzeOneFlyMovie(pathToWatch,ExprNum,movNum)
 %ANALYZEONEFLYMOVIE Summary of this function goes here
 %   Detailed explanation goes here
-% Script to run analysis on renamed files. Need to modify the cnie2sparse
-% code to make everything work.
+% Script to run analysis on renamed files.
 
 % pathStruct = generatePathStruct(pathToWatch);
 clustFlag = true ; % shich version of analysis script to run

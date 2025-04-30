@@ -141,7 +141,6 @@ for flyTrialsInd = 1:length(exprDir)
     end
 
     %% run analysis on renamed cines
-
     cc=0;
     for currMovNum = unique(movNumsList)
         % check if there is triplet
