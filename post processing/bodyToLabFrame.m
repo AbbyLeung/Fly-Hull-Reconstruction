@@ -37,7 +37,7 @@ translationVecs = data_in.bodyCM_orig ;
 %% perform body->lab frame transformations
 for i = 1:N_frames
     % get rotation matrix and translation vectors for current frame
-    rotM = squeeze(bodyFrameRotMats(:,:,i))' ; % not the transpose/inverse
+    rotM = squeeze(bodyFrameRotMats(:,:,i))' ; % use the transpose
     T = translationVecs(i,:) ; 
    
     % first do the easy ones--just rotation
@@ -56,7 +56,9 @@ for i = 1:N_frames
     row1 = frameStartInd(i) ; 
     row2 = frameEndInd(i) ; 
     data_out.res(row1:row2,2:4) = ...
-        int16((rotM*double(data_out.res(row1:row2,2:4))')' + T) ; % fucking double vs int16
+        int16((rotM*(double(data_out.res(row1:row2,2:4)))')' + T);
+        % int16((rotM*double(data_out.res(row1:row2,2:4))')' + int16(T)) ; % fucking double vs int16
+
     
 end
 
