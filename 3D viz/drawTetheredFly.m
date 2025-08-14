@@ -392,7 +392,9 @@ switch (pinType)
         
         pinGrp = hgtransform ;
         set([pin hdisk1 hdisk2],'Parent',pinGrp) ;
-        R1 = makehgtform('yrotate',-3*(pi/8)) ;
+        % set pin angle
+        pinAngle =  -pi/2;% -3*(pi/8);
+        R1 = makehgtform('yrotate',pinAngle) ;
         T1 = makehgtform('translate',[0 0 -scale*thoraxRadius]) ;
         T1R1 = T1*R1 ;
         set(pinGrp,'Matrix',T1R1) ;
@@ -488,6 +490,5 @@ hdisk6 = patch(X,Y,Z,leftWingColor,'linestyle',wingLineStyle) ;
 
 alpha([leftWing leftVein hdisk5 hdisk6],alphaVal) ;
 set([leftWing leftVein hdisk5 hdisk6], 'Parent',leftWingGrp) ;
-
 end
 

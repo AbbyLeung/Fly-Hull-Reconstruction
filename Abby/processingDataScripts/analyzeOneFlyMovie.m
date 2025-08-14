@@ -1,4 +1,4 @@
-function [] = analyzeOneFlyMovie(pathToWatch,ExprNum,movNum)
+function [] = analyzeOneFlyMovie(pathToWatch,ExprNum,movNum,flyBGParams)
 %ANALYZEONEFLYMOVIE Summary of this function goes here
 %   Detailed explanation goes here
 % Script to run analysis on renamed files.
@@ -27,7 +27,6 @@ cinFilenames = fullfile(pathToWatch,camFilenames);
 
 twoFlies = 0;
 
-% load(fullfile(pathStruct.calibration,'calibration_easyWandData'))
 calibrationPath = fullfile(fileparts(pathToWatch),'calibration');
 load(fullfile(calibrationPath,'calibration_easyWandData'));
 DLT_matrix_CSV_filename = fullfile(calibrationPath,...
@@ -49,7 +48,7 @@ end
 hullFigPath = movieFolder;
 defineConstantsScript
 
-flyBGParams = load(fullfile(pathToWatch,'bg_info','flyWindowParams.mat'));
+% flyBGParams = load(fullfile(pathToWatch,'bg_info','flyWindowParams.mat'));
 colorOffsets = flyBGParams.colorOffsets;
 windowParams = flyBGParams.windowParams;
 

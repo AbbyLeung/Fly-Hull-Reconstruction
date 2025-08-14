@@ -1,8 +1,8 @@
-% Script to run analysis on renamed files. Need to modify the cnie2sparse
+% Script to run analysis on renamed files. Need to modify the cine2sparse
 % code to make everything work.
 
 %% Setup up paths for analysis folder
-exprFolder = 'Y:\Abby2\Feb7\control 250ms' ; 
+exprFolder = 'Y:\old setup data backup\Gravity Sensing\Fly 01\Intact_Light' ; 
 ExprNum = 1;
 camNamesList = {'xy','xz','yz'};
 calibrationPath = fullfile(exprFolder,'calibration');
@@ -196,8 +196,8 @@ for flyTrialsInd = 1:length(exprDir)
                 disp('Analysis failed:')
                 disp(exception)
             end
-            % disp('Generating mp4...')
-            % cine2mp4(pathToWatch,ExprNum,currMovNum,mp4Path)
+            disp('Generating mp4...')
+            cine2mp4(pathToWatch,ExprNum,currMovNum,mp4Path)
         end
     end
         

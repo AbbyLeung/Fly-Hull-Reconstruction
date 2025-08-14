@@ -1,5 +1,8 @@
+function [flyWindowParams] = matchBackgroundsFunc(imgCell,bgFolder,cineFilenames)
+%MATCHBACKGROUNDSFUNC Summary of this function goes here
+%   Detailed explanation goes here
 %% first get background images (only need to do this one time)
-bgFolder = 'Z:\Abby\Gravity Sensing\Fly 01\Intact_Light\bg';
+% bgFolder = 'Z:\Abby\Gravity Sensing\Fly 01\Intact_Light\bg';
 camNames = {'yz','xz','xy'};
 camFilenames = strcat(camNames,'_1.cine');
 camPaths = fullfile(bgFolder,camFilenames);
@@ -36,8 +39,6 @@ colorOffsets = zeros(1,3);
 
 % get one frame from each camera view to adjust color in background for
 % each fly
-% bgInfoPath = 'Y:\Abby2\Feb7\S01\fly 07\bg_info';
-load(fullfile(bgInfoPath,'bgParams.mat'))
 for camInd = 1:3
     avgBG = mean(bgCell{camInd}(mask));
     avgIm = mean(imgCell{camInd}(mask));
@@ -48,8 +49,6 @@ end
 LoadPhantomLibraries();
 RegisterPhantom(true);
 
-% cineFilenames = strcat(camNames,'_001.cine');
-% cinePath = fullfile('Y:\Abby2\Feb7\S01\fly 10',cineFilenames);
 cinePath = cineFilenames;
 frames = struct();
 windowParams = zeros(3,4);
@@ -91,7 +90,11 @@ end
 UnregisterPhantom(); %Use this function when you finished your work
 UnloadPhantomLibraries();
 
-save(fullfile(bgInfoPath,'flyWindowParams.mat'),'colorOffsets','windowParams')
+flyWindowParams = struct();
+flyWindowParams.colorOffsets = colorOffsets;
+flyWindowParams.windowParams = windowParams;
+
+% save(fullfile(bgInfoPath,'flyWindowParams.mat'),'colorOffsets','windowParams')
 
 % testFrame = frames(1).XZ;
 % testFrame(rowMin:rowMax,colMin:colMax) = 256;
@@ -99,18 +102,12 @@ save(fullfile(bgInfoPath,'flyWindowParams.mat'),'colorOffsets','windowParams')
 % 
 % currCamInd = 2;
 % for i = 1:36
-%     pause(0.5)
+%     pause(1/30)
 %     imshow(frames(i).(camNames{currCamInd})(windowParams(currCamInd,1):windowParams(currCamInd,2),...
 %         windowParams(currCamInd,3):windowParams(currCamInd,4)))
 %     impixelinfo
 % end
 % 
 
-
-
-
-
-
-
-
+end
 
