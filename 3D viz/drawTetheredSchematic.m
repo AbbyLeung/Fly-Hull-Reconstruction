@@ -3,9 +3,9 @@
 % -------------------------------------------------------------------------
 % ------------------------------
 %% params
-saveFlag = true ; % save output?
+saveFlag = false ; % save output?
 insetFlag = false ; % make zoomed-in image of fly?
-optoFlag = true ;  % add drawing of optogenetic light?
+optoFlag = false ;  % add drawing of optogenetic light?
 savePrefix = '' ; % any additional string to affix to filenames
 pinType = 3 ;    % type of pin on fly. 0 = no pin , 1 = roll pin, 2 = pitch
 
@@ -53,9 +53,14 @@ thetab0 = 45 * pi / 180 ;
 %     [70, 0, 55] ; [110, 0, 135] ; [95, 0, 30]] ;  
 
 bodyPos = [0, 0, -10];
-bodyYPR = [pi/2, pi/4, 0];
+bodyYPR = [pi/2, pi/4, -pi/4];
 rightYPR = (pi/180)*[ 140, 22, 55] ;
 leftYPR = (pi/180)*[ 140, 22, 55] ;
+
+bodyPos = [[0, 0, 0];[100,-10,40]];
+bodyYPR = [[pi/2, pi/4, 0];[pi/2, pi/4, -pi/4]];
+rightYPR = (pi/180)*[[140, 22, 55];[140, 22, 55]] ;
+leftYPR = (pi/180)*[[140, 22, 55];[140, 22, 55]] ;
 
 N_flies = size(bodyPos,1) ; 
 flyGridFlag = false ; 
@@ -88,12 +93,12 @@ ax = gca ;
 parent = hgtransform('Parent',ax);
 
 % draw cameras
-cam_yx = draw3Dcamera(ax, parent, camLen, camWid, camDep, center_yz,...
-    direction_yz, lineScale) ;
-cam_xz = draw3Dcamera(ax, parent, camLen, camWid, camDep, center_xz, ...
-    direction_xz, lineScale) ;
-cam_xy = draw3Dcamera(ax, parent, camLen, camWid, camDep, center_xy, ...
-    direction_xy, lineScale) ;
+% cam_yx = draw3Dcamera(ax, parent, camLen, camWid, camDep, center_yz,...
+%     direction_yz, lineScale) ;
+% cam_xz = draw3Dcamera(ax, parent, camLen, camWid, camDep, center_xz, ...
+%     direction_xz, lineScale) ;
+% cam_xy = draw3Dcamera(ax, parent, camLen, camWid, camDep, center_xy, ...
+%     direction_xy, lineScale) ;
 
 % draw chamber
 % flight_chamber = draw3DflightChamber(ax, parent, chamberSideLength, ...
@@ -105,9 +110,9 @@ for ind = 1:N_flies
     [flyGrp, ~, rightWingGrp, leftWingGrp, dL, ~, ~] = drawTetheredFly(ax, ...
         flyScale*6.5, resolution, pinType, thetab0, flyGridFlag);
     setFlyDOF(flyGrp, rightWingGrp, leftWingGrp, bodyPos(ind,:), ...
-        bodyYPR(ind,:), rightYPR(ind,:) , leftYPR(ind,:), thetab0, dL )
+        bodyYPR(ind,:), rightYPR(ind,:) , leftYPR(ind,:), thetab0, dL ) % pin length = 62.4?
     
-    material(flyGrp, 'dull')
+    material(flyGrp, 'shiny')
     c = findobj(flyGrp,'Type','surface');
     set(c,'ambientstrength',0.5); % note that this line comes after "material shiny"
     
@@ -148,10 +153,12 @@ if saveFlag
     screen_DPI = get(0,'ScreenPixelsPerInch');
     K = 4 ; 
     set(fig,'InvertHardcopy','off');
-    print(fig,['-r',num2str(screen_DPI*K)], '-dpng', ...
-        fullfile(savePath, 'setup_schematic_im2.png'));
+    % print(fig,['-r',num2str(screen_DPI*K)], '-dpng', ...
+    %     fullfile(savePath, 'setup_schematic_im2.png'));
     %print(gcf, fullfile(savePath, 'setup_schematic.png'),'-dpng','-r600')
-    %imwrite(gcf,fullfile(savePath, 'setup_schematic_im.png'))
+    % imwrite(gcf,fullfile(savePath, 'setup_schematic_im.png'))
+    % saveas(gcf,fullfile(savePath, 'setup_schematic_im'),'epsc')
+    savefig(gcf,fullfile(savePath,'setup_tethered'))
 end
 
 % =========================================================================
@@ -197,20 +204,20 @@ if insetFlag
     set(h_justFly,'color','w');
     axis off
     
-    if saveFlag
+    % if saveFlag
         %     myaa ;
         %     disp('doing weird workaround with myaa')
         %         print(h_justFly, fullfile(savePath, 'just_fly.png'),'-dpng','-r600')
         %         F = getframe ;
         %         imwrite(F.cdata,fullfile(savePath, 'just_fly_im_im.png'))
-        screen_DPI = get(0,'ScreenPixelsPerInch');
-        K = 4 ;
-        set(h_justFly,'InvertHardcopy','off');
-        print(h_justFly,['-r',num2str(screen_DPI*K)], '-dpng', ...
-            fullfile(savePath, 'just_fly_im2.png'));
+        % screen_DPI = get(0,'ScreenPixelsPerInch');
+        % K = 4 ;
+        % set(h_justFly,'InvertHardcopy','off');
+        % print(h_justFly,['-r',num2str(screen_DPI*K)], '-dpng', ...
+            % fullfile(savePath, 'just_fly_im2.png'));
         
-        myaa ;
-        F = getframe ;
-        imwrite(F.cdata,fullfile(savePath, 'just_fly_im.png'))
-    end
+        % myaa ;
+        % F = getframe ;
+        % imwrite(F.cdata,fullfile(savePath, 'just_fly_im.eps'))
+    % end
 end

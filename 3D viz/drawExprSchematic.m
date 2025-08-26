@@ -3,11 +3,11 @@
 % -------------------------------------------------------------------------
 % ------------------------------
 %% params
-saveFlag = true ; % save output?
+saveFlag = false ; % save output?
 insetFlag = false ; % make zoomed-in image of fly?
 optoFlag = true ;  % add drawing of optogenetic light?
 savePrefix = '' ; % any additional string to affix to filenames
-pinType = 2 ;    % type of pin on fly. 0 = no pin , 1 = roll pin, 2 = pitch
+pinType = 0 ;    % type of pin on fly. 0 = no pin , 1 = roll pin, 2 = pitch
 
 savePath = 'C:\Users\Abby\Box Sync\figs' ; % ALTER AS NEEDED
 % saveName = 'schematic_no_LED' ; 
@@ -43,19 +43,19 @@ frameCrossSection = scale*1 ;
 % fly setup -- for multiple flies, create matrix (1 row per fly)
 %pinType = 2 ; % 0==no pin, 1==roll pin, 2==pitch
 thetab0 = 45 * pi / 180 ;
-% bodyPos = [[0, 0, 0] ; [-50, -75, -55] ; [80, +100, -30] ; ...
-%     [-100, +100, +55] ; [+90, -100, +45] ; [+40, -50, +70]] ; 
-% bodyYPR = [[pi/2, pi/4, 0] ; [pi/6, pi/6, -pi/8] ; [pi, pi/3, pi/8] ; ...
-%     [-pi/4, pi/3, 0] ; [-pi/4, pi/4, 0] ; [-pi/2, pi/6, pi/3]] ; 
-% rightYPR = (pi/180)*[[ 140, 22, 55] ; [120, -15, 75] ; [20, 10, 55] ; ...
-%     [70, 0, 55] ; [110, 0, 135] ; [95, 0, 30] ] ;  
-% leftYPR = (pi/180)*[[ 140, 22, 55] ; [120, -15, 75] ;  [20, 10, 55] ; ...
-%     [70, 0, 55] ; [110, 0, 135] ; [95, 0, 30]] ;  
+bodyPos = [[0, 0, 0] ; [-50, -75, -55] ; [80, +100, -30] ; ...
+    [-100, +100, +55] ; [+90, -100, +45] ; [+40, -50, +70]] ; 
+bodyYPR = [[pi/2, pi/4, 0] ; [pi/6, pi/6, -pi/8] ; [pi, pi/3, pi/8] ; ...
+    [-pi/4, pi/3, 0] ; [-pi/4, pi/4, 0] ; [-pi/2, pi/6, pi/3]] ; 
+rightYPR = (pi/180)*[[ 140, 22, 55] ; [120, -15, 75] ; [20, 10, 55] ; ...
+    [70, 0, 55] ; [110, 0, 135] ; [95, 0, 30] ] ;  
+leftYPR = (pi/180)*[[ 140, 22, 55] ; [120, -15, 75] ;  [20, 10, 55] ; ...
+    [70, 0, 55] ; [110, 0, 135] ; [95, 0, 30]] ;  
 
-bodyPos = [0, 0, 0];
-bodyYPR = [pi/2, pi/4, 0];
-rightYPR = (pi/180)*[ 140, 22, 55] ;
-leftYPR = (pi/180)*[ 140, 22, 55] ;
+% bodyPos = [0, 0, 0];
+% bodyYPR = [pi/2, pi/4, 0];
+% rightYPR = (pi/180)*[ 140, 22, 55] ;
+% leftYPR = (pi/180)*[ 140, 22, 55] ;
 
 N_flies = size(bodyPos,1) ; 
 flyGridFlag = false ; 
@@ -95,14 +95,14 @@ cam_xy = draw3Dcamera(ax, parent, camLen, camWid, camDep, center_xy, ...
     direction_xy, lineScale) ;
 
 % draw chamber
-% flight_chamber = draw3DflightChamber(ax, parent, chamberSideLength, ...
-%     frameCrossSection, lineScale) ; 
+flight_chamber = draw3DflightChamber(ax, parent, chamberSideLength, ...
+    frameCrossSection, lineScale) ; 
 
 % put some flies in the chamber 
 flyGrpList = gobjects(N_flies) ; 
 for ind = 1:N_flies
     [flyGrp, ~, rightWingGrp, leftWingGrp, dL, ~, ~] = draw3Dfly(ax, ...
-        flyScale*6, resolution, pinType, thetab0, flyGridFlag);
+        flyScale, resolution, pinType, thetab0, flyGridFlag);
     setFlyDOF(flyGrp, rightWingGrp, leftWingGrp, bodyPos(ind,:), ...
         bodyYPR(ind,:), rightYPR(ind,:) , leftYPR(ind,:), thetab0, dL )
     
@@ -151,6 +151,7 @@ if saveFlag
         fullfile(savePath, 'setup_schematic_im2.png'));
     %print(gcf, fullfile(savePath, 'setup_schematic.png'),'-dpng','-r600')
     %imwrite(gcf,fullfile(savePath, 'setup_schematic_im.png'))
+    saveas(gcf,fullfile(savePath,'freeflight_schematic'),'epsc')
 end
 
 % =========================================================================

@@ -4,11 +4,11 @@
 % -------------------------------------------------------------------------
 %% params
 saveFlag = false;
-schematicType = 'flyOnly' ; % 'body' | 'wing' | 'wingFrame' | 'flyOnly'
+schematicType = 'body' ; % 'body' | 'wing' | 'wingFrame' | 'flyOnly'
 labelFlag = true ; 
-pinType = 3 ; % 1 = roll, 2 = pitch, 3 = tethered fly
+pinType = 0 ; % 1 = roll, 2 = pitch, 3 = tethered fly
 
-savePath = pwd ; % TO BE ALTERED
+savePath = 'C:\Users\Abby\Box Sync\figs' ; % TO BE ALTERED
     
 % ----------------------
 % overall scales
@@ -604,11 +604,12 @@ if saveFlag
     set(h_main,'InvertHardcopy','off');
     print(h_main,['-r',num2str(screen_DPI*K)], '-dpng', ...
         fullfile(savePath, ['angle_schematic_' schematicType '_2.png']));
-    export_fig(fullfile(savePath, ['angle_schematic_' ...
-        schematicType '_3.png']), '-dpng','-r500', h_main);
+    % export_fig(fullfile(savePath, ['angle_schematic_' ...
+    %     schematicType '_3.png']), '-dpng','-r500', h_main);
     
-    myaa ;
+    % myaa ;
     F = getframe ;
-    imwrite(F.cdata, fullfile(savePath, ...
-        ['angle_schematic_' schematicType '.png']))
+    % imwrite(F.cdata, fullfile(savePath, ...
+    %     ['angle_schematic_' schematicType '.png']))
+    saveas(gcf,fullfile(savePath,'bodySchematics'),'epsc')
 end

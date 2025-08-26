@@ -20,7 +20,7 @@ clustFlag = true ; % shich version of analysis script to run
 largePertFlag = false  ; % is it a large perturbation?
 removeLegsFlag = true ; % try to remove legs in binary threshold?
 alignBBoxFlag = false ; % try to align images to avoid clipping?
-
+f
 % get experiment number from folder name--too lazy to re-enter each time
 pathStruct = generatePathStruct(pathToWatch) ;
 pathSplit = strsplit(pathToWatch,'\') ;

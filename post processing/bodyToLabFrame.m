@@ -5,7 +5,7 @@
 % the body frame is defines as the long body axis pointing along x axis 
 % with zero roll, pitched up by 45 degrees
 % -------------------------------------------------------------------------
-function data_out = bodyToLabFrame(data_in)
+function data_out = bodyToLabFrame(data_in,rotateRes)
 % ----------------------------------
 %% params
 % names of variables that require full transformation vs just rotation
@@ -37,7 +37,7 @@ translationVecs = data_in.bodyCM_orig ;
 %% perform body->lab frame transformations
 for i = 1:N_frames
     % get rotation matrix and translation vectors for current frame
-    rotM = squeeze(bodyFrameRotMats(:,:,i))' ; % not the transpose/inverse
+    rotM = squeeze(bodyFrameRotMats(:,:,i))' ; % use the transpose
     T = translationVecs(i,:) ; 
    
     % first do the easy ones--just rotation
@@ -53,10 +53,13 @@ for i = 1:N_frames
     end
     
     % finally, do the voxels, which aren't just one vector per frame
-    row1 = frameStartInd(i) ; 
-    row2 = frameEndInd(i) ; 
-    data_out.res(row1:row2,2:4) = ...
-        int16((rotM*double(data_out.res(row1:row2,2:4))')' + T) ; % fucking double vs int16
+    if rotateRes
+        row1 = frameStartInd(i) ; 
+        row2 = frameEndInd(i) ; 
+        data_out.res(row1:row2,2:4) = ...
+            int16((rotM*(double(data_out.res(row1:row2,2:4)))')' + T);
+            % int16((rotM*double(data_out.res(row1:row2,2:4))')' + int16(T)) ; % fucking double vs int16
+    end
     
 end
 

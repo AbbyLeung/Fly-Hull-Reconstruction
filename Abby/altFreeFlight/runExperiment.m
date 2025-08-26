@@ -1,31 +1,15 @@
-% Script to run analysis on renamed files. Need to modify the cine2sparse
-% code to make everything work.
-
 %% Setup up paths for analysis folder
-exprFolder = 'Y:\old setup data backup\Gravity Sensing\Fly 01\Intact_Light' ; 
-ExprNum = 1;
+pathToWatch = 'C:\Users\Abby\Cornell\test_cines\04_05052025';
+pathStruct = generatePathStruct(pathToWatch);
+calibrationPath = pathStruct.calibration;
 camNamesList = {'xy','xz','yz'};
-calibrationPath = fullfile(exprFolder,'calibration');
-% bgRefPath = fullfile(exprFolder,'bg_ref');
+ExprNum = pathStruct.ExprNum;
 
-% get folder names for each fly and then loop through each one
-exprDir = dir(fullfile(exprFolder,'fly*'));
-
-for flyTrialsInd = 1:length(exprDir)
-    currFlyFolder = fullfile(exprFolder,exprDir(flyTrialsInd).name);
-
-    %% background and mp4 paths
-    bgInfoPath = fullfile(currFlyFolder,'bg_info');
-    if ~isfolder(bgInfoPath)
-        mkdir(bgInfoPath)
-    end
-    
-    mp4Path = fullfile(currFlyFolder,'mp4');
-    if ~isfolder(mp4Path)
-        mkdir(mp4Path)
-    end
+while true
+    % pause(600)
+    disp('Checking directory for new videos...')
     %% rename matching cines
-    cineDir = dir(fullfile(currFlyFolder,'*.cine'));
+    cineDir = dir(fullfile(pathToWatch,'*.cine'));
     
     fnExp1 = ['(?<camName>[xyz]{2})_Y(?<year>\d{4})',...
         '(?<month>\d{2})(?<day>\d{2})H(?<hour>\d{2})(?<minute>\d{2})', ...
@@ -38,6 +22,7 @@ for flyTrialsInd = 1:length(exprDir)
     fnExpMovNum = '(?<camName>[xyz]{2})_(?<movieNum>\d{3}).cine';
     fnExp = [fnExp1,'|',fnExp2]; 
     
+    % get structure containing cine files
     out_names = regexp({cineDir.name},fnExp,'names');
     renamingInd = ~cellfun(@isempty,out_names);
     original_filenames = {cineDir(renamingInd).name};
@@ -66,11 +51,13 @@ for flyTrialsInd = 1:length(exprDir)
         renameFlag = true;
     else
         renameFlag = false;
+        disp('No new videos found')
+        break
     end
     
     %% rename cines if needed
     if renameFlag
-    
+        disp('New video found')
         datetimes = cell(1,length(camNamesList));
         cineDirs = cell(1,length(camNamesList));
         
@@ -103,9 +90,9 @@ for flyTrialsInd = 1:length(exprDir)
         
                 origFilenames = {cineDirs{1}(ind1).filename,cineDirs{2}(ind2).filename,...
                         cineDirs{3}(ind3).filename};
-                origPaths = fullfile(currFlyFolder,origFilenames);
+                origPaths = fullfile(pathToWatch,origFilenames);
                 renameFilenames = strcat(camNamesList,'_',movNumStr,'.cine');
-                cinePaths = fullfile(currFlyFolder,renameFilenames);
+                cinePaths = fullfile(pathToWatch,renameFilenames);
         
                 % rename files
                 movefile(origPaths{1},cinePaths{1}); movefile(origPaths{2},cinePaths{2});
@@ -115,11 +102,20 @@ for flyTrialsInd = 1:length(exprDir)
                 [~,camNames,~] = fileparts(origPaths);
         
                 xmlFilenames = strcat(camNamesList,'_',movNumStr,'.xml');
-                xmlPaths = fullfile(currFlyFolder,xmlFilenames);
+                xmlPaths = fullfile(pathToWatch,xmlFilenames);
         
-                movefile(fullfile(currFlyFolder,[camNames{1},'.xml']),xmlPaths{1});
-                movefile(fullfile(currFlyFolder,[camNames{2},'.xml']),xmlPaths{2});
-                movefile(fullfile(currFlyFolder,[camNames{3},'.xml']),xmlPaths{3});
+                movefile(fullfile(pathToWatch,[camNames{1},'.xml']),xmlPaths{1});
+                movefile(fullfile(pathToWatch,[camNames{2},'.xml']),xmlPaths{2});
+                movefile(fullfile(pathToWatch,[camNames{3},'.xml']),xmlPaths{3});
+
+                % run reconstruction
+                try
+                    data = flyAnalysisMain(movNum, ExprNum, pathStruct, ...
+                        true,true,true, false, false);
+                catch exception
+                    disp(exception)
+                    continue
+                end
         else
                 continue
             end
@@ -127,7 +123,7 @@ for flyTrialsInd = 1:length(exprDir)
     end
     
     % get movie number list after renaming
-    cineDir = dir(fullfile(currFlyFolder,'*.cine'));
+    cineDir = dir(fullfile(pathToWatch,'*.cine'));
     renamed_out = regexp({cineDir.name},fnExpMovNum,'names');
     renamedInds = ~(cellfun(@isempty,renamed_out));
     
@@ -139,79 +135,4 @@ for flyTrialsInd = 1:length(exprDir)
         disp('No movies to run reconstruction on')
         return
     end
-
-    %% run analysis on renamed cines
-    cc=0;
-    for currMovNum = unique(movNumsList)
-        % check if there is triplet
-        movNumStr = num2str(currMovNum,'%03.f');
-        tripletCheck = sum(movNumsList==currMovNum);
-        if tripletCheck ~= length(camNamesList)
-            disp(['No matching triplet for movie ',movNumStr])
-            continue
-        else
-            cc=cc+1;
-            if cc==1
-                %% get and save images of background to fly folder
-                LoadPhantomLibraries();
-                RegisterPhantom(true);
-            
-                % input movie number for analysis
-                ExprNumStr = num2str(ExprNum,'%03.f');
-                movNumStr = num2str(currMovNum,'%03.f');
-                cineSuffix = ['_',movNumStr,'.cine'];
-
-                imgCell = cell(1,3);
-                
-                camNames = {'yz','xz','xy'};
-                camFilenames = strcat(camNames,cineSuffix);
-                cineFilenames = fullfile(currFlyFolder,camFilenames);
-
-                for camInd = 1:3
-                    currCineData = myOpenCinFile(cineFilenames{camInd});
-                    currIm = myReadCinImage(currCineData,0);
-                    imgCell{camInd} = currIm;
-                    myCloseCinFile(currCineData);
-                end
-                bg_savepath = fullfile(bgInfoPath,'bgParams');
-                save(bg_savepath,'imgCell')
-
-                UnregisterPhantom(); %Use this function when you finished your work
-                UnloadPhantomLibraries();
-
-                % try
-                %     matchBackgrounds
-                % catch exception
-                %     disp(exception)
-                % end
-
-                matchBackgrounds
-
-            end
-            disp(['Found triplet for movie ',movNumStr,', running reconstruction'])
-            try
-                analyzeOneFlyMovie(currFlyFolder,ExprNum,currMovNum)
-                disp(['Done analyzing movie ',movNumStr])
-            catch exception
-                disp('Analysis failed:')
-                disp(exception)
-            end
-            disp('Generating mp4...')
-            cine2mp4(pathToWatch,ExprNum,currMovNum,mp4Path)
-        end
-    end
-        
-    
-
 end
-
-
-
-
-
-
-
-
-
-
-

@@ -41,8 +41,6 @@ end
 clear metaDataCell
 % get metadata and set video params
 metaData = getCinMetaData(cinePaths{1});
-% imWidth = metaData.width;
-% imHeight = metaData.height;
 framerate = double(metaData.frameRate);
 firstImNo = metaData.firstImage;
 lastImNo = metaData.lastImage;
