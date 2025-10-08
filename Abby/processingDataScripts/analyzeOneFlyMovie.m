@@ -5,8 +5,8 @@ function [] = analyzeOneFlyMovie(pathToWatch,ExprNum,movNum,flyBGParams)
 
 % pathStruct = generatePathStruct(pathToWatch);
 clustFlag = true ; % shich version of analysis script to run
-largePertFlag = false  ; % is it a large perturbation?
-removeLegsFlag = false ; % try to remove legs in binary threshold?
+largePertFlag = true  ; % is it a large perturbation?
+removeLegsFlag = false; % try to remove legs in binary threshold?
 alignBBoxFlag = false ; % try to align images to avoid clipping?
 stopWingsFlag = true;
 

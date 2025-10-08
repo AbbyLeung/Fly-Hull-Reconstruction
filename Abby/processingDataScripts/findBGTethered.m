@@ -18,6 +18,9 @@ cineCenter = [round(cineMetaData.width/2),round(cineMetaData.height/2)];
 movStrNum = sprintf('%03d',movNum);
 
 bgCellFile = fullfile(fileparts(exprPath),'bg','bgCell.mat');
+if ~isfile(bgCellFile)
+    bgCellFile = fullfile(exprPath,'bg','bgCell.mat');
+end
 load(bgCellFile);
 
 for camInd = 1:3

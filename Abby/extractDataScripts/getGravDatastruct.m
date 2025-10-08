@@ -1,5 +1,5 @@
 % script to load data into one data structure
-exprFolder = 'Z:\Abby\Gravity Sensing\Fly 01\Intact_Light';
+exprFolder = 'D:\Gravity Sensing\Fly 02\Intact_Light';
 flyLine = 'Intact Light Wildtype';
 % flyDir = dir(fullfile(exprFolder,'fly*'));
 % folderNames = {flyDir.name};
@@ -10,7 +10,7 @@ structInd = 1;
 for flyInd = 1%:length(folderNames)
     % currFlyStr = regexp(folderNames{flyInd},'\d*','Match');
     % currFlyNum = str2double(currFlyStr);
-    currFlyNum = 1;
+    currFlyNum = 2;
 
     % analysisFolder = fullfile(exprFolder,folderNames{flyInd},'Analysis');
     analysisFolder = fullfile(exprFolder,'Analysis');
@@ -20,7 +20,7 @@ for flyInd = 1%:length(folderNames)
         continue
     end
     
-    for trialInd = 1:30%length(trialsDir)
+    for trialInd = 1:length(trialsDir)
        trialFolderName = trialsDir(trialInd).name;
        currTrialStr = regexp(trialFolderName,'\d*','Match'); % get num from filename
        currTrialNum = str2double(currTrialStr{end});
@@ -39,6 +39,7 @@ for flyInd = 1%:length(folderNames)
                currData = load(fullfile(currFolder,dataFilename));
                currData = currData.data;
                datastruct(structInd).ManualCorr = true;
+               datastruct(structInd).ManualCorrRange = currData.manualCorrRangeMS;
            else % assume the data is cleaned already (part of reconstruction)
                 dataFilename = [trialFolderName,'_cleaned.mat'];
                 currData = load(fullfile(currFolder,dataFilename));
@@ -85,5 +86,5 @@ for flyInd = 1%:length(folderNames)
     end  
 end
 
-% S01_NH = datastruct;
-% save('S01_NH.mat','S01_NH')
+ctrlGrav2 = datastruct;
+save('ctrlGrav2.mat','ctrlGrav2')

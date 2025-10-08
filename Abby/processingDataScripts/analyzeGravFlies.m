@@ -2,7 +2,7 @@
 % code to make everything work.
 
 %% Setup up paths for analysis folder
-exprFolder = 'Z:\Abby\Gravity Sensing\Fly 01\Intact_Light' ; 
+exprFolder = 'D:\Gravity Sensing\Fly 02\Intact_Dark' ; 
 ExprNum = 1;
 camNamesList = {'xy','xz','yz'};
 calibrationPath = fullfile(exprFolder,'calibration');
@@ -139,7 +139,8 @@ else
 end
 
 %% run analysis on renamed cines
-for currMovNum = unique(movNumsList)
+movList = unique(movNumsList);
+for currMovNum = movList
     % check if there is triplet
     movNumStr = num2str(currMovNum,'%03.f');
     tripletCheck = sum(movNumsList==currMovNum);
@@ -178,7 +179,6 @@ for currMovNum = unique(movNumsList)
 
         disp(['Found triplet for movie ',movNumStr,', running reconstruction'])
         try
-            % matchBackgrounds
             analyzeOneFlyMovie(currFlyFolder,ExprNum,currMovNum,flyWindowParams)
             disp(['Done analyzing movie ',movNumStr])
         catch exception
