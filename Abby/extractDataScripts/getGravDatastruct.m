@@ -1,6 +1,6 @@
 % script to load data into one data structure
 exprFolder = 'D:\Gravity Sensing\Fly 02\Intact_Light';
-flyLine = 'Intact Light Wildtype';
+flyLine = 'Intact In Light Wildtype';
 % flyDir = dir(fullfile(exprFolder,'fly*'));
 % folderNames = {flyDir.name};
 datastruct = struct();
@@ -39,7 +39,7 @@ for flyInd = 1%:length(folderNames)
                currData = load(fullfile(currFolder,dataFilename));
                currData = currData.data;
                datastruct(structInd).ManualCorr = true;
-               datastruct(structInd).ManualCorrRange = currData.manualCorrRangeMS;
+               datastruct(structInd).ManualCorrRange = [0,30];
            else % assume the data is cleaned already (part of reconstruction)
                 dataFilename = [trialFolderName,'_cleaned.mat'];
                 currData = load(fullfile(currFolder,dataFilename));
@@ -85,6 +85,6 @@ for flyInd = 1%:length(folderNames)
        structInd = structInd + 1;
     end  
 end
-
-ctrlGrav2 = datastruct;
-save('ctrlGrav2.mat','ctrlGrav2')
+% 
+% ctrlGrav2_dark = datastruct;
+% save('ctrlGrav2_dark.mat','ctrlGrav2_dark')
