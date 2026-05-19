@@ -2,7 +2,7 @@
 % code to make everything work.
 
 %% Setup up paths for analysis folder
-exprFolder = 'D:\Gravity Sensing\Fly 02\Intact_Dark' ; 
+exprFolder = 'D:\Gravity Sensing\Fly 03\Antenna R Haltere G Dark' ; 
 ExprNum = 1;
 camNamesList = {'xy','xz','yz'};
 calibrationPath = fullfile(exprFolder,'calibration');

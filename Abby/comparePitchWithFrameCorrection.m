@@ -13,9 +13,9 @@
 clear ; close all ;
 
 %% --- USER INPUTS ---------------------------------------------------------
-dataFile        = 'Z:\Abby\_Opto_Mechanical_Data\22_12022026\Analysis\Pitch Up\Expr_22_mov_044\Expr_22_mov_044_results.mat' ; % full path to a *_test.mat or *_results.mat
-calibrationPath = 'Z:\Abby\_Opto_Mechanical_Data\22_12022026\calibration' ; % full path to calibration folder
-order           = [2, 1, 3] ; % default: YZ=col2, XZ=col1, XY=col3 in dlt
+dataFile        = 'D:\Gravity Sensing\Fly 02\Intact_Light\Analysis\Expr_001_mov_001\Expr001mov001_Data_manually_corrected.mat' ; % full path to a *_test.mat or *_results.mat
+calibrationPath = 'D:\Gravity Sensing\Fly 02\Intact_Light\calibration' ; % full path to calibration folder
+order           = [1, 2, 3] ; % default: YZ=col2, XZ=col1, XY=col3 in dlt
 %--------------------------------------------------------------------------
 
 %% --- load data -----------------------------------------------------------

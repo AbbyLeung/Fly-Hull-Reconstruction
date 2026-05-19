@@ -1,7 +1,7 @@
 % script to load data into one data structure
-exprFolder = 'D:\Gravity Sensing\Fly 02\Intact_Light';
+exprFolder = 'D:\Gravity Sensing\Fly 01\Intact_Light';
 flyLine = 'Intact In Light Wildtype';
-% flyDir = dir(fullfile(exprFolder,'fly*'));
+flyDir = dir(fullfile(exprFolder,'fly*'));
 % folderNames = {flyDir.name};
 datastruct = struct();
 structInd = 1;
@@ -10,7 +10,7 @@ structInd = 1;
 for flyInd = 1%:length(folderNames)
     % currFlyStr = regexp(folderNames{flyInd},'\d*','Match');
     % currFlyNum = str2double(currFlyStr);
-    currFlyNum = 2;
+    currFlyNum = 1;
 
     % analysisFolder = fullfile(exprFolder,folderNames{flyInd},'Analysis');
     analysisFolder = fullfile(exprFolder,'Analysis');
@@ -24,33 +24,45 @@ for flyInd = 1%:length(folderNames)
        trialFolderName = trialsDir(trialInd).name;
        currTrialStr = regexp(trialFolderName,'\d*','Match'); % get num from filename
        currTrialNum = str2double(currTrialStr{end});
-       % add info to data struct
-       datastruct(structInd).flyLine = flyLine;
-       datastruct(structInd).flyNumber = currFlyNum;
-       datastruct(structInd).trialNum = currTrialNum;
-        
        % load analysis file
        currFolder = fullfile(trialsDir(trialInd).folder,trialFolderName);
-       mcDir = dir(fullfile(currFolder,'*manually_corrected.mat'));
 
-       try 
-           if ~isempty(mcDir)
-               dataFilename = mcDir.name;
-               currData = load(fullfile(currFolder,dataFilename));
-               currData = currData.data;
-               datastruct(structInd).ManualCorr = true;
-               datastruct(structInd).ManualCorrRange = [0,30];
-           else % assume the data is cleaned already (part of reconstruction)
-                dataFilename = [trialFolderName,'_cleaned.mat'];
-                currData = load(fullfile(currFolder,dataFilename));
-                currData = currData.data_cleaned;
-                datastruct(structInd).ManualCorr = false;
-                
-           end
-       catch errorMsg
-            disp(errorMsg)
-            continue
+       mcDir      = dir(fullfile(currFolder,'*manually_corrected.mat')) ;
+       cleanedDir = dir(fullfile(currFolder,'*cleaned.mat')) ;
+       testDir    = dir(fullfile(currFolder,'*test.mat')) ;
+
+       if ~isempty(mcDir)
+           dataFilename = mcDir.name ;
+           varName      = 'data' ;
+           manualCorr   = true ;
+       elseif ~isempty(cleanedDir)
+           dataFilename = cleanedDir.name ;
+           varName      = 'data_cleaned' ;
+           manualCorr   = false ;
+       elseif ~isempty(testDir)
+           dataFilename = testDir.name ;
+           varName      = 'data' ;
+           manualCorr   = false ;
+       else
+           fprintf('No data file found in %s, skipping\n', trialFolderName) ;
+           continue
        end
+
+       try
+           raw      = load(fullfile(currFolder, dataFilename)) ;
+           currData = raw.(varName) ;
+       catch errorMsg
+           disp(errorMsg)
+           continue
+       end
+
+       % add info to data struct (only after confirming data loaded)
+       datastruct(structInd).flyLine         = flyLine ;
+       datastruct(structInd).flyNumber       = currFlyNum ;
+       datastruct(structInd).trialNum        = currTrialNum ;
+       datastruct(structInd).dataPath        = currFolder ;
+       datastruct(structInd).ManualCorr      = manualCorr ;
+       datastruct(structInd).ManualCorrRange = [0, 30] ;
 
        % currData = currData.data_cleaned;
        bodyAngles = currData.anglesLabFrameSmooth(:,[1,2,9]); %yaw, pitch, roll
@@ -86,5 +98,5 @@ for flyInd = 1%:length(folderNames)
     end  
 end
 % 
-% ctrlGrav2_dark = datastruct;
-% save('ctrlGrav2_dark.mat','ctrlGrav2_dark')
+ctrlGrav1_light = datastruct;
+save('ctrlGrav1_light.mat','ctrlGrav1_light')
