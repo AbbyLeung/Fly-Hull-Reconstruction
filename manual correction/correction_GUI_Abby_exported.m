@@ -1,108 +1,117 @@
-classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
+classdef correction_GUI_Abby_exported < matlab.apps.AppBase
 
     % Properties that correspond to app components
     properties (Access = public)
-        figure1                 matlab.ui.Figure
-        uitoolbar1              matlab.ui.container.Toolbar
-        ui_zoom_in              matlab.ui.container.toolbar.ToggleTool
-        ui_zoom_out             matlab.ui.container.toolbar.ToggleTool
-        ui_rotate               matlab.ui.container.toolbar.ToggleTool
-        ui_pan                  matlab.ui.container.toolbar.ToggleTool
-        ui_save                 matlab.ui.container.toolbar.PushTool
-        savedataButton          matlab.ui.control.Button
-        roll_view               matlab.ui.control.Button
-        clear_data              matlab.ui.control.Button
-        ffwd                    matlab.ui.control.Button
-        fwd                     matlab.ui.control.Button
-        back                    matlab.ui.control.Button
-        bback                   matlab.ui.control.Button
-        load_data               matlab.ui.control.Button
-        open_data_dir           matlab.ui.control.Button
-        data_dir                matlab.ui.control.ListBox
-        correction_panel        matlab.ui.container.Panel
-        l_eta_view              matlab.ui.control.Button
-        r_eta_view              matlab.ui.control.Button
-        phi_view                matlab.ui.control.Button
-        l_theta_view            matlab.ui.control.Button
-        phi_view_2              matlab.ui.control.Button
-        r_theta_view            matlab.ui.control.Button
-        EZViewButton            matlab.ui.control.Button
-        l_eta_inc               matlab.ui.control.Button
-        l_theta_inc             matlab.ui.control.Button
-        l_phi_inc               matlab.ui.control.Button
-        l_z_inc                 matlab.ui.control.Button
-        l_y_inc                 matlab.ui.control.Button
-        l_x_inc                 matlab.ui.control.Button
-        r_eta_inc               matlab.ui.control.Button
-        r_theta_inc             matlab.ui.control.Button
-        r_phi_inc               matlab.ui.control.Button
-        r_z_inc                 matlab.ui.control.Button
-        r_y_inc                 matlab.ui.control.Button
-        rx_inc                  matlab.ui.control.Button
-        body_roll_inc           matlab.ui.control.Button
-        body_pitch_inc          matlab.ui.control.Button
-        body_phi_inc            matlab.ui.control.Button
-        body_z_inc              matlab.ui.control.Button
-        l_eta_dec               matlab.ui.control.Button
-        l_theta_dec             matlab.ui.control.Button
-        l_phi_dec               matlab.ui.control.Button
-        l_z_dec                 matlab.ui.control.Button
-        l_y_dec                 matlab.ui.control.Button
-        l_x_dec                 matlab.ui.control.Button
-        r_eta_dec               matlab.ui.control.Button
-        r_theta_dec             matlab.ui.control.Button
-        r_phi_dec               matlab.ui.control.Button
-        r_z_dec                 matlab.ui.control.Button
-        r_y_dec                 matlab.ui.control.Button
-        rx_dec                  matlab.ui.control.Button
-        body_roll_dec           matlab.ui.control.Button
-        body_pitch_dec          matlab.ui.control.Button
-        body_phi_dec            matlab.ui.control.Button
-        body_z_dec              matlab.ui.control.Button
-        body_y_inc              matlab.ui.control.Button
-        body_y_dec              matlab.ui.control.Button
-        body_x_inc              matlab.ui.control.Button
-        body_x_dec              matlab.ui.control.Button
-        save_roll               matlab.ui.control.StateButton
-        save_manualCorrRangeMS  matlab.ui.control.Button
-        cluster_wings           matlab.ui.control.Button
-        l_z_label               matlab.ui.control.Label
-        l_y_label               matlab.ui.control.Label
-        l_x_label               matlab.ui.control.Label
-        r_z_label               matlab.ui.control.Label
-        r_y_label               matlab.ui.control.Label
-        r_x_label               matlab.ui.control.Label
-        roll_label              matlab.ui.control.Label
-        pitch_label             matlab.ui.control.Label
-        yaw_label               matlab.ui.control.Label
-        z_cm_label              matlab.ui.control.Label
-        y_cm_label              matlab.ui.control.Label
-        swap_wings              matlab.ui.control.Button
-        ignoreFrame             matlab.ui.control.StateButton
-        body_roll               matlab.ui.control.Slider
-        body_pitch              matlab.ui.control.Slider
-        body_phi                matlab.ui.control.Slider
-        left_wing_label         matlab.ui.control.Label
-        right_wing_label        matlab.ui.control.Label
-        l_eta                   matlab.ui.control.Slider
-        l_theta                 matlab.ui.control.Slider
-        l_phi                   matlab.ui.control.Slider
-        l_z                     matlab.ui.control.Slider
-        l_y                     matlab.ui.control.Slider
-        l_x                     matlab.ui.control.Slider
-        r_eta                   matlab.ui.control.Slider
-        r_theta                 matlab.ui.control.Slider
-        r_phi                   matlab.ui.control.Slider
-        r_z                     matlab.ui.control.Slider
-        r_y                     matlab.ui.control.Slider
-        rx                      matlab.ui.control.Slider
-        body_z                  matlab.ui.control.Slider
-        body_y                  matlab.ui.control.Slider
-        x_cm_label              matlab.ui.control.Label
-        body_label              matlab.ui.control.Label
-        body_x                  matlab.ui.control.Slider
-        frame_info              matlab.ui.control.Label
-        main_axes               matlab.ui.control.UIAxes
+        figure1                  matlab.ui.Figure
+        uitoolbar1               matlab.ui.container.Toolbar
+        ui_zoom_in               matlab.ui.container.toolbar.ToggleTool
+        ui_zoom_out              matlab.ui.container.toolbar.ToggleTool
+        ui_rotate                matlab.ui.container.toolbar.ToggleTool
+        ui_pan                   matlab.ui.container.toolbar.ToggleTool
+        ui_save                  matlab.ui.container.toolbar.PushTool
+        recalcBadFramesButton    matlab.ui.control.Button
+        bad_frame_label          matlab.ui.control.Label
+        NextBadFrameButton       matlab.ui.control.Button
+        savedataButton           matlab.ui.control.Button
+        roll_view                matlab.ui.control.Button
+        clear_data               matlab.ui.control.Button
+        ffwd                     matlab.ui.control.Button
+        fwd                      matlab.ui.control.Button
+        back                     matlab.ui.control.Button
+        bback                    matlab.ui.control.Button
+        load_data                matlab.ui.control.Button
+        open_data_dir            matlab.ui.control.Button
+        data_dir                 matlab.ui.control.ListBox
+        correction_panel         matlab.ui.container.Panel
+        copyleftwingvecButton    matlab.ui.control.Button
+        copyrightwingvecButton   matlab.ui.control.Button
+        copybodyvecButton        matlab.ui.control.Button
+        copyprevleftwingButton   matlab.ui.control.Button
+        copyprevrightwingButton  matlab.ui.control.Button
+        copyprevbodyButton       matlab.ui.control.Button
+        l_eta_view               matlab.ui.control.Button
+        r_eta_view               matlab.ui.control.Button
+        phi_view                 matlab.ui.control.Button
+        l_theta_view             matlab.ui.control.Button
+        phi_view_2               matlab.ui.control.Button
+        r_theta_view             matlab.ui.control.Button
+        EZViewButton             matlab.ui.control.Button
+        l_eta_inc                matlab.ui.control.Button
+        l_theta_inc              matlab.ui.control.Button
+        l_phi_inc                matlab.ui.control.Button
+        l_z_inc                  matlab.ui.control.Button
+        l_y_inc                  matlab.ui.control.Button
+        l_x_inc                  matlab.ui.control.Button
+        r_eta_inc                matlab.ui.control.Button
+        r_theta_inc              matlab.ui.control.Button
+        r_phi_inc                matlab.ui.control.Button
+        r_z_inc                  matlab.ui.control.Button
+        r_y_inc                  matlab.ui.control.Button
+        rx_inc                   matlab.ui.control.Button
+        body_roll_inc            matlab.ui.control.Button
+        body_pitch_inc           matlab.ui.control.Button
+        body_phi_inc             matlab.ui.control.Button
+        body_z_inc               matlab.ui.control.Button
+        l_eta_dec                matlab.ui.control.Button
+        l_theta_dec              matlab.ui.control.Button
+        l_phi_dec                matlab.ui.control.Button
+        l_z_dec                  matlab.ui.control.Button
+        l_y_dec                  matlab.ui.control.Button
+        l_x_dec                  matlab.ui.control.Button
+        r_eta_dec                matlab.ui.control.Button
+        r_theta_dec              matlab.ui.control.Button
+        r_phi_dec                matlab.ui.control.Button
+        r_z_dec                  matlab.ui.control.Button
+        r_y_dec                  matlab.ui.control.Button
+        rx_dec                   matlab.ui.control.Button
+        body_roll_dec            matlab.ui.control.Button
+        body_pitch_dec           matlab.ui.control.Button
+        body_phi_dec             matlab.ui.control.Button
+        body_z_dec               matlab.ui.control.Button
+        body_y_inc               matlab.ui.control.Button
+        body_y_dec               matlab.ui.control.Button
+        body_x_inc               matlab.ui.control.Button
+        body_x_dec               matlab.ui.control.Button
+        save_roll                matlab.ui.control.StateButton
+        save_manualCorrRangeMS   matlab.ui.control.Button
+        cluster_wings            matlab.ui.control.Button
+        l_z_label                matlab.ui.control.Label
+        l_y_label                matlab.ui.control.Label
+        l_x_label                matlab.ui.control.Label
+        r_z_label                matlab.ui.control.Label
+        r_y_label                matlab.ui.control.Label
+        r_x_label                matlab.ui.control.Label
+        roll_label               matlab.ui.control.Label
+        pitch_label              matlab.ui.control.Label
+        yaw_label                matlab.ui.control.Label
+        z_cm_label               matlab.ui.control.Label
+        y_cm_label               matlab.ui.control.Label
+        swap_wings               matlab.ui.control.Button
+        ignoreFrame              matlab.ui.control.StateButton
+        body_roll                matlab.ui.control.Slider
+        body_pitch               matlab.ui.control.Slider
+        body_phi                 matlab.ui.control.Slider
+        left_wing_label          matlab.ui.control.Label
+        right_wing_label         matlab.ui.control.Label
+        l_eta                    matlab.ui.control.Slider
+        l_theta                  matlab.ui.control.Slider
+        l_phi                    matlab.ui.control.Slider
+        l_z                      matlab.ui.control.Slider
+        l_y                      matlab.ui.control.Slider
+        l_x                      matlab.ui.control.Slider
+        r_eta                    matlab.ui.control.Slider
+        r_theta                  matlab.ui.control.Slider
+        r_phi                    matlab.ui.control.Slider
+        r_z                      matlab.ui.control.Slider
+        r_y                      matlab.ui.control.Slider
+        rx                       matlab.ui.control.Slider
+        body_z                   matlab.ui.control.Slider
+        body_y                   matlab.ui.control.Slider
+        x_cm_label               matlab.ui.control.Label
+        body_label               matlab.ui.control.Label
+        body_x                   matlab.ui.control.Slider
+        frame_info               matlab.ui.control.Label
+        main_axes                matlab.ui.control.UIAxes
     end
 
     
@@ -110,15 +119,48 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
         EZViewApp % Description
         frameCurr
         tmsCurr
-        copyBodyButton          matlab.ui.control.Button
-        copyRightWingButton     matlab.ui.control.Button
-        copyLeftWingButton      matlab.ui.control.Button
-        nextBadFrameButton          matlab.ui.control.Button
-        recalcBadFramesButton       matlab.ui.control.Button
-        bad_frame_label             matlab.ui.control.Label
     end
     
     methods (Access = private)
+
+        function badFrames = detectBadFrames(app, handles)
+            N = handles.Nimages ;
+            nSigma = 5 ;
+            badFrames = false(N, 3) ;
+        
+            angDiff = @(V) [0; acosd(max(-1, min(1, ...
+                sum(V(1:end-1,:) .* V(2:end,:), 2)))) ] ;
+            posDiff = @(C) [0; sqrt(sum(diff(C).^2, 2))] ;
+        
+            % Body
+            bodyMetrics = [posDiff(handles.bodyCM), ...
+                           angDiff(handles.rollHats)] ;
+            badFrames(:,1) = any(statOutlier(app, bodyMetrics, nSigma), 2) ;
+        
+            % Right wing
+            rightMetrics = [posDiff(handles.rightWingCM), ...
+                            angDiff(handles.span1Hats), ...
+                            angDiff(handles.chord1Hats)] ;
+            badFrames(:,2) = any(statOutlier(app, rightMetrics, nSigma), 2) ;
+        
+            % Left wing
+            leftMetrics  = [posDiff(handles.leftWingCM), ...
+                            angDiff(handles.span2Hats), ...
+                            angDiff(handles.chord2Hats)] ;
+            badFrames(:,3) = any(statOutlier(app, leftMetrics, nSigma), 2) ;
+        end
+        
+        function flags = statOutlier(app, X, nSigma)
+            flags = false(size(X)) ;
+            for col = 1:size(X,2)
+                x = X(:,col) ;
+                x(1) = NaN ;
+                med = median(x, 'omitnan') ;
+                mad_val = median(abs(x - med), 'omitnan') ;
+                threshold = med + nSigma * 1.4826 * mad_val ;
+                flags(:,col) = x > threshold ;
+            end
+        end
         function clearDisplay(app, hObject)
             % -------------------------------------
             % remove current fly plot from handles
@@ -168,8 +210,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
                 app.r_theta_dec, app.r_eta_dec, app.l_x_dec, app.l_y_dec, app.l_z_dec, app.l_phi_dec, app.l_theta_dec, app.l_eta_dec, app.body_z_inc,...
                 app.body_phi_inc, app.body_pitch_inc, app.body_roll_inc, app.rx_inc, app.r_y_inc, app.r_z_inc, app.r_phi_inc, app.r_theta_inc, app.r_eta_inc,...
                 app.l_x_inc, app.l_y_inc, app.l_z_inc, app.l_phi_inc, app.l_theta_inc, app.l_eta_inc, app.EZViewButton, app.phi_view, app.r_theta_view, ...
-                app.l_theta_view, app.r_eta_view, app.l_eta_view, app.roll_view, app.copyBodyButton, app.copyRightWingButton, app.copyLeftWingButton, ...
-                app.nextBadFrameButton, app.recalcBadFramesButton];
+                app.l_theta_view, app.r_eta_view, app.l_eta_view, app.roll_view];
             set(button_handles,'Enable','on')
             %toggle_button_handles = findall(0,'Style','togglebutton') ;
             %set(toggle_button_handles,'Enable','on')
@@ -362,36 +403,8 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
                 end
                 % enable sliders so that angles can be adjusted
                 enableButtons(app, hObject)
-
-                % detect bad frames automatically on load (MAD-based)
                 handles.badFrames = detectBadFrames(app, handles) ;
-
-                % override / supplement with flags saved by hullInspectionGUI
-                % looks for *_badFrames.mat in the same folder as the data file
-                [dataDir, dataBase, ~] = fileparts(handles.datapath_curr) ;
-                % strip any '_manually_corrected' suffix to find the base name
-                baseStripped = regexprep(dataBase, '_manually_corrected', '') ;
-                % also try stripping '_Data' to match Expr_XX_mov_YYY_badFrames.mat
-                baseStripped2 = regexprep(baseStripped, '_Data$', '') ;
-                badFramesCandidates = { ...
-                    fullfile(dataDir, [dataBase     '_badFrames.mat']), ...
-                    fullfile(dataDir, [baseStripped  '_badFrames.mat']), ...
-                    fullfile(dataDir, [baseStripped2 '_badFrames.mat']) } ;
-                for bfi = 1:numel(badFramesCandidates)
-                    if exist(badFramesCandidates{bfi}, 'file')
-                        try
-                            bfData = load(badFramesCandidates{bfi}, 'badFramesList') ;
-                            idx = bfData.badFramesList ;
-                            idx = idx(idx >= 1 & idx <= handles.Nimages) ;
-                            handles.badFrames(idx, :) = true ;
-                            disp(['Loaded bad frames from: ' badFramesCandidates{bfi}]) ;
-                        catch
-                            disp(['Could not load bad frames file: ' badFramesCandidates{bfi}]) ;
-                        end
-                        break ;
-                    end
-                end
-
+            
                 % store data to gui and update display
                 guidata(hObject, handles);
                 updateDisplay(app, hObject);
@@ -510,7 +523,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
                     temp1([handles.wingSwapFlag],:) ;
             end
             
-            if isfield(handles, 'manualCorrRangeMS')
+            if isfield(handles, 'manualCorrRangeMS') && ~isempty(handles.manualCorrRangeMS)
                 data.manualCorrRangeMS = handles.manualCorrRangeMS ;
             end
             
@@ -535,7 +548,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             
                 % calculate angles
                 angleSaveFlag = true ;
-                anglePlotFlag = true ;
+                anglePlotFlag = false ;
                 calcAnglesMain(handles.output_path, handles.largePertFlag, ...
                     angleSaveFlag, anglePlotFlag) ;
             
@@ -770,14 +783,13 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             set(handles.frame_info,'String',...
                 ['t(ms)=' num2str(app.tmsCurr) '  Frame # ' ...
                 num2str(app.frameCurr) ' of ' num2str(handles.Nimages)])
-
-            % update bad frame label
+            
             if isfield(handles, 'badFrames')
                 badParts = {} ;
                 partNames = {'Body', 'Right Wing', 'Left Wing'} ;
                 for col = 1:3
                     if handles.badFrames(app.frameCurr, col)
-                        badParts{end+1} = partNames{col} ; %#ok<AGROW>
+                        badParts{end+1} = partNames{col} ;
                     end
                 end
                 if ~isempty(badParts)
@@ -788,61 +800,9 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
                     set(app.bad_frame_label, 'Text', '') ;
                 end
             end
-
             guidata(hObject, handles);
         end
         
-        function badFrames = detectBadFrames(app, handles)
-            % -------------------------------------------------------
-            % Detect bad frames using MAD-based statistical outlier
-            % detection on frame-to-frame jumps in CM position and
-            % vector direction.
-            % Returns Nimages x 3 logical matrix:
-            %   col 1 = body, col 2 = right wing, col 3 = left wing
-
-            N = handles.Nimages ;
-            nSigma = 5 ; % number of MADs for threshold
-            badFrames = false(N, 3) ;
-
-            % --- helper: angular diff between consecutive unit vectors ---
-            angDiff = @(V) [0; acosd(max(-1, min(1, ...
-                sum(V(1:end-1,:) .* V(2:end,:), 2)))) ] ;
-            % --- helper: Euclidean dist between consecutive CM positions --
-            posDiff = @(C) [0; sqrt(sum(diff(C).^2, 2))] ;
-
-            % --- Body ---
-            bodyMetrics = [posDiff(handles.bodyCM), ...
-                           angDiff(handles.rollHats)] ;
-            badFrames(:,1) = any(statOutlier(app, bodyMetrics, nSigma), 2) ;
-
-            % --- Right wing ---
-            rightMetrics = [posDiff(handles.rightWingCM), ...
-                            angDiff(handles.span1Hats), ...
-                            angDiff(handles.chord1Hats)] ;
-            badFrames(:,2) = any(statOutlier(app, rightMetrics, nSigma), 2) ;
-
-            % --- Left wing ---
-            leftMetrics  = [posDiff(handles.leftWingCM), ...
-                            angDiff(handles.span2Hats), ...
-                            angDiff(handles.chord2Hats)] ;
-            badFrames(:,3) = any(statOutlier(app, leftMetrics, nSigma), 2) ;
-        end
-
-        function flags = statOutlier(app, X, nSigma)
-            % MAD-based outlier detection, applied column-wise.
-            % Flags values above median + nSigma * 1.4826 * MAD.
-            % Frame 1 is excluded (its diff is always 0 by definition).
-            flags = false(size(X)) ;
-            for col = 1:size(X,2)
-                x = X(:,col) ;
-                x(1) = NaN ; % exclude frame 1
-                med = median(x, 'omitnan') ;
-                mad_val = median(abs(x - med), 'omitnan') ;
-                threshold = med + nSigma * 1.4826 * mad_val ;
-                flags(:,col) = x > threshold ;
-            end
-        end
-
         function resetInteractions(app, event)
             % This function resets the states of the toggle tools that
             % impact user interactions.  It also resets the figure interactions.
@@ -924,10 +884,10 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             % handles    structure with handles and user data (see GUIDATA)
             % varargin   unrecognized PropertyName/PropertyValue pairs from the
             %            command line (see VARARGIN)
-            tmsCurr_default = -10 ; %-10 ;
+            tmsCurr_default = -20 ; %-10 ;
             saveEvery_default = 200000 ; %200
             % startdir_default = 'Z:\Abby\Gravity Sensing\AltCalc\Analysis\Expr_001_mov_024\' ;
-            startdir_default = 'D:\Gravity Sensing\Fly 02\Intact_Light\Analysis\Expr_001_mov_024' ;
+            startdir_default = 'C:\Users\Abby\Cornell\test_data_mc\119_26022026\Analysis\Unsorted\Expr_119_mov_037';
             bodyFrameFlag_default = false ;
             largePertFlag_default = true ;
             
@@ -1289,7 +1249,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             % -------------------------------------------------------------------
             % perform clustering
             [wingVox, wingRows, label_idx, centroids, badClusterFlag] = ...
-                clusterWings(handles, app.frameCurr, wing_str) ;
+                clusterWings(handles, frameCurr, wing_str) ;
             
             % ------------------------------------------------------------------
             % did clustering work?
@@ -2921,63 +2881,100 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             saveData(app, hObject)
         end
 
-        % Button pushed function: copyBodyButton
-        function copyBodyButtonPushed(app, event)
+        % Button pushed function: copyprevbodyButton
+        function copyprevbodyButtonPushed(app, event)
+            [hObject, ~, handles] = convertToGUIDECallbackArguments(app, event);
+            % app.frameCurr = app.frameCurr;
+            if app.frameCurr <= 1, return; end
+            handles.rollHats(app.frameCurr,:)  = handles.rollHats(app.frameCurr-1,:);
+            handles.normRolls(app.frameCurr,:) = handles.normRolls(app.frameCurr-1,:);
+            handles.psiHats(app.frameCurr,:)   = handles.psiHats(app.frameCurr-1,:);
+            handles.bodyCM(app.frameCurr,:)    = handles.bodyCM(app.frameCurr-1,:);
+            handles = updateChangeFlags(app, handles, 'all');
+            guidata(hObject, handles);
+            updateDisplay(app, hObject);
+        end
+
+        % Button pushed function: copyprevrightwingButton
+        function copyprevrightwingButtonPushed(app, event)
+            [hObject, ~, handles] = convertToGUIDECallbackArguments(app, event);
+            % app.frameCurr = app.frameCurr;
+            if app.frameCurr <= 1, return; end
+            handles.span1Hats(app.frameCurr,:)   = handles.span1Hats(app.frameCurr-1,:);
+            handles.chord1Hats(app.frameCurr,:)  = handles.chord1Hats(app.frameCurr-1,:);
+            handles.phi1Hats(app.frameCurr,:)    = handles.phi1Hats(app.frameCurr-1,:);
+            handles.rightWingCM(app.frameCurr,:) = handles.rightWingCM(app.frameCurr-1,:);
+            handles = updateChangeFlags(app, handles, 'rvec');
+            guidata(hObject, handles);
+            updateDisplay(app, hObject);  
+        end
+
+        % Button pushed function: copyprevleftwingButton
+        function copyprevleftwingButtonPushed(app, event)
+            [hObject, ~, handles] = convertToGUIDECallbackArguments(app, event);
+            % app.frameCurr = app.frameCurr;
+            if app.frameCurr <= 1, return; end
+            handles.span2Hats(app.frameCurr,:)  = handles.span2Hats(app.frameCurr-1,:);
+            handles.chord2Hats(app.frameCurr,:) = handles.chord2Hats(app.frameCurr-1,:);
+            handles.phi2Hats(app.frameCurr,:)   = handles.phi2Hats(app.frameCurr-1,:);
+            handles.leftWingCM(app.frameCurr,:) = handles.leftWingCM(app.frameCurr-1,:);
+            handles = updateChangeFlags(app, handles, 'lvec');
+            guidata(hObject, handles);
+            updateDisplay(app, hObject);
+        end
+
+        % Button pushed function: copybodyvecButton
+        function copybodyvecButtonPushed(app, event)
             [hObject, ~, handles] = convertToGUIDECallbackArguments(app, event);
             frameCurr = app.frameCurr;
             if frameCurr <= 1, return; end
             handles.rollHats(frameCurr,:)  = handles.rollHats(frameCurr-1,:);
             handles.normRolls(frameCurr,:) = handles.normRolls(frameCurr-1,:);
             handles.psiHats(frameCurr,:)   = handles.psiHats(frameCurr-1,:);
-            handles.bodyCM(frameCurr,:)    = handles.bodyCM(frameCurr-1,:);
-            handles = updateChangeFlags(app, handles, 'all');
+            handles = updateChangeFlags(app, handles, 'bodyvec');
             guidata(hObject, handles);
             updateDisplay(app, hObject);
         end
 
-        % Button pushed function: copyRightWingButton
-        function copyRightWingButtonPushed(app, event)
-            [hObject, ~, handles] = convertToGUIDECallbackArguments(app, event);
+        % Button pushed function: copyrightwingvecButton
+        function copyrightwingvecButtonPushed(app, event)
+                [hObject, ~, handles] = convertToGUIDECallbackArguments(app, event);
             frameCurr = app.frameCurr;
             if frameCurr <= 1, return; end
             handles.span1Hats(frameCurr,:)  = handles.span1Hats(frameCurr-1,:);
             handles.chord1Hats(frameCurr,:) = handles.chord1Hats(frameCurr-1,:);
             handles.phi1Hats(frameCurr,:)   = handles.phi1Hats(frameCurr-1,:);
-            handles.rightWingCM(frameCurr,:) = handles.rightWingCM(frameCurr-1,:);
             handles = updateChangeFlags(app, handles, 'rvec');
             guidata(hObject, handles);
             updateDisplay(app, hObject);
         end
 
-        % Button pushed function: copyLeftWingButton
-        function copyLeftWingButtonPushed(app, event)
+        % Button pushed function: copyleftwingvecButton
+        function copyleftwingvecButtonPushed(app, event)
             [hObject, ~, handles] = convertToGUIDECallbackArguments(app, event);
             frameCurr = app.frameCurr;
             if frameCurr <= 1, return; end
             handles.span2Hats(frameCurr,:)  = handles.span2Hats(frameCurr-1,:);
             handles.chord2Hats(frameCurr,:) = handles.chord2Hats(frameCurr-1,:);
             handles.phi2Hats(frameCurr,:)   = handles.phi2Hats(frameCurr-1,:);
-            handles.leftWingCM(frameCurr,:) = handles.leftWingCM(frameCurr-1,:);
             handles = updateChangeFlags(app, handles, 'lvec');
             guidata(hObject, handles);
             updateDisplay(app, hObject);
         end
 
-        % Button pushed function: nextBadFrameButton
-        function nextBadFrameButtonPushed(app, event)
+        % Button pushed function: NextBadFrameButton
+        function NextBadFrameButtonPushed(app, event)
             [hObject, ~, handles] = convertToGUIDECallbackArguments(app, event);
             if ~isfield(handles, 'badFrames'), return; end
-
-            % find next bad frame after current (any body part)
+            
             anyBad = any(handles.badFrames, 2) ;
             nextFrames = find(anyBad & (1:handles.Nimages)' > app.frameCurr) ;
-
+            
             if isempty(nextFrames)
-                % wrap around to beginning
-                nextFrames = find(anyBad) ;
-                if isempty(nextFrames), return; end
+            nextFrames = find(anyBad) ;
+            if isempty(nextFrames), return; end
             end
-
+            
             app.frameCurr = nextFrames(1) ;
             app.tmsCurr = handles.tvec(app.frameCurr) ;
             handles = updateChangeFlags(app, handles, 'all') ;
@@ -2990,48 +2987,9 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
         % Button pushed function: recalcBadFramesButton
         function recalcBadFramesButtonPushed(app, event)
             [hObject, ~, handles] = convertToGUIDECallbackArguments(app, event);
-            handles.badFrames = detectBadFrames(app, handles) ;
-            guidata(hObject, handles) ;
-            updateDisplay(app, hObject) ;
-        end
-
-        % Button pushed function: copyBodyVecsButton (vectors only, no CM)
-        function copyBodyVecsButtonPushed(app, event)
-            [hObject, ~, handles] = convertToGUIDECallbackArguments(app, event);
-            frameCurr = app.frameCurr;
-            if frameCurr <= 1, return; end
-            handles.rollHats(frameCurr,:)  = handles.rollHats(frameCurr-1,:);
-            handles.normRolls(frameCurr,:) = handles.normRolls(frameCurr-1,:);
-            handles.psiHats(frameCurr,:)   = handles.psiHats(frameCurr-1,:);
-            handles = updateChangeFlags(app, handles, 'bodyvec');
-            guidata(hObject, handles);
-            updateDisplay(app, hObject);
-        end
-
-        % Button pushed function: copyRightWingVecsButton (vectors only, no CM)
-        function copyRightWingVecsButtonPushed(app, event)
-            [hObject, ~, handles] = convertToGUIDECallbackArguments(app, event);
-            frameCurr = app.frameCurr;
-            if frameCurr <= 1, return; end
-            handles.span1Hats(frameCurr,:)  = handles.span1Hats(frameCurr-1,:);
-            handles.chord1Hats(frameCurr,:) = handles.chord1Hats(frameCurr-1,:);
-            handles.phi1Hats(frameCurr,:)   = handles.phi1Hats(frameCurr-1,:);
-            handles = updateChangeFlags(app, handles, 'rvec');
-            guidata(hObject, handles);
-            updateDisplay(app, hObject);
-        end
-
-        % Button pushed function: copyLeftWingVecsButton (vectors only, no CM)
-        function copyLeftWingVecsButtonPushed(app, event)
-            [hObject, ~, handles] = convertToGUIDECallbackArguments(app, event);
-            frameCurr = app.frameCurr;
-            if frameCurr <= 1, return; end
-            handles.span2Hats(frameCurr,:)  = handles.span2Hats(frameCurr-1,:);
-            handles.chord2Hats(frameCurr,:) = handles.chord2Hats(frameCurr-1,:);
-            handles.phi2Hats(frameCurr,:)   = handles.phi2Hats(frameCurr-1,:);
-            handles = updateChangeFlags(app, handles, 'lvec');
-            guidata(hObject, handles);
-            updateDisplay(app, hObject);
+                handles.badFrames = detectBadFrames(app, handles) ;
+                guidata(hObject, handles) ;
+                updateDisplay(app, hObject) ;
         end
     end
 
@@ -3096,7 +3054,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.main_axes.FontSize = 13.3333333333333;
             app.main_axes.NextPlot = 'replace';
             app.main_axes.Tag = 'main_axes';
-            app.main_axes.Position = [26 76 757 729];
+            app.main_axes.Position = [26 76 757 688];
 
             % Create frame_info
             app.frame_info = uilabel(app.figure1);
@@ -3115,7 +3073,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.correction_panel.Title = 'Correct body/wing orientation';
             app.correction_panel.Tag = 'correction_panel';
             app.correction_panel.FontSize = 10.6666666666667;
-            app.correction_panel.Position = [792 15 439 643];
+            app.correction_panel.Position = [792 15 439 664];
 
             % Create body_x
             app.body_x = uislider(app.correction_panel);
@@ -3126,7 +3084,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.body_x.Tag = 'body_x';
             app.body_x.Enable = 'off';
             app.body_x.FontSize = 10.6666666666667;
-            app.body_x.Position = [79 597 334 3];
+            app.body_x.Position = [81 589 334 3];
 
             % Create body_label
             app.body_label = uilabel(app.correction_panel);
@@ -3136,7 +3094,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.body_label.WordWrap = 'on';
             app.body_label.FontSize = 13.3333333333333;
             app.body_label.FontWeight = 'bold';
-            app.body_label.Position = [201 603 86 19.620895522388];
+            app.body_label.Position = [210 611 86 19.620895522388];
             app.body_label.Text = 'Body';
 
             % Create x_cm_label
@@ -3147,7 +3105,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.x_cm_label.WordWrap = 'on';
             app.x_cm_label.FontSize = 10.6666666666667;
             app.x_cm_label.FontWeight = 'bold';
-            app.x_cm_label.Position = [19 592 35.5946601941748 13.0805970149254];
+            app.x_cm_label.Position = [21 584 35.5946601941748 13.0805970149254];
             app.x_cm_label.Text = 'Xcm';
 
             % Create body_y
@@ -3159,7 +3117,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.body_y.Tag = 'body_y';
             app.body_y.Enable = 'off';
             app.body_y.FontSize = 10.6666666666667;
-            app.body_y.Position = [79 574 334 3];
+            app.body_y.Position = [81 566 334 3];
 
             % Create body_z
             app.body_z = uislider(app.correction_panel);
@@ -3170,7 +3128,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.body_z.Tag = 'body_z';
             app.body_z.Enable = 'off';
             app.body_z.FontSize = 10.6666666666667;
-            app.body_z.Position = [79 552 334 3];
+            app.body_z.Position = [81 544 334 3];
 
             % Create rx
             app.rx = uislider(app.correction_panel);
@@ -3181,7 +3139,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.rx.Tag = 'rx';
             app.rx.Enable = 'off';
             app.rx.FontSize = 10.6666666666667;
-            app.rx.Position = [79 420 334 3];
+            app.rx.Position = [80 410 334 3];
 
             % Create r_y
             app.r_y = uislider(app.correction_panel);
@@ -3192,7 +3150,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_y.Tag = 'r_y';
             app.r_y.Enable = 'off';
             app.r_y.FontSize = 10.6666666666667;
-            app.r_y.Position = [79 398 334 3];
+            app.r_y.Position = [80 388 334 3];
 
             % Create r_z
             app.r_z = uislider(app.correction_panel);
@@ -3203,7 +3161,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_z.Tag = 'r_z';
             app.r_z.Enable = 'off';
             app.r_z.FontSize = 10.6666666666667;
-            app.r_z.Position = [79 375 334 3];
+            app.r_z.Position = [80 365 334 3];
 
             % Create r_phi
             app.r_phi = uislider(app.correction_panel);
@@ -3214,7 +3172,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_phi.Tag = 'r_phi';
             app.r_phi.Enable = 'off';
             app.r_phi.FontSize = 10.6666666666667;
-            app.r_phi.Position = [79 343 334 3];
+            app.r_phi.Position = [80 333 334 3];
 
             % Create r_theta
             app.r_theta = uislider(app.correction_panel);
@@ -3225,7 +3183,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_theta.Tag = 'r_theta';
             app.r_theta.Enable = 'off';
             app.r_theta.FontSize = 10.6666666666667;
-            app.r_theta.Position = [79 317 334 3];
+            app.r_theta.Position = [80 307 334 3];
 
             % Create r_eta
             app.r_eta = uislider(app.correction_panel);
@@ -3236,7 +3194,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_eta.Tag = 'r_eta';
             app.r_eta.Enable = 'off';
             app.r_eta.FontSize = 10.6666666666667;
-            app.r_eta.Position = [79 291 334 3];
+            app.r_eta.Position = [80 281 334 3];
 
             % Create l_x
             app.l_x = uislider(app.correction_panel);
@@ -3247,7 +3205,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_x.Tag = 'l_x';
             app.l_x.Enable = 'off';
             app.l_x.FontSize = 10.6666666666667;
-            app.l_x.Position = [79 234 334 3];
+            app.l_x.Position = [80 224 334 3];
 
             % Create l_y
             app.l_y = uislider(app.correction_panel);
@@ -3258,7 +3216,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_y.Tag = 'l_y';
             app.l_y.Enable = 'off';
             app.l_y.FontSize = 10.6666666666667;
-            app.l_y.Position = [79 212 334 3];
+            app.l_y.Position = [80 202 334 3];
 
             % Create l_z
             app.l_z = uislider(app.correction_panel);
@@ -3269,7 +3227,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_z.Tag = 'l_z';
             app.l_z.Enable = 'off';
             app.l_z.FontSize = 10.6666666666667;
-            app.l_z.Position = [79 189 334 3];
+            app.l_z.Position = [80 179 334 3];
 
             % Create l_phi
             app.l_phi = uislider(app.correction_panel);
@@ -3280,7 +3238,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_phi.Tag = 'l_phi';
             app.l_phi.Enable = 'off';
             app.l_phi.FontSize = 10.6666666666667;
-            app.l_phi.Position = [79 158 334 3];
+            app.l_phi.Position = [80 148 334 3];
 
             % Create l_theta
             app.l_theta = uislider(app.correction_panel);
@@ -3291,7 +3249,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_theta.Tag = 'l_theta';
             app.l_theta.Enable = 'off';
             app.l_theta.FontSize = 10.6666666666667;
-            app.l_theta.Position = [79 132 334 3];
+            app.l_theta.Position = [80 122 334 3];
 
             % Create l_eta
             app.l_eta = uislider(app.correction_panel);
@@ -3302,7 +3260,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_eta.Tag = 'l_eta';
             app.l_eta.Enable = 'off';
             app.l_eta.FontSize = 10.6666666666667;
-            app.l_eta.Position = [79 107 334 3];
+            app.l_eta.Position = [80 97 334 3];
 
             % Create right_wing_label
             app.right_wing_label = uilabel(app.correction_panel);
@@ -3312,7 +3270,8 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.right_wing_label.WordWrap = 'on';
             app.right_wing_label.FontSize = 13.3333333333333;
             app.right_wing_label.FontWeight = 'bold';
-            app.right_wing_label.Position = [199 436 90 16.8179104477612];
+            app.right_wing_label.FontColor = [0.6353 0.0784 0.1843];
+            app.right_wing_label.Position = [200 426 90 16.8179104477612];
             app.right_wing_label.Text = 'Right Wing';
 
             % Create left_wing_label
@@ -3323,7 +3282,8 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.left_wing_label.WordWrap = 'on';
             app.left_wing_label.FontSize = 13.3333333333333;
             app.left_wing_label.FontWeight = 'bold';
-            app.left_wing_label.Position = [207 250 71 19.6208955223881];
+            app.left_wing_label.FontColor = [0 0.4471 0.7412];
+            app.left_wing_label.Position = [208 240 71 19.6208955223881];
             app.left_wing_label.Text = 'Left Wing';
 
             % Create body_phi
@@ -3335,7 +3295,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.body_phi.Tag = 'body_phi';
             app.body_phi.Enable = 'off';
             app.body_phi.FontSize = 10.6666666666667;
-            app.body_phi.Position = [79 521 334 3];
+            app.body_phi.Position = [81 513 334 3];
 
             % Create body_pitch
             app.body_pitch = uislider(app.correction_panel);
@@ -3346,7 +3306,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.body_pitch.Tag = 'body_pitch';
             app.body_pitch.Enable = 'off';
             app.body_pitch.FontSize = 10.6666666666667;
-            app.body_pitch.Position = [79 498 334 3];
+            app.body_pitch.Position = [81 490 334 3];
 
             % Create body_roll
             app.body_roll = uislider(app.correction_panel);
@@ -3357,7 +3317,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.body_roll.Tag = 'body_roll';
             app.body_roll.Enable = 'off';
             app.body_roll.FontSize = 10.6666666666667;
-            app.body_roll.Position = [79 476 334 3];
+            app.body_roll.Position = [81 468 334 3];
 
             % Create ignoreFrame
             app.ignoreFrame = uibutton(app.correction_panel, 'state');
@@ -3366,7 +3326,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.ignoreFrame.Enable = 'off';
             app.ignoreFrame.Text = 'Ignore Frame';
             app.ignoreFrame.FontSize = 10.6666666666667;
-            app.ignoreFrame.Position = [20 47 126 26.8285714285714];
+            app.ignoreFrame.Position = [22 47 126 26.8285714285714];
 
             % Create swap_wings
             app.swap_wings = uibutton(app.correction_panel, 'push');
@@ -3374,7 +3334,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.swap_wings.Tag = 'swap_wings';
             app.swap_wings.FontSize = 10.6666666666667;
             app.swap_wings.Enable = 'off';
-            app.swap_wings.Position = [292 47 126 26.8285714285714];
+            app.swap_wings.Position = [294 47 126 26.8285714285714];
             app.swap_wings.Text = 'Swap Wings';
 
             % Create y_cm_label
@@ -3385,7 +3345,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.y_cm_label.WordWrap = 'on';
             app.y_cm_label.FontSize = 10.6666666666667;
             app.y_cm_label.FontWeight = 'bold';
-            app.y_cm_label.Position = [19 569 35.5946601941748 13.0805970149254];
+            app.y_cm_label.Position = [21 561 35.5946601941748 13.0805970149254];
             app.y_cm_label.Text = 'Ycm';
 
             % Create z_cm_label
@@ -3396,7 +3356,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.z_cm_label.WordWrap = 'on';
             app.z_cm_label.FontSize = 10.6666666666667;
             app.z_cm_label.FontWeight = 'bold';
-            app.z_cm_label.Position = [19 547 35.5946601941748 13.0805970149254];
+            app.z_cm_label.Position = [21 539 35.5946601941748 13.0805970149254];
             app.z_cm_label.Text = 'Zcm';
 
             % Create yaw_label
@@ -3407,7 +3367,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.yaw_label.WordWrap = 'on';
             app.yaw_label.FontSize = 10.6666666666667;
             app.yaw_label.FontWeight = 'bold';
-            app.yaw_label.Position = [19 516 35.5946601941748 13.0805970149254];
+            app.yaw_label.Position = [21 508 35.5946601941748 13.0805970149254];
             app.yaw_label.Text = 'Yaw';
 
             % Create pitch_label
@@ -3418,7 +3378,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.pitch_label.WordWrap = 'on';
             app.pitch_label.FontSize = 10.6666666666667;
             app.pitch_label.FontWeight = 'bold';
-            app.pitch_label.Position = [19 493 35.5946601941748 13.0805970149254];
+            app.pitch_label.Position = [21 485 35.5946601941748 13.0805970149254];
             app.pitch_label.Text = 'Pitch';
 
             % Create roll_label
@@ -3429,7 +3389,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.roll_label.WordWrap = 'on';
             app.roll_label.FontSize = 10.6666666666667;
             app.roll_label.FontWeight = 'bold';
-            app.roll_label.Position = [19 471 35.5946601941748 13.0805970149254];
+            app.roll_label.Position = [21 463 35.5946601941748 13.0805970149254];
             app.roll_label.Text = 'Roll';
 
             % Create r_x_label
@@ -3441,7 +3401,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_x_label.FontSize = 10.6666666666667;
             app.r_x_label.FontWeight = 'bold';
             app.r_x_label.FontColor = [0.64 0.08 0.18];
-            app.r_x_label.Position = [21 415 36 13.0805970149254];
+            app.r_x_label.Position = [22 405 36 13.0805970149254];
             app.r_x_label.Text = 'R X';
 
             % Create r_y_label
@@ -3453,7 +3413,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_y_label.FontSize = 10.6666666666667;
             app.r_y_label.FontWeight = 'bold';
             app.r_y_label.FontColor = [0.64 0.08 0.18];
-            app.r_y_label.Position = [21 393 36 13.0805970149254];
+            app.r_y_label.Position = [22 383 36 13.0805970149254];
             app.r_y_label.Text = 'R Y';
 
             % Create r_z_label
@@ -3465,7 +3425,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_z_label.FontSize = 10.6666666666667;
             app.r_z_label.FontWeight = 'bold';
             app.r_z_label.FontColor = [0.64 0.08 0.18];
-            app.r_z_label.Position = [21 370 36 13.0805970149254];
+            app.r_z_label.Position = [22 360 36 13.0805970149254];
             app.r_z_label.Text = 'R Z';
 
             % Create l_x_label
@@ -3477,7 +3437,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_x_label.FontSize = 10.6666666666667;
             app.l_x_label.FontWeight = 'bold';
             app.l_x_label.FontColor = [0 0.45 0.74];
-            app.l_x_label.Position = [22 229 36 13.0805970149254];
+            app.l_x_label.Position = [23 219 36 13.0805970149254];
             app.l_x_label.Text = 'L X';
 
             % Create l_y_label
@@ -3489,7 +3449,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_y_label.FontSize = 10.6666666666667;
             app.l_y_label.FontWeight = 'bold';
             app.l_y_label.FontColor = [0 0.45 0.74];
-            app.l_y_label.Position = [22 207 36 13.0805970149254];
+            app.l_y_label.Position = [23 197 36 13.0805970149254];
             app.l_y_label.Text = 'L Y';
 
             % Create l_z_label
@@ -3501,7 +3461,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_z_label.FontSize = 10.6666666666667;
             app.l_z_label.FontWeight = 'bold';
             app.l_z_label.FontColor = [0 0.45 0.74];
-            app.l_z_label.Position = [22 184 36 13.0805970149254];
+            app.l_z_label.Position = [23 174 36 13.0805970149254];
             app.l_z_label.Text = 'L Z';
 
             % Create cluster_wings
@@ -3510,7 +3470,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.cluster_wings.Tag = 'cluster_wings';
             app.cluster_wings.FontSize = 10.6666666666667;
             app.cluster_wings.Enable = 'off';
-            app.cluster_wings.Position = [156 47 126 26.8285714285714];
+            app.cluster_wings.Position = [158 47 126 26.8285714285714];
             app.cluster_wings.Text = 'Cluster Wings';
 
             % Create save_manualCorrRangeMS
@@ -3519,7 +3479,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.save_manualCorrRangeMS.Tag = 'save_manualCorrRangeMS';
             app.save_manualCorrRangeMS.FontSize = 10.6666666666667;
             app.save_manualCorrRangeMS.Enable = 'off';
-            app.save_manualCorrRangeMS.Position = [292 11 126 27];
+            app.save_manualCorrRangeMS.Position = [294 11 126 27];
             app.save_manualCorrRangeMS.Text = 'Enter Manual Corr Range';
 
             % Create save_roll
@@ -3529,21 +3489,21 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.save_roll.Enable = 'off';
             app.save_roll.Text = 'Save Roll';
             app.save_roll.FontSize = 10.6666666666667;
-            app.save_roll.Position = [22 11 124 27];
+            app.save_roll.Position = [24 11 124 27];
 
             % Create body_x_dec
             app.body_x_dec = uibutton(app.correction_panel, 'push');
             app.body_x_dec.ButtonPushedFcn = createCallbackFcn(app, @body_x_decButtonPushed, true);
             app.body_x_dec.HorizontalAlignment = 'left';
             app.body_x_dec.Enable = 'off';
-            app.body_x_dec.Position = [62 587 18 23];
+            app.body_x_dec.Position = [64 579 18 23];
             app.body_x_dec.Text = '◀';
 
             % Create body_x_inc
             app.body_x_inc = uibutton(app.correction_panel, 'push');
             app.body_x_inc.ButtonPushedFcn = createCallbackFcn(app, @body_x_incButtonPushed, true);
             app.body_x_inc.Enable = 'off';
-            app.body_x_inc.Position = [412 587 18 23];
+            app.body_x_inc.Position = [414 579 18 23];
             app.body_x_inc.Text = '▶';
 
             % Create body_y_dec
@@ -3551,14 +3511,14 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.body_y_dec.ButtonPushedFcn = createCallbackFcn(app, @body_y_decButtonPushed, true);
             app.body_y_dec.HorizontalAlignment = 'left';
             app.body_y_dec.Enable = 'off';
-            app.body_y_dec.Position = [62 564 18 23];
+            app.body_y_dec.Position = [64 556 18 23];
             app.body_y_dec.Text = '◀';
 
             % Create body_y_inc
             app.body_y_inc = uibutton(app.correction_panel, 'push');
             app.body_y_inc.ButtonPushedFcn = createCallbackFcn(app, @body_y_incButtonPushed, true);
             app.body_y_inc.Enable = 'off';
-            app.body_y_inc.Position = [412 564 18 23];
+            app.body_y_inc.Position = [414 556 18 23];
             app.body_y_inc.Text = '▶';
 
             % Create body_z_dec
@@ -3566,7 +3526,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.body_z_dec.ButtonPushedFcn = createCallbackFcn(app, @body_z_decButtonPushed, true);
             app.body_z_dec.HorizontalAlignment = 'left';
             app.body_z_dec.Enable = 'off';
-            app.body_z_dec.Position = [62 542 18 23];
+            app.body_z_dec.Position = [64 534 18 23];
             app.body_z_dec.Text = '◀';
 
             % Create body_phi_dec
@@ -3574,7 +3534,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.body_phi_dec.ButtonPushedFcn = createCallbackFcn(app, @body_phi_decButtonPushed, true);
             app.body_phi_dec.HorizontalAlignment = 'left';
             app.body_phi_dec.Enable = 'off';
-            app.body_phi_dec.Position = [62 511 18 23];
+            app.body_phi_dec.Position = [64 503 18 23];
             app.body_phi_dec.Text = '◀';
 
             % Create body_pitch_dec
@@ -3582,7 +3542,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.body_pitch_dec.ButtonPushedFcn = createCallbackFcn(app, @body_pitch_decButtonPushed, true);
             app.body_pitch_dec.HorizontalAlignment = 'left';
             app.body_pitch_dec.Enable = 'off';
-            app.body_pitch_dec.Position = [62 488 18 23];
+            app.body_pitch_dec.Position = [64 480 18 23];
             app.body_pitch_dec.Text = '◀';
 
             % Create body_roll_dec
@@ -3590,7 +3550,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.body_roll_dec.ButtonPushedFcn = createCallbackFcn(app, @body_roll_decButtonPushed, true);
             app.body_roll_dec.HorizontalAlignment = 'left';
             app.body_roll_dec.Enable = 'off';
-            app.body_roll_dec.Position = [62 466 18 23];
+            app.body_roll_dec.Position = [64 458 18 23];
             app.body_roll_dec.Text = '◀';
 
             % Create rx_dec
@@ -3598,7 +3558,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.rx_dec.ButtonPushedFcn = createCallbackFcn(app, @rx_decButtonPushed, true);
             app.rx_dec.HorizontalAlignment = 'left';
             app.rx_dec.Enable = 'off';
-            app.rx_dec.Position = [62 410 18 23];
+            app.rx_dec.Position = [63 400 18 23];
             app.rx_dec.Text = '◀';
 
             % Create r_y_dec
@@ -3606,7 +3566,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_y_dec.ButtonPushedFcn = createCallbackFcn(app, @r_y_decButtonPushed, true);
             app.r_y_dec.HorizontalAlignment = 'left';
             app.r_y_dec.Enable = 'off';
-            app.r_y_dec.Position = [62 388 18 23];
+            app.r_y_dec.Position = [63 378 18 23];
             app.r_y_dec.Text = '◀';
 
             % Create r_z_dec
@@ -3614,7 +3574,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_z_dec.ButtonPushedFcn = createCallbackFcn(app, @r_z_decButtonPushed, true);
             app.r_z_dec.HorizontalAlignment = 'left';
             app.r_z_dec.Enable = 'off';
-            app.r_z_dec.Position = [62 365 18 23];
+            app.r_z_dec.Position = [63 355 18 23];
             app.r_z_dec.Text = '◀';
 
             % Create r_phi_dec
@@ -3622,7 +3582,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_phi_dec.ButtonPushedFcn = createCallbackFcn(app, @r_phi_decButtonPushed, true);
             app.r_phi_dec.HorizontalAlignment = 'left';
             app.r_phi_dec.Enable = 'off';
-            app.r_phi_dec.Position = [62 333 18 23];
+            app.r_phi_dec.Position = [63 323 18 23];
             app.r_phi_dec.Text = '◀';
 
             % Create r_theta_dec
@@ -3630,7 +3590,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_theta_dec.ButtonPushedFcn = createCallbackFcn(app, @r_theta_decButtonPushed, true);
             app.r_theta_dec.HorizontalAlignment = 'left';
             app.r_theta_dec.Enable = 'off';
-            app.r_theta_dec.Position = [62 307 18 23];
+            app.r_theta_dec.Position = [63 297 18 23];
             app.r_theta_dec.Text = '◀';
 
             % Create r_eta_dec
@@ -3638,7 +3598,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_eta_dec.ButtonPushedFcn = createCallbackFcn(app, @r_eta_decButtonPushed, true);
             app.r_eta_dec.HorizontalAlignment = 'left';
             app.r_eta_dec.Enable = 'off';
-            app.r_eta_dec.Position = [62 281 18 23];
+            app.r_eta_dec.Position = [63 271 18 23];
             app.r_eta_dec.Text = '◀';
 
             % Create l_x_dec
@@ -3646,7 +3606,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_x_dec.ButtonPushedFcn = createCallbackFcn(app, @l_x_decButtonPushed, true);
             app.l_x_dec.HorizontalAlignment = 'left';
             app.l_x_dec.Enable = 'off';
-            app.l_x_dec.Position = [62 224 18 23];
+            app.l_x_dec.Position = [63 214 18 23];
             app.l_x_dec.Text = '◀';
 
             % Create l_y_dec
@@ -3654,7 +3614,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_y_dec.ButtonPushedFcn = createCallbackFcn(app, @l_y_decButtonPushed, true);
             app.l_y_dec.HorizontalAlignment = 'left';
             app.l_y_dec.Enable = 'off';
-            app.l_y_dec.Position = [62 202 18 23];
+            app.l_y_dec.Position = [63 192 18 23];
             app.l_y_dec.Text = '◀';
 
             % Create l_z_dec
@@ -3662,7 +3622,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_z_dec.ButtonPushedFcn = createCallbackFcn(app, @l_z_decButtonPushed, true);
             app.l_z_dec.HorizontalAlignment = 'left';
             app.l_z_dec.Enable = 'off';
-            app.l_z_dec.Position = [62 179 18 23];
+            app.l_z_dec.Position = [63 169 18 23];
             app.l_z_dec.Text = '◀';
 
             % Create l_phi_dec
@@ -3670,7 +3630,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_phi_dec.ButtonPushedFcn = createCallbackFcn(app, @l_phi_decButtonPushed, true);
             app.l_phi_dec.HorizontalAlignment = 'left';
             app.l_phi_dec.Enable = 'off';
-            app.l_phi_dec.Position = [62 148 18 23];
+            app.l_phi_dec.Position = [63 138 18 23];
             app.l_phi_dec.Text = '◀';
 
             % Create l_theta_dec
@@ -3678,7 +3638,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_theta_dec.ButtonPushedFcn = createCallbackFcn(app, @l_theta_decButtonPushed, true);
             app.l_theta_dec.HorizontalAlignment = 'left';
             app.l_theta_dec.Enable = 'off';
-            app.l_theta_dec.Position = [62 122 18 23];
+            app.l_theta_dec.Position = [63 112 18 23];
             app.l_theta_dec.Text = '◀';
 
             % Create l_eta_dec
@@ -3686,126 +3646,126 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_eta_dec.ButtonPushedFcn = createCallbackFcn(app, @l_eta_decButtonPushed, true);
             app.l_eta_dec.HorizontalAlignment = 'left';
             app.l_eta_dec.Enable = 'off';
-            app.l_eta_dec.Position = [62 97 18 23];
+            app.l_eta_dec.Position = [63 87 18 23];
             app.l_eta_dec.Text = '◀';
 
             % Create body_z_inc
             app.body_z_inc = uibutton(app.correction_panel, 'push');
             app.body_z_inc.ButtonPushedFcn = createCallbackFcn(app, @body_z_incButtonPushed, true);
             app.body_z_inc.Enable = 'off';
-            app.body_z_inc.Position = [412 542 18 23];
+            app.body_z_inc.Position = [414 534 18 23];
             app.body_z_inc.Text = '▶';
 
             % Create body_phi_inc
             app.body_phi_inc = uibutton(app.correction_panel, 'push');
             app.body_phi_inc.ButtonPushedFcn = createCallbackFcn(app, @body_phi_incButtonPushed, true);
             app.body_phi_inc.Enable = 'off';
-            app.body_phi_inc.Position = [412 511 18 23];
+            app.body_phi_inc.Position = [414 503 18 23];
             app.body_phi_inc.Text = '▶';
 
             % Create body_pitch_inc
             app.body_pitch_inc = uibutton(app.correction_panel, 'push');
             app.body_pitch_inc.ButtonPushedFcn = createCallbackFcn(app, @body_pitch_incButtonPushed, true);
             app.body_pitch_inc.Enable = 'off';
-            app.body_pitch_inc.Position = [412 488 18 23];
+            app.body_pitch_inc.Position = [414 480 18 23];
             app.body_pitch_inc.Text = '▶';
 
             % Create body_roll_inc
             app.body_roll_inc = uibutton(app.correction_panel, 'push');
             app.body_roll_inc.ButtonPushedFcn = createCallbackFcn(app, @body_roll_incButtonPushed, true);
             app.body_roll_inc.Enable = 'off';
-            app.body_roll_inc.Position = [412 466 18 23];
+            app.body_roll_inc.Position = [414 458 18 23];
             app.body_roll_inc.Text = '▶';
 
             % Create rx_inc
             app.rx_inc = uibutton(app.correction_panel, 'push');
             app.rx_inc.ButtonPushedFcn = createCallbackFcn(app, @rx_incButtonPushed, true);
             app.rx_inc.Enable = 'off';
-            app.rx_inc.Position = [412 410 18 23];
+            app.rx_inc.Position = [413 400 18 23];
             app.rx_inc.Text = '▶';
 
             % Create r_y_inc
             app.r_y_inc = uibutton(app.correction_panel, 'push');
             app.r_y_inc.ButtonPushedFcn = createCallbackFcn(app, @r_y_incButtonPushed, true);
             app.r_y_inc.Enable = 'off';
-            app.r_y_inc.Position = [412 388 18 23];
+            app.r_y_inc.Position = [413 378 18 23];
             app.r_y_inc.Text = '▶';
 
             % Create r_z_inc
             app.r_z_inc = uibutton(app.correction_panel, 'push');
             app.r_z_inc.ButtonPushedFcn = createCallbackFcn(app, @r_z_incButtonPushed, true);
             app.r_z_inc.Enable = 'off';
-            app.r_z_inc.Position = [412 365 18 23];
+            app.r_z_inc.Position = [413 355 18 23];
             app.r_z_inc.Text = '▶';
 
             % Create r_phi_inc
             app.r_phi_inc = uibutton(app.correction_panel, 'push');
             app.r_phi_inc.ButtonPushedFcn = createCallbackFcn(app, @r_phi_incButtonPushed, true);
             app.r_phi_inc.Enable = 'off';
-            app.r_phi_inc.Position = [412 333 18 23];
+            app.r_phi_inc.Position = [413 323 18 23];
             app.r_phi_inc.Text = '▶';
 
             % Create r_theta_inc
             app.r_theta_inc = uibutton(app.correction_panel, 'push');
             app.r_theta_inc.ButtonPushedFcn = createCallbackFcn(app, @r_theta_incButtonPushed, true);
             app.r_theta_inc.Enable = 'off';
-            app.r_theta_inc.Position = [412 307 18 23];
+            app.r_theta_inc.Position = [413 297 18 23];
             app.r_theta_inc.Text = '▶';
 
             % Create r_eta_inc
             app.r_eta_inc = uibutton(app.correction_panel, 'push');
             app.r_eta_inc.ButtonPushedFcn = createCallbackFcn(app, @r_eta_incButtonPushed, true);
             app.r_eta_inc.Enable = 'off';
-            app.r_eta_inc.Position = [412 281 18 23];
+            app.r_eta_inc.Position = [413 271 18 23];
             app.r_eta_inc.Text = '▶';
 
             % Create l_x_inc
             app.l_x_inc = uibutton(app.correction_panel, 'push');
             app.l_x_inc.ButtonPushedFcn = createCallbackFcn(app, @l_x_incButtonPushed, true);
             app.l_x_inc.Enable = 'off';
-            app.l_x_inc.Position = [412 224 18 23];
+            app.l_x_inc.Position = [413 214 18 23];
             app.l_x_inc.Text = '▶';
 
             % Create l_y_inc
             app.l_y_inc = uibutton(app.correction_panel, 'push');
             app.l_y_inc.ButtonPushedFcn = createCallbackFcn(app, @l_y_incButtonPushed, true);
             app.l_y_inc.Enable = 'off';
-            app.l_y_inc.Position = [412 202 18 23];
+            app.l_y_inc.Position = [413 192 18 23];
             app.l_y_inc.Text = '▶';
 
             % Create l_z_inc
             app.l_z_inc = uibutton(app.correction_panel, 'push');
             app.l_z_inc.ButtonPushedFcn = createCallbackFcn(app, @l_z_incButtonPushed, true);
             app.l_z_inc.Enable = 'off';
-            app.l_z_inc.Position = [412 179 18 23];
+            app.l_z_inc.Position = [413 169 18 23];
             app.l_z_inc.Text = '▶';
 
             % Create l_phi_inc
             app.l_phi_inc = uibutton(app.correction_panel, 'push');
             app.l_phi_inc.ButtonPushedFcn = createCallbackFcn(app, @l_phi_incButtonPushed, true);
             app.l_phi_inc.Enable = 'off';
-            app.l_phi_inc.Position = [412 148 18 23];
+            app.l_phi_inc.Position = [413 138 18 23];
             app.l_phi_inc.Text = '▶';
 
             % Create l_theta_inc
             app.l_theta_inc = uibutton(app.correction_panel, 'push');
             app.l_theta_inc.ButtonPushedFcn = createCallbackFcn(app, @l_theta_incButtonPushed, true);
             app.l_theta_inc.Enable = 'off';
-            app.l_theta_inc.Position = [412 122 18 23];
+            app.l_theta_inc.Position = [413 112 18 23];
             app.l_theta_inc.Text = '▶';
 
             % Create l_eta_inc
             app.l_eta_inc = uibutton(app.correction_panel, 'push');
             app.l_eta_inc.ButtonPushedFcn = createCallbackFcn(app, @l_eta_incButtonPushed, true);
             app.l_eta_inc.Enable = 'off';
-            app.l_eta_inc.Position = [412 96 18 23];
+            app.l_eta_inc.Position = [413 86 18 23];
             app.l_eta_inc.Text = '▶';
 
             % Create EZViewButton
             app.EZViewButton = uibutton(app.correction_panel, 'push');
             app.EZViewButton.ButtonPushedFcn = createCallbackFcn(app, @EZViewButtonPushed, true);
             app.EZViewButton.Enable = 'off';
-            app.EZViewButton.Position = [156 11 126 27];
+            app.EZViewButton.Position = [158 11 126 27];
             app.EZViewButton.Text = 'EZ View';
 
             % Create r_theta_view
@@ -3813,7 +3773,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_theta_view.ButtonPushedFcn = createCallbackFcn(app, @r_theta_viewButtonPushed, true);
             app.r_theta_view.FontColor = [0.6392 0.0784 0.1804];
             app.r_theta_view.Enable = 'off';
-            app.r_theta_view.Position = [5 305 57 27];
+            app.r_theta_view.Position = [6 295 57 27];
             app.r_theta_view.Text = 'R Theta';
 
             % Create phi_view_2
@@ -3821,7 +3781,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.phi_view_2.ButtonPushedFcn = createCallbackFcn(app, @phi_viewButtonPushed, true);
             app.phi_view_2.FontColor = [0.6392 0.0784 0.1804];
             app.phi_view_2.Enable = 'off';
-            app.phi_view_2.Position = [5 331 57 27];
+            app.phi_view_2.Position = [6 321 57 27];
             app.phi_view_2.Text = 'R Phi';
 
             % Create l_theta_view
@@ -3829,7 +3789,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_theta_view.ButtonPushedFcn = createCallbackFcn(app, @l_theta_viewButtonPushed, true);
             app.l_theta_view.FontColor = [0 0.451 0.7412];
             app.l_theta_view.Enable = 'off';
-            app.l_theta_view.Position = [5 120 57 27];
+            app.l_theta_view.Position = [6 110 57 27];
             app.l_theta_view.Text = 'L Theta';
 
             % Create phi_view
@@ -3837,7 +3797,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.phi_view.ButtonPushedFcn = createCallbackFcn(app, @phi_viewButtonPushed, true);
             app.phi_view.FontColor = [0 0.451 0.7412];
             app.phi_view.Enable = 'off';
-            app.phi_view.Position = [5 146 57 27];
+            app.phi_view.Position = [6 136 57 27];
             app.phi_view.Text = 'L Phi';
 
             % Create r_eta_view
@@ -3845,7 +3805,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.r_eta_view.ButtonPushedFcn = createCallbackFcn(app, @r_eta_viewButtonPushed, true);
             app.r_eta_view.FontColor = [0.6392 0.0784 0.1804];
             app.r_eta_view.Enable = 'off';
-            app.r_eta_view.Position = [6 279 57 27];
+            app.r_eta_view.Position = [7 269 57 27];
             app.r_eta_view.Text = 'R Eta';
 
             % Create l_eta_view
@@ -3853,8 +3813,48 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.l_eta_view.ButtonPushedFcn = createCallbackFcn(app, @l_eta_viewButtonPushed, true);
             app.l_eta_view.FontColor = [0 0.451 0.7412];
             app.l_eta_view.Enable = 'off';
-            app.l_eta_view.Position = [6 94 57 27];
+            app.l_eta_view.Position = [7 84 57 27];
             app.l_eta_view.Text = 'L Eta';
+
+            % Create copyprevbodyButton
+            app.copyprevbodyButton = uibutton(app.correction_panel, 'push');
+            app.copyprevbodyButton.ButtonPushedFcn = createCallbackFcn(app, @copyprevbodyButtonPushed, true);
+            app.copyprevbodyButton.Position = [65 610 100 23];
+            app.copyprevbodyButton.Text = 'copy prev body';
+
+            % Create copyprevrightwingButton
+            app.copyprevrightwingButton = uibutton(app.correction_panel, 'push');
+            app.copyprevrightwingButton.ButtonPushedFcn = createCallbackFcn(app, @copyprevrightwingButtonPushed, true);
+            app.copyprevrightwingButton.FontColor = [0.6353 0.0784 0.1843];
+            app.copyprevrightwingButton.Position = [63 423 122 23];
+            app.copyprevrightwingButton.Text = 'copy prev right wing';
+
+            % Create copyprevleftwingButton
+            app.copyprevleftwingButton = uibutton(app.correction_panel, 'push');
+            app.copyprevleftwingButton.ButtonPushedFcn = createCallbackFcn(app, @copyprevleftwingButtonPushed, true);
+            app.copyprevleftwingButton.FontColor = [0 0.4471 0.7412];
+            app.copyprevleftwingButton.Position = [65 239 114 23];
+            app.copyprevleftwingButton.Text = 'copy prev left wing';
+
+            % Create copybodyvecButton
+            app.copybodyvecButton = uibutton(app.correction_panel, 'push');
+            app.copybodyvecButton.ButtonPushedFcn = createCallbackFcn(app, @copybodyvecButtonPushed, true);
+            app.copybodyvecButton.Position = [296 610 100 23];
+            app.copybodyvecButton.Text = 'copy body vec';
+
+            % Create copyrightwingvecButton
+            app.copyrightwingvecButton = uibutton(app.correction_panel, 'push');
+            app.copyrightwingvecButton.ButtonPushedFcn = createCallbackFcn(app, @copyrightwingvecButtonPushed, true);
+            app.copyrightwingvecButton.FontColor = [0.6353 0.0784 0.1843];
+            app.copyrightwingvecButton.Position = [290 423 117 23];
+            app.copyrightwingvecButton.Text = 'copy right wing vec';
+
+            % Create copyleftwingvecButton
+            app.copyleftwingvecButton = uibutton(app.correction_panel, 'push');
+            app.copyleftwingvecButton.ButtonPushedFcn = createCallbackFcn(app, @copyleftwingvecButtonPushed, true);
+            app.copyleftwingvecButton.FontColor = [0 0.4471 0.7412];
+            app.copyleftwingvecButton.Position = [292 237 110 23];
+            app.copyleftwingvecButton.Text = 'copy left wing vec';
 
             % Create data_dir
             app.data_dir = uilistbox(app.figure1);
@@ -3862,7 +3862,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.data_dir.ValueChangedFcn = createCallbackFcn(app, @data_dir_Callback, true);
             app.data_dir.Tag = 'data_dir';
             app.data_dir.FontSize = 10.6666666666667;
-            app.data_dir.Position = [807 699 416 124];
+            app.data_dir.Position = [807 731 416 92];
             app.data_dir.Value = '(import data files into this list box)';
 
             % Create open_data_dir
@@ -3878,7 +3878,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.load_data.ButtonPushedFcn = createCallbackFcn(app, @load_data_Callback, true);
             app.load_data.Tag = 'load_data';
             app.load_data.FontSize = 10.6666666666667;
-            app.load_data.Position = [808 663 202 32];
+            app.load_data.Position = [809 689 202 32];
             app.load_data.Text = 'Load Data';
 
             % Create bback
@@ -3922,7 +3922,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.clear_data.ButtonPushedFcn = createCallbackFcn(app, @clear_data_Callback, true);
             app.clear_data.Tag = 'clear_data';
             app.clear_data.FontSize = 10.6666666666667;
-            app.clear_data.Position = [1020 663 202 32];
+            app.clear_data.Position = [1021 689 202 32];
             app.clear_data.Text = 'Clear Data';
 
             % Create roll_view
@@ -3938,51 +3938,22 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
             app.savedataButton.Position = [308 28 69 23];
             app.savedataButton.Text = 'save data';
 
-            % Create nextBadFrameButton
-            app.nextBadFrameButton = uibutton(app.figure1, 'push');
-            app.nextBadFrameButton.ButtonPushedFcn = createCallbackFcn(app, @nextBadFrameButtonPushed, true);
-            app.nextBadFrameButton.Enable = 'off';
-            app.nextBadFrameButton.Position = [760 24 130 29];
-            app.nextBadFrameButton.Text = 'Next Bad Frame';
+            % Create NextBadFrameButton
+            app.NextBadFrameButton = uibutton(app.figure1, 'push');
+            app.NextBadFrameButton.ButtonPushedFcn = createCallbackFcn(app, @NextBadFrameButtonPushed, true);
+            app.NextBadFrameButton.Position = [275 775 102 23];
+            app.NextBadFrameButton.Text = 'Next Bad Frame';
+
+            % Create bad_frame_label
+            app.bad_frame_label = uilabel(app.figure1);
+            app.bad_frame_label.Position = [81 775 175 22];
+            app.bad_frame_label.Text = 'Bad Frame Label';
 
             % Create recalcBadFramesButton
             app.recalcBadFramesButton = uibutton(app.figure1, 'push');
             app.recalcBadFramesButton.ButtonPushedFcn = createCallbackFcn(app, @recalcBadFramesButtonPushed, true);
-            app.recalcBadFramesButton.Enable = 'off';
-            app.recalcBadFramesButton.Position = [900 24 150 29];
-            app.recalcBadFramesButton.Text = 'Recalc Bad Frames';
-
-            % Create bad_frame_label
-            app.bad_frame_label = uilabel(app.figure1);
-            app.bad_frame_label.HorizontalAlignment = 'center';
-            app.bad_frame_label.FontSize = 14;
-            app.bad_frame_label.FontWeight = 'bold';
-            app.bad_frame_label.FontColor = [0.8 0 0];
-            app.bad_frame_label.Position = [50 778 725 28];
-            app.bad_frame_label.Text = '';
-
-            % Create copyBodyButton
-            app.copyBodyButton = uibutton(app.correction_panel, 'push');
-            app.copyBodyButton.ButtonPushedFcn = createCallbackFcn(app, @copyBodyButtonPushed, true);
-            app.copyBodyButton.Enable = 'off';
-            app.copyBodyButton.Position = [20 83 126 27];
-            app.copyBodyButton.Text = 'Copy Body';
-
-            % Create copyRightWingButton
-            app.copyRightWingButton = uibutton(app.correction_panel, 'push');
-            app.copyRightWingButton.ButtonPushedFcn = createCallbackFcn(app, @copyRightWingButtonPushed, true);
-            app.copyRightWingButton.FontColor = [0.6392 0.0784 0.1804];
-            app.copyRightWingButton.Enable = 'off';
-            app.copyRightWingButton.Position = [156 83 126 27];
-            app.copyRightWingButton.Text = 'Copy R Wing';
-
-            % Create copyLeftWingButton
-            app.copyLeftWingButton = uibutton(app.correction_panel, 'push');
-            app.copyLeftWingButton.ButtonPushedFcn = createCallbackFcn(app, @copyLeftWingButtonPushed, true);
-            app.copyLeftWingButton.FontColor = [0 0.451 0.7412];
-            app.copyLeftWingButton.Enable = 'off';
-            app.copyLeftWingButton.Position = [292 83 126 27];
-            app.copyLeftWingButton.Text = 'Copy L Wing';
+            app.recalcBadFramesButton.Position = [407 775 110 23];
+            app.recalcBadFramesButton.Text = 'recalc bad frames';
 
             % Show the figure after all components are created
             app.figure1.Visible = 'on';
@@ -3993,7 +3964,7 @@ classdef correctionGUI_sam_App_Abby_edits_exported < matlab.apps.AppBase
     methods (Access = public)
 
         % Construct app
-        function app = correctionGUI_sam_App_Abby_edits_exported(varargin)
+        function app = correction_GUI_Abby_exported(varargin)
 
             runningApp = getRunningApp(app);
 
