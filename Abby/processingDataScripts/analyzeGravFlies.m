@@ -2,7 +2,7 @@
 % code to make everything work.
 
 %% Setup up paths for analysis folder
-exprFolder = 'Z:\Abby\Gravity Sensing\Fly 01\Intact_Light' ; 
+exprFolder = 'D:\Box Sync Old\Gravity Sensing\Fly 02\Intact_Light' ; 
 ExprNum = 1;
 camNamesList = {'xy','xz','yz'};
 calibrationPath = fullfile(exprFolder,'calibration');
@@ -110,7 +110,11 @@ if renameFlag
             movefile(origPaths{3},cinePaths{3});
     
             % also rename the .xml files
-            [~,camNames,~] = fileparts(origPaths);
+            camNames = cell(1,3);
+            for i = 1:3
+                [~,currCamName,~] = fileparts(origPaths{i});
+                camNames{i} = currCamName;
+            end
     
             xmlFilenames = strcat(camNamesList,'_',movNumStr,'.xml');
             xmlPaths = fullfile(currFlyFolder,xmlFilenames);
