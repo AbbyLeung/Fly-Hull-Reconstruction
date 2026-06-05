@@ -143,7 +143,8 @@ else
 end
 
 %% run analysis on renamed cines
-for currMovNum = unique(movNumsList)
+movList = unique(movNumsList);
+for currMovNum = movList
     % check if there is triplet
     movNumStr = num2str(currMovNum,'%03.f');
     tripletCheck = sum(movNumsList==currMovNum);
@@ -182,7 +183,6 @@ for currMovNum = unique(movNumsList)
 
         disp(['Found triplet for movie ',movNumStr,', running reconstruction'])
         try
-            % matchBackgrounds
             analyzeOneFlyMovie(currFlyFolder,ExprNum,currMovNum,flyWindowParams)
             disp(['Done analyzing movie ',movNumStr])
         catch exception

@@ -90,8 +90,8 @@ end
 % manual correction time, if mc has occured. gives plot bounds
 if (isfield(data,'correctionTime'))
     correctionTime=data.correctionTime;
-elseif(isfield(data,'manualCorrRangeMS'))
-    correctionTime=data.manualCorrRangeMS;
+elseif(isfield(data,'manualCorrRangeMS') && ~isempty(data.manualCorrRangeMS))
+    correctionTime = data.manualCorrRangeMS ;
 else
     correctionTime = [-10, 50] ;
 end

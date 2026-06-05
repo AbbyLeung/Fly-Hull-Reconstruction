@@ -4,9 +4,11 @@ function [] = analyzeOneFlyMovie(pathToWatch,ExprNum,movNum,flyBGParams)
 % Script to run analysis on renamed files.
 
 % pathStruct = generatePathStruct(pathToWatch);
-clustFlag = true ; % shich version of analysis script to run
+
+clustFlag = true ; % which version of analysis script to run
 largePertFlag = false  ; % is it a large perturbation?
 removeLegsFlag = true ; % try to remove legs in binary threshold?
+
 alignBBoxFlag = false ; % try to align images to avoid clipping?
 stopWingsFlag = false;
 

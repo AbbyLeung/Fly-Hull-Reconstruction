@@ -4,7 +4,7 @@ function [flyWindowParams] = matchBackgroundsFunc(imgCell,bgFolder,cineFilenames
 %% first get background images (only need to do this one time)
 % bgFolder = 'Z:\Abby\Gravity Sensing\Fly 01\Intact_Light\bg';
 camNames = {'yz','xz','xy'};
-camFilenames = strcat(camNames,'_1.cine');
+camFilenames = strcat(camNames,'_001.cine');
 camPaths = fullfile(bgFolder,camFilenames);
 
 % check if bg cell is already created
