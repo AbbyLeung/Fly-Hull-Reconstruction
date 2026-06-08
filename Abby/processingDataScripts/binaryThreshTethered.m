@@ -87,10 +87,6 @@ allAxlim = zeros(N,4) ;
 W = 40 ;
 maskWindow = 100 ; 
 
-if (~DEBUG_FLAG)
-    hbar = waitbar(0,['binaryThreshold: finding whole-body bw images for ' ...
-        fn_curr ]) ;
-end
 
 % ------------------------------------------------------------------------
 %% FIND THE ENTIRE FLY BW IMAGE IN EACH FRAME
@@ -188,14 +184,10 @@ for t=tin:tout
         subplot(1,4,4) ; imhist(im2) ; set(gca,'xlim',[0 255],'ylim',[0 30]) ;
         hold on ; plot(level*[255 255],[0 50],'r-','linewidth',2) ;
         pause(0.05);
-    else
-        waitbar(c/N, hbar) ;
     end
 end
 
-if (~DEBUG_FLAG)
-    close(hbar);
-else
+if (DEBUG_FLAG)
     figure(1); clf ;
 end
 
@@ -217,12 +209,7 @@ xcm_pass1 = zeros(N,1) + NaN ; % use N and not (N-2*DELTA) to be compatible with
 ycm_pass1 = zeros(N,1) + NaN ;
 %N_bodyPix = nan(N,1) ; 
 
-if (~DEBUG_FLAG2)
-    hbar = waitbar(0,['binaryThreshold: finding body CM for ' fn_curr ...
-        ' (pass 1)...']) ;
-end
-
-cc  = 0 ; % used only for hbar
+cc  = 0 ;
 Ndd = N - 2*DELTA ;
 
 for t = tin+DELTA : tout-DELTA
@@ -366,14 +353,7 @@ for t = tin+DELTA : tout-DELTA
         plot(xcm_pass1(d1:c), ycm_pass1(d1:c),'ko-','markerfacecolor','w','markersize',3) ;
         pause(.01) ;
         hold off ;
-    else
-        waitbar(cc/Ndd, hbar) ;
     end
-end
-
-
-if (~DEBUG_FLAG2)
-    close(hbar);
 end
 
 %figure ;
@@ -382,11 +362,6 @@ end
 
 %% FIND BODY C.M. PASS-2 - shift the images to overlap, then do the same trick as in pass-1
 % (see code in segmentWingSingleFrame.m)
-
-if (~DEBUG_FLAG3) && (~DEBUG_FLAG4)
-    hbar = waitbar(0,['binaryThreshold: finding body CM for ' fn_curr ...
-        ' (pass 2)...']) ;
-end
 
 if (DEBUG_FLAG4) && (stopWingsFlag)
     h_fig = figure ;
@@ -598,15 +573,6 @@ for t = tin+DELTA : tout-DELTA
         title(ax, t)
         pause(0.05)
     end
-    if ~(DEBUG_FLAG3) && ~(DEBUG_FLAG4)
-        waitbar(cc/Ndd, hbar) ;
-    end
-    
-    
-end
-
-if (~DEBUG_FLAG3) && ~(DEBUG_FLAG4)
-    close(hbar)
 end
 
 % ------------------------------------------------------------------------

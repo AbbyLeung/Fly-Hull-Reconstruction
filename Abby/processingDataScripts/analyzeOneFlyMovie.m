@@ -89,47 +89,39 @@ tout = lastImNum-100;
 LoadPhantomLibraries();
 RegisterPhantom(true);
 
-cam = XY ;
-% try
-%     [all_fly_bw_xy, body_only_bw_xy, all_fly_thresholds_xy, xcm_xy, ycm_xy,...
-%         allAxlim_xy, DELTA, with_legs_bw_xy] = ...
-%         binaryThreshold(allBGcell{cam} , cinFilenames{cam}, tin,...
-%          tout, twoFlies, allXcm{cam}, allYcm{cam}, removeLegsFlag, ...
-%          stopWingsFlag) ;
-% catch exception
-%     msg = strcat('Error doing xy binary threshold for movie ', movieNum) ;
-%     msg = strcat(msg, ': ', getReport(exception, 'basic')) ;
-%     disp(msg)
-%     % fileID = fopen(errorPath,'a+') ;
-%     % fprintf(fileID, '%s\r\n', msg) ;
-%     % fclose(fileID) ;
-%     errorFlag = true ;
-%     return
-% end
-
-disp('Binary for XY')
-[all_fly_bw_xy, body_only_bw_xy, all_fly_thresholds_xy, xcm_xy, ycm_xy,...
-    allAxlim_xy, DELTA, with_legs_bw_xy] = ...
-    binaryThreshTethered(allBGcell{cam} , cinFilenames{cam}, tin,...
-     tout, windowParams(cam,:),removeLegsFlag, stopWingsFlag) ;
-
-disp('Binary for XZ')
-cam = XZ ;
-[all_fly_bw_xz, body_only_bw_xz, all_fly_thresholds_xz, xcm_xz, ycm_xz,...
-        allAxlim_xz, DELTA, with_legs_bw_xz] = ...
-        binaryThreshTethered( allBGcell{cam}  , cinFilenames{cam}, tin,...
-         tout, windowParams(cam,:),removeLegsFlag, stopWingsFlag) ;
-
-disp('Binary for YZ')
-cam = YZ ;
-[all_fly_bw_yz, body_only_bw_yz, all_fly_thresholds_yz, xcm_yz, ycm_yz,...
-    allAxlim_yz, DELTA, with_legs_bw_yz] = ...
-    binaryThreshTethered( allBGcell{cam}  , cinFilenames{cam}, tin,...
-     tout, windowParams(cam,:),removeLegsFlag, stopWingsFlag) ;
-
+disp('Binary threshold (batch)...')
+jobXY = batch('binaryThreshTethered', 8, {allBGcell{XY}, cinFilenames{XY}, ...
+    tin, tout, windowParams(XY,:), removeLegsFlag, stopWingsFlag}) ;
+jobXZ = batch('binaryThreshTethered', 8, {allBGcell{XZ}, cinFilenames{XZ}, ...
+    tin, tout, windowParams(XZ,:), removeLegsFlag, stopWingsFlag}) ;
+jobYZ = batch('binaryThreshTethered', 8, {allBGcell{YZ}, cinFilenames{YZ}, ...
+    tin, tout, windowParams(YZ,:), removeLegsFlag, stopWingsFlag}) ;
 
 UnregisterPhantom();
 UnloadPhantomLibraries();
+
+wait(jobXY) ; wait(jobXZ) ; wait(jobYZ) ;
+
+outXY = fetchOutputs(jobXY) ; outXZ = fetchOutputs(jobXZ) ; outYZ = fetchOutputs(jobYZ) ;
+delete(jobXY) ; delete(jobXZ) ; delete(jobYZ) ;
+
+all_fly_bw_xy         = outXY{1} ; body_only_bw_xy       = outXY{2} ;
+all_fly_thresholds_xy = outXY{3} ; xcm_xy                = outXY{4} ;
+ycm_xy                = outXY{5} ; allAxlim_xy           = outXY{6} ;
+DELTA                 = outXY{7} ; with_legs_bw_xy       = outXY{8} ;
+
+all_fly_bw_xz         = outXZ{1} ; body_only_bw_xz       = outXZ{2} ;
+all_fly_thresholds_xz = outXZ{3} ; xcm_xz                = outXZ{4} ;
+ycm_xz                = outXZ{5} ; allAxlim_xz           = outXZ{6} ;
+with_legs_bw_xz       = outXZ{8} ;
+
+all_fly_bw_yz         = outYZ{1} ; body_only_bw_yz       = outYZ{2} ;
+all_fly_thresholds_yz = outYZ{3} ; xcm_yz                = outYZ{4} ;
+ycm_yz                = outYZ{5} ; allAxlim_yz           = outYZ{6} ;
+with_legs_bw_yz       = outYZ{8} ;
+
+clear outXY outXZ outYZ
+disp(['Done with binary threshold for movie ' movieNum])
 %  -----------------------------------------------------------------------
 %% COMBINE all_fly_bw_** INTO ONE STRUCTURE
 %   (use frames DELTA+1 until Nimages-DELTA)
