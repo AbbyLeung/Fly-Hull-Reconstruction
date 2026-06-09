@@ -90,7 +90,7 @@ for currChunk = 1:N_chunks
                 % imbed timer in cam1 view
                 if camInd == 1
                     currFrame = insertText(currFrame,[1,1],...
-                        timeValsText{frameInd},BoxOpacity=1,FontSize=35);
+                        timeValsText{frameInd},'BoxOpacity', 1, 'FontSize', 35);
                     currFrame = currFrame(:,:,1);
                     frameInd = frameInd+1;
                 end
