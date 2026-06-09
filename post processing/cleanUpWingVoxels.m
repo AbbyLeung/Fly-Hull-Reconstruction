@@ -8,21 +8,24 @@
 % it's just e.g. the back of the wing stroke that has problems
 %--------------------------------------------------------------------------
 function data_out = cleanUpWingVoxels(data_in, all_fly_bw, ...
-    body_only_bw, dlt, order, debugFlag)
+    body_only_bw, dlt, order, debugFlag, logPath)
 %--------------------------------------------------------------------------
 %{
  data_in = importdata(['D:\Fly Data\VNC Motor' ...
    'Lines\58_23032019\Analysis\Roll' ...
-   'Left\Expr_58_mov_007\Expr_58_mov_007_test.mat']) ; 
+   'Left\Expr_58_mov_007\Expr_58_mov_007_test.mat']) ;
 %}
 %% params and inputs
 if ~exist('debugFlag','var')
     debugFlag = false ;
     figPosAfter = [2841, 273, 725, 610] ;
     figPosBefore = [ 2000, 270, 757, 613] ;
-elseif exist('debugFlag','var') && debugFlag 
+elseif exist('debugFlag','var') && debugFlag
     figPosAfter = [2841, 273, 725, 610] ;
     figPosBefore = [ 2000, 270, 757, 613] ;
+end
+if ~exist('logPath','var') || isempty(logPath)
+    logPath = [] ;
 end
 
 clustDebugFlag1 = false ;
@@ -443,8 +446,16 @@ for k = 1:N_bad_frames
                 wing_str, ind, rightWingCM_interp, rightWingTips_interp, ...
                 row_start, row_end, imWingRMat, segWingsFlag, dlt, order,...
                 voxelSize, clustDebugFlag2) ;
-        catch
-            keyboard
+        catch exception
+            msg = sprintf('Frame %d : error clustering right wing, skipping: %s\n', ...
+                ind, exception.message) ;
+            if ~isempty(logPath)
+                fileID = fopen(logPath, 'a+') ;
+                fprintf(fileID, '%s\r\n', msg) ;
+                fclose(fileID) ;
+            end
+            data_out.ignoreFrames = unique([data_out.ignoreFrames, ind]) ;
+            continue
         end
         oneWingClustFlag = true ;
         if ignoreFlagR
@@ -461,8 +472,16 @@ for k = 1:N_bad_frames
                 wing_str, ind, leftWingCM_interp, leftWingTips_interp, ...
                 row_start, row_end, imWingLMat, segWingsFlag, dlt, order,...
                 voxelSize, clustDebugFlag2) ;
-        catch
-            keyboard
+        catch exception
+            msg = sprintf('Frame %d : error clustering left wing, skipping: %s\n', ...
+                ind, exception.message) ;
+            if ~isempty(logPath)
+                fileID = fopen(logPath, 'a+') ;
+                fprintf(fileID, '%s\r\n', msg) ;
+                fclose(fileID) ;
+            end
+            data_out.ignoreFrames = unique([data_out.ignoreFrames, ind]) ;
+            continue
         end
         oneWingClustFlag = true ;
         if ignoreFlagL

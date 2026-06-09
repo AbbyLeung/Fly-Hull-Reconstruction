@@ -508,8 +508,9 @@ end
 %% do some post processing to clean up the data
 order = [2, 1, 3] ;
 
+logPath = fullfile(movieFolder, 'cleanUpLog.txt') ;
 data = cleanUpWingVoxels(data, all_fly_bw, ...
-    body_only_bw, dlt_matrix, order) ;
+    body_only_bw, dlt_matrix, order, false, logPath) ;
 
 % check to see if wings need to be swapped
 % fprintf('Checking L<->R wing swaps for movie %d... \n', movNum)

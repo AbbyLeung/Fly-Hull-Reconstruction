@@ -71,7 +71,7 @@ imageHeight = detectorLengthPix(1) ;
 imageWidth  = detectorLengthPix(2) ;
 
 %N         = params.N ;         % 512 ; % no. of voxels is N^3. % does not have to be the image size. can be larger.
-volLength =  16e-3 ; % AL: was 8e-3 %params.volLength ; % N / 232 ; % 2.2 in cm
+volLength =  12e-3 ; % AL: was 8e-3, increased to 16e-3, reduced to 12e-3 %params.volLength ; % N / 232 ; % 2.2 in cm
 
 % ----------
 % SET PARAMS
