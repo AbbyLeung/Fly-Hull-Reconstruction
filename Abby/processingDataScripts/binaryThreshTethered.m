@@ -63,6 +63,9 @@ CC_size_thresh = 250 ; % used in pass 1 to find candidate connected components
 centroid_dist_thresh = 2.0 ; % used in pass 1 to find candidate connected components
 % --------------------------------------------------------
 
+LoadPhantomLibraries();
+RegisterPhantom(true);
+
 metaData = getCinMetaData(cinFilename) ;
 
 if(~exist('tin','var'))
@@ -588,6 +591,9 @@ end
 % -----------------------------------
 %% Close cine and exit
 myCloseCinFile(cindata) ;
+
+UnregisterPhantom();
+UnloadPhantomLibraries();
 
 warning('on','MATLAB:gui:latexsup:UnableToInterpretTeXString')
 
