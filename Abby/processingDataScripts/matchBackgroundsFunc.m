@@ -4,7 +4,7 @@ function [flyWindowParams] = matchBackgroundsFunc(imgCell,bgFolder,cineFilenames
 %% first get background images (only need to do this one time)
 % bgFolder = 'Z:\Abby\Gravity Sensing\Fly 01\Intact_Light\bg';
 camNames = {'yz','xz','xy'};
-camFilenames = strcat(camNames,'_001.cine');
+camFilenames = strcat(camNames,'_1.cine');
 camPaths = fullfile(bgFolder,camFilenames);
 
 % check if bg cell is already created
@@ -34,7 +34,7 @@ end
 % make mask
 dims = size(bgCell{1});
 mask = false(dims);
-mask(100:200,650:700) = true;
+mask(100:200,100:200) = true;
 colorOffsets = zeros(1,3);
 
 % get one frame from each camera view to adjust color in background for
