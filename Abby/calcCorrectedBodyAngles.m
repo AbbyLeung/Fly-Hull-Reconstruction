@@ -30,7 +30,7 @@ function [psi_corr, beta_corr, rho_corr, R_corr, ...
 if ~exist('largePertFlag','var') || isempty(largePertFlag)
     largePertFlag = false ;
 end
-% XY camera is always column 3 in the DLT CSV for this rig
+% XY cam is always column 3
 XY_col = 3 ;
 RAD2DEG = 180 / pi ;
 
@@ -54,13 +54,13 @@ pp  = easyWandData.ppts ;
 f_xy  = f(XY_col) ;
 pp_xy = pp(2*XY_col-1 : 2*XY_col) ;
 
-Kxy   = [f_xy, 0, pp_xy(1) ; 0, f_xy, pp_xy(2) ; 0, 0, 1] ;
+Kxy   = [f_xy, 0, pp_xy(1) ; 0, f_xy, pp_xy(2) ; 0, 0, 1] ; % intrinsics
 dltxy = dlt(:, XY_col) ;
 Axy   = [dltxy(1:4)' ; dltxy(5:8)' ; dltxy(9:11)', 1] ;
-Rxy   = Kxy \ Axy ;
+Rxy   = Kxy \ Axy ; % extrinsics
 Rxy   = Rxy / max([norm(Rxy(1:3,1)), norm(Rxy(1:3,2)), norm(Rxy(1:3,3))]) ;
 
-xy_optical_axis = Rxy(1:3,1:3)' * [0;0;1] ;
+xy_optical_axis = Rxy(1:3,1:3)' * [0;0;1] ; % rotate cam +z to world coordinates
 xy_optical_axis = xy_optical_axis / norm(xy_optical_axis) ;
 
 target = [0;0;-1] ;
@@ -73,10 +73,11 @@ if axNorm < 1e-10
 else
     ax     = ax / axNorm ;
     ang    = acos(dot(xy_optical_axis, target)) ;
+    % rotate about ax axis by ang degrees with Rodrigues' rotation formula
     K_skew = [0, -ax(3), ax(2) ; ax(3), 0, -ax(1) ; -ax(2), ax(1), 0] ;
     R_corr = eye(3) + sin(ang)*K_skew + (1-cos(ang))*(K_skew^2) ;
-    fprintf('calcCorrectedBodyAngles: correction angle = %.3f deg\n', ...
-        ang * RAD2DEG) ;
+    % fprintf('calcCorrectedBodyAngles: correction angle = %.3f deg\n', ...
+    %     ang * RAD2DEG) ;
 end
 
 %--------------------------------------------------------------------------
@@ -115,7 +116,7 @@ end
 % rotate rollVectors into corrected lab frame
 rollVectors_corr = (R_corr * data.rollVectors')' ;
 
-% build time vector matching calcAnglesRaw_Sam convention
+% build time vector (from calcAnglesRaw_Sam)
 fps = data.params.fps ;
 if isfield(data, 'startAnalysisTimeMS')
     startTime = data.startAnalysisTimeMS * fps / 1000 ;
@@ -132,10 +133,10 @@ t = (startTime:endTime) / fps ;
 rho_corr = smoothed_rho(:) ;
 
 %--------------------------------------------------------------------------
-%% smooth corrected angles (same filter params as smoothBodyAngles)
+%% smooth corrected angles (from smoothBodyAngles)
 smoothingParams = setSmoothingParams() ;
 
-% yaw: unwrap first (same logic as smoothBodyAngles)
+% yaw: unwrap first (from smoothBodyAngles)
 init_window  = 20 ;
 psi_smooth   = psi_corr ;
 psi_init     = nanmedian(psi_smooth(1:min(init_window, length(psi_smooth)))) ;

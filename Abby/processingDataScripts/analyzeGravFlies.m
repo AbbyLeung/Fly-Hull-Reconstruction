@@ -2,16 +2,14 @@
 % code to make everything work.
 
 %% Setup up paths for analysis folder
-exprFolders = {'D:\Box Sync Old\Gravity Sensing\Fly 04\ctrl_light','D:\Box Sync Old\Gravity Sensing\Fly 04\ctrl_dark',...
-    'D:\Box Sync Old\Gravity Sensing\Fly 05\ctrl_light','D:\Box Sync Old\Gravity Sensing\Fly 05\ctrl_dark',...
-    'D:\Box Sync Old\Gravity Sensing\Fly 06\antenna_removed_dark','D:\Box Sync Old\Gravity Sensing\Fly 06\antenna_removed_light'} ; 
+exprFolders = {'D:\Gravity Sensing\Fly 05\ctrl_light','D:\Gravity Sensing\Fly 05\ctrl_dark'} ; 
 ExprNum = 1;
 camNamesList = {'xy','xz','yz'};
 % bgRefPath = fullfile(exprFolder,'bg_ref');
 
 % get folder names for each fly and then loop through each one
-for i = 1:length(exprFolders)
-    currFlyFolder = exprFolders{i};
+for folder_ind = 1:length(exprFolders)
+    currFlyFolder = exprFolders{folder_ind};
     calibrationPath = fullfile(currFlyFolder,'calibration');
 
     %% background and mp4 paths
@@ -147,7 +145,11 @@ for i = 1:length(exprFolders)
 
     %% run analysis on renamed cines
     movList = unique(movNumsList);
+    % quick fix because computer decided to restart
     for currMovNum = movList
+        if (folder_ind == 1 && currMovNum < 20)
+            continue
+        end
         % check if there is triplet
         movNumStr = num2str(currMovNum,'%03.f');
         tripletCheck = sum(movNumsList==currMovNum);
